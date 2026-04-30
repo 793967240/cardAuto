@@ -15,7 +15,7 @@ func _ready() -> void:
 	EventBus.language_changed.connect(_on_language_changed)
 
 func _update_texts() -> void:
-	title_label.text = tr("menu.main.title") if TranslationServer.has_translation("menu.main.title") else "时序录"
+	title_label.text = tr("menu.main.title")
 	start_button.text = tr("menu.main.start")
 	continue_button.text = tr("menu.main.continue")
 	settings_button.text = tr("menu.main.settings")
