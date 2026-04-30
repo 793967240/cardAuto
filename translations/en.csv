@@ -1,0 +1,59 @@
+keys,en
+menu.main.start,Start Game
+menu.main.continue,Continue
+menu.main.settings,Settings
+menu.main.quit,Quit
+menu.settings.title,Settings
+menu.settings.language,Language
+menu.settings.music_volume,Music Volume
+menu.settings.sfx_volume,SFX Volume
+menu.settings.fullscreen,Fullscreen
+menu.settings.back,Back
+battle.button.surrender,Surrender
+battle.button.pause,Pause
+battle.button.resume,Resume
+battle.button.speed_1x,1x
+battle.button.speed_2x,2x
+battle.button.speed_4x,4x
+battle.label.recovery,Recovery
+battle.label.timeline,Timeline
+battle.label.hp,HP
+battle.label.chain,Chain
+build.title,Build
+build.button.simulate,Simulate Battle
+build.button.confirm,Confirm
+build.label.total_duration,Total Duration
+build.label.recovery_duration,Recovery
+build.tooltip.recovery,"Recovery Phase: The vulnerability window after your chain loops. Enemies continue attacking, and you cannot act."
+build.synergy.hint,Synergy: {synergy_name}
+map.node.battle,Battle
+map.node.elite,Elite
+map.node.shop,Shop
+map.node.event,Event
+map.node.campfire,Campfire
+map.node.boss,Tribulation
+map.node.mystery,Mystery
+campfire.title,Meditation Grounds
+campfire.option.rest,Rest (Restore 30% HP)
+campfire.option.forge,Forge (Upgrade a card)
+ui.button.confirm,Confirm
+ui.button.cancel,Cancel
+ui.button.back,Back
+ui.label.gold,Gold
+ui.label.act,Act {act}
+status.weakness.name,Dao Wound
+status.weakness.desc,Take 50% more damage
+status.vulnerable.name,Slow
+status.vulnerable.desc,Card cost +1
+status.burn.name,Karmic Fire
+status.burn.desc,Take {damage} damage per tick
+status.freeze.name,Frost Seal
+status.freeze.desc,Chain halted for {duration} ticks
+status.mark.name,Mark
+status.mark.desc,Next hit deals +{amount} more damage
+status.charge.name,Charge
+status.charge.desc,Current Charge: {stacks} stacks
+status.interrupt_immune.name,Interrupt Immunity
+status.interrupt_immune.desc,Immune to interrupts for {duration} ticks
+error.save_corrupted,"Save file corrupted, loaded from backup."
+error.no_backup,All backups corrupted. Unable to restore save.

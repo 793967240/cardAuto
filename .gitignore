@@ -44,5 +44,11 @@ steam_appid.txt
 # assets/**/*.png (managed separately - use LFS if >100KB)
 assets/_pending/
 
+# Fonts - 完整字体包太大不入 Git，子集化后的文件可提交
+assets/fonts/*_full.otf
+assets/fonts/*_full.ttf
+assets/fonts/source_han_serif_sc_regular.otf
+assets/fonts/source_han_serif_cn_regular.otf
+
 # OS
 Thumbs.db

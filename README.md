@@ -1,6 +1,6 @@
 # TimeChain（时序录）
 
-水墨修仙 · 时间轴卡牌构筑 · 自动战斗 · Roguelike 爬塔
+国风唯美仙侠 · 时间轴卡牌构筑 · 自动战斗 · Roguelike 爬塔
 
 **引擎**：Godot 4.3 · **语言**：GDScript · **平台**：Steam PC (Windows / Linux / macOS)
 
@@ -28,14 +28,25 @@ cd timechain
 godot --path project/
 ```
 
-### 安装 gut 测试框架
+### 启用 gut 测试框架
+
+gut 已内置于 `addons/gut/`，在 Godot 编辑器中启用：
+
+> Project → Project Settings → Plugins → GUT → ✅ Enable
+
+### 中文字体（首次设置）
+
+Cormorant（英文）已包含在 `assets/fonts/`，思源宋体需手动下载后子集化：
 
 ```bash
-cd project/
-git submodule add https://github.com/bitwes/Gut.git addons/gut
-```
+# 1. 下载思源宋体 SC（约 20MB）
+# https://github.com/adobe-fonts/source-han-serif/releases
+# 保存为：assets/fonts/source_han_serif_sc_regular.otf
 
-或在 Godot 编辑器 → AssetLib 搜索 "GUT" 直接安装。
+# 2. 子集化（输出约 3-5MB）
+pip install fonttools
+python3 tools/font_subset.py
+```
 
 ### 运行测试
 
@@ -119,7 +130,11 @@ project/
 
 ## 翻译协作
 
-翻译 Google Sheet：*(阶段 0 完成后填写链接)*
+翻译 Google Sheet（中英双语，含 Glossary 修仙术语表）：
+**https://docs.google.com/spreadsheets/d/1_timechain_i18n_placeholder**
+> ⚠️ 正式 Sheet 创建后替换此链接
+
+工作流：修改 `translations/_source.csv` → Sheet 同步 → 导出 `zh_CN.csv` / `en.csv` → CI 校验 → 合入
 
 ---
 
@@ -127,8 +142,8 @@ project/
 
 | 阶段 | 状态 | 目标 |
 |------|------|------|
-| 0 · 地基 | 🚧 进行中 | 项目骨架 + CI + 美术 Pipeline + i18n |
-| 1 · 核心循环 MVP | ⏳ 待启动 | 可玩一场完整战斗（PC 键鼠） |
+| 0 · 地基 | ✅ 完成 | 项目骨架 + CI + 美术 Pipeline + i18n |
+| 1 · 核心循环 MVP | 🚧 进行中 | 可玩一场完整战斗（PC 键鼠） |
 | 2 · 构筑深度 | ⏳ 待启动 | 词条 + 扩展底座 + 卡池扩充 |
 | 3 · Roguelike 外壳 | ⏳ 待启动 | 完整爬塔 + Act 1+2 |
 | 3.5 · EA 准备期 | ⏳ 待启动 | Steam 集成 + 商店页 + 体验抛光 |

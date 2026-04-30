@@ -1,0 +1,59 @@
+keys,zh_CN
+menu.main.start,开始游戏
+menu.main.continue,继续游戏
+menu.main.settings,设置
+menu.main.quit,退出
+menu.settings.title,设置
+menu.settings.language,语言
+menu.settings.music_volume,音乐音量
+menu.settings.sfx_volume,音效音量
+menu.settings.fullscreen,全屏
+menu.settings.back,返回
+battle.button.surrender,投降
+battle.button.pause,暂停
+battle.button.resume,继续
+battle.button.speed_1x,1x
+battle.button.speed_2x,2x
+battle.button.speed_4x,4x
+battle.label.recovery,调息
+battle.label.timeline,时间轴
+battle.label.hp,生命值
+battle.label.chain,链条
+build.title,构筑
+build.button.simulate,模拟战斗
+build.button.confirm,确认
+build.label.total_duration,总时长
+build.label.recovery_duration,修整时长
+build.tooltip.recovery,修整阶段：链条循环后的弱点窗口。敌人继续输出，玩家无法行动。
+build.synergy.hint,协同：{synergy_name}
+map.node.battle,战斗
+map.node.elite,精英
+map.node.shop,商店
+map.node.event,事件
+map.node.campfire,篝火
+map.node.boss,天劫
+map.node.mystery,神秘
+campfire.title,静修之地
+campfire.option.rest,调息（恢复 30% 生命）
+campfire.option.forge,修炼（强化一张卡牌）
+ui.button.confirm,确认
+ui.button.cancel,取消
+ui.button.back,返回
+ui.label.gold,金币
+ui.label.act,第 {act} 层
+status.weakness.name,道伤
+status.weakness.desc,受到伤害 +50%
+status.vulnerable.name,迟滞
+status.vulnerable.desc,卡牌 cost +1
+status.burn.name,业火
+status.burn.desc,每 tick 受到 {damage} 点伤害
+status.freeze.name,冰魄封印
+status.freeze.desc,链条暂停 {duration} tick
+status.mark.name,印记
+status.mark.desc,受到下一次伤害额外 +{amount}
+status.charge.name,充能
+status.charge.desc,当前充能：{stacks} 层
+status.interrupt_immune.name,打断免疫
+status.interrupt_immune.desc,免疫打断效果 {duration} tick
+error.save_corrupted,存档损坏，已加载备份。
+error.no_backup,所有备份均已损坏，无法恢复存档。

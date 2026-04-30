@@ -78,7 +78,7 @@ surrender={
 
 [internationalization]
 
-locale/translations=PackedStringArray("res://translations/zh_CN.translation", "res://translations/en.translation")
+locale/translations=PackedStringArray("res://translations/zh_CN.csv", "res://translations/en.csv")
 locale/fallback="en"
 
 [autoload]
