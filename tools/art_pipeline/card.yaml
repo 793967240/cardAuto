@@ -1,0 +1,11 @@
+# 卡牌生图 Prompt 模板示例
+# 用法：python3 tools/art_pipeline/generate_card.py --card tools/art_pipeline/card.yaml
+
+id: sword_zhan
+name: 斩
+prompt: "剑修挥剑，剑气横斩，蓝白剑气轨迹，墨色背景，竖版构图，细节精致，近景"
+
+style_override: null  # null = 使用全局 STYLE_HEADER
+
+output_size: [1024, 1536]
+model: "seedream-3.0"

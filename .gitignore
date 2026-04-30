@@ -1,0 +1,48 @@
+# Godot
+.godot/
+*.uid
+*.import
+*.translation
+export_presets.cfg
+
+# Build outputs
+build/
+dist/
+
+# macOS
+.DS_Store
+*.DS_Store
+__MACOSX/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+dist/
+
+# Test reports
+reports/balance_*.json
+reports/balance_*.html
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Secrets
+.env
+*.secret
+steamworks_sdk/
+steam_appid.txt
+
+# Large assets (use Git LFS for these)
+# assets/**/*.png (managed separately - use LFS if >100KB)
+assets/_pending/
+
+# OS
+Thumbs.db
