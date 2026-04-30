@@ -53,43 +53,42 @@ func _on_tick_recv(n): _received.append(n)
 
 func _run_timeline_tests() -> void:
 	print("--- Timeline ---")
-	var TL = preload("res://src/core/timeline.gd")
 
 	_tick_count_a = 0
-	var t = TL.new()
+	var t = Timeline.new()
 	t.tick_advanced.connect(_on_tick_a)
 	t.update(1.0)
 	_assert_eq(_tick_count_a, 2, "1s @1x = 2 ticks")
 
 	_tick_count_b = 0
-	t = TL.new()
+	t = Timeline.new()
 	t.set_speed_multiplier(2.0)
 	t.tick_advanced.connect(_on_tick_b)
 	t.update(1.0)
 	_assert_eq(_tick_count_b, 4, "1s @2x = 4 ticks")
 
 	_tick_count_c = 0
-	t = TL.new()
+	t = Timeline.new()
 	t.set_speed_multiplier(4.0)
 	t.tick_advanced.connect(_on_tick_c)
 	t.update(1.0)
 	_assert_eq(_tick_count_c, 8, "1s @4x = 8 ticks")
 
 	_tick_count_d = 0
-	t = TL.new()
+	t = Timeline.new()
 	t.tick_advanced.connect(_on_tick_d)
 	t.update(0.4)
 	_assert_eq(_tick_count_d, 0, "0.4s = 0 ticks")
 	t.update(0.2)
 	_assert_eq(_tick_count_d, 1, "0.6s total = 1 tick")
 
-	t = TL.new()
+	t = Timeline.new()
 	t.update(2.0)
 	t.reset()
 	_assert_eq(t.get_current_tick(), 0, "reset clears tick")
 
 	_received = []
-	t = TL.new()
+	t = Timeline.new()
 	t.tick_advanced.connect(_on_tick_recv)
 	t.advance_ticks(3)
 	_assert_eq(_received, [1, 2, 3], "advance_ticks(3) = [1,2,3]")
@@ -106,21 +105,18 @@ func _on_empty(): _chain_empty = true
 
 func _run_chain_tests() -> void:
 	print("\n--- Chain ---")
-	var Combatant = preload("res://src/core/combatant.gd")
-	var CardData = preload("res://src/data_models/card_data.gd")
-	var CardRuntime = preload("res://src/core/card_runtime.gd")
-	var BattleContext = preload("res://src/core/battle_context.gd")
 
 	var dummy = Combatant.new(&"e", "E", 999)
+	var dummy_list: Array[Combatant] = [dummy]
 
 	# cost-2 카드 테스트
 	_chain_fired = 0
 	var player = Combatant.new(&"p", "P", 80)
-	var ctx = BattleContext.new(player, [dummy])
+	var ctx = BattleContext.new(player, dummy_list)
 	var card = CardData.new()
 	card.cost = 2
 	var rt = CardRuntime.new(card)
-	var slots: Array = [rt]
+	var slots: Array[CardRuntime] = [rt]
 	player.chain.set_slots(slots)
 	player.chain.card_fired.connect(_on_chain_fired)
 	player.chain.on_tick(ctx)
@@ -131,11 +127,11 @@ func _run_chain_tests() -> void:
 	# recovery
 	_chain_recovered = false
 	var p2 = Combatant.new(&"p2", "P2", 80)
-	var ctx2 = BattleContext.new(p2, [dummy])
+	var ctx2 = BattleContext.new(p2, dummy_list)
 	var card2 = CardData.new()
 	card2.cost = 1
 	var rt2 = CardRuntime.new(card2)
-	var slots2: Array = [rt2]
+	var slots2: Array[CardRuntime] = [rt2]
 	p2.chain.set_slots(slots2)
 	p2.chain.recovery_started.connect(_on_recovered)
 	p2.chain.on_tick(ctx2)
@@ -144,8 +140,8 @@ func _run_chain_tests() -> void:
 	# empty chain
 	_chain_empty = false
 	var p3 = Combatant.new(&"p3", "P3", 80)
-	var ctx3 = BattleContext.new(p3, [dummy])
-	var empty_slots: Array = []
+	var ctx3 = BattleContext.new(p3, dummy_list)
+	var empty_slots: Array[CardRuntime] = []
 	p3.chain.set_slots(empty_slots)
 	p3.chain.chain_empty.connect(_on_empty)
 	p3.chain.on_tick(ctx3)
@@ -159,19 +155,13 @@ func _run_chain_tests() -> void:
 
 func _run_simulator_tests() -> void:
 	print("\n--- BattleSimulator ---")
-	var BattleSimulator = preload("res://src/core/battle_simulator.gd")
-	var Combatant = preload("res://src/core/combatant.gd")
-	var BattleContext = preload("res://src/core/battle_context.gd")
-	var CardData = preload("res://src/data_models/card_data.gd")
-	var CardRuntime = preload("res://src/core/card_runtime.gd")
-	var EffectAttack = preload("res://src/core/effects/effect_attack.gd")
 
 	var sim = BattleSimulator.new()
 	_assert(sim != null, "BattleSimulator instantiates")
 
 	# 玩家 vs 弱敌
 	var player = Combatant.new(&"sword", "Sword", 80)
-	var slots: Array = []
+	var slots: Array[CardRuntime] = []
 	for i in 3:
 		var c = CardData.new()
 		c.cost = 1
@@ -179,20 +169,22 @@ func _run_simulator_tests() -> void:
 		slots.append(CardRuntime.new(c))
 	player.chain.set_slots(slots)
 	var enemy = Combatant.new(&"slime", "Slime", 30)
-	var result = sim.simulate(player, [enemy], 0)
+	var enemy_list: Array[Combatant] = [enemy]
+	var result = sim.simulate(player, enemy_list, 0)
 	_assert_eq(result.winner, BattleContext.Winner.PLAYER, "player beats weak enemy")
 	_assert_gt(result.ticks_elapsed, 0, "ticks_elapsed > 0")
 
 	# 超时
 	var p2 = Combatant.new(&"p", "P", 80)
 	var e2 = Combatant.new(&"e", "E", 999)
-	var r2 = sim.simulate(p2, [e2], 0, 10)
+	var e2_list: Array[Combatant] = [e2]
+	var r2 = sim.simulate(p2, e2_list, 0, 10)
 	_assert_eq(r2.winner, BattleContext.Winner.TIMEOUT, "timeout when nobody wins")
 
 	# 胜率
 	var results = sim.simulate_batch(
-		func(): return Combatant.new(&"sword", "Sword", 80),
-		func(): return [Combatant.new(&"e", "E", 999)],
+		func() -> Combatant: return Combatant.new(&"sword", "Sword", 80),
+		func() -> Array[Combatant]: return [Combatant.new(&"e", "E", 999)] as Array[Combatant],
 		3, 0, 5
 	)
 	_assert_eq(results.size(), 3, "batch returns 3 results")

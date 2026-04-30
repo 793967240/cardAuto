@@ -52,8 +52,8 @@ func simulate_batch(
 ) -> Array[BattleResult]:
 	var results: Array[BattleResult] = []
 	for i in count:
-		var p := player_factory.call()
-		var e := enemies_factory.call()
+		var p: Combatant = player_factory.call()
+		var e: Array[Combatant] = enemies_factory.call()
 		results.append(simulate(p, e, base_seed + i, max_ticks))
 	return results
 

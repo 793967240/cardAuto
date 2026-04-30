@@ -14,7 +14,7 @@ config/name="TimeChain"
 config/version="0.1.0"
 config/description="时序录 - 时间轴卡牌构筑 Roguelike"
 run/main_scene="res://scenes/boot.tscn"
-config/features=PackedStringArray("4.3", "Forward Plus")
+config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
 [display]
@@ -91,3 +91,4 @@ InputRouter="*res://src/input/input_router.gd"
 [rendering]
 
 renderer/rendering_method="forward_plus"
+textures/vram_compression/import_etc2_astc=true

@@ -2,7 +2,7 @@
 
 国风唯美仙侠 · 时间轴卡牌构筑 · 自动战斗 · Roguelike 爬塔
 
-**引擎**：Godot 4.3 · **语言**：GDScript · **平台**：Steam PC (Windows / Linux / macOS)
+**引擎**：Godot 4.6 · **语言**：GDScript · **平台**：Steam PC (Windows / Linux / macOS)
 
 ---
 
@@ -10,7 +10,7 @@
 
 ### 前置条件
 
-- [Godot 4.3](https://godotengine.org/download) (Forward+ 后端)
+- [Godot 4.6](https://godotengine.org/download) (Forward+ 后端)
 - Python 3.11+（工具脚本）
 - Git
 - `animal-mediakit` skill（美术生图用）

@@ -34,7 +34,7 @@ func add_stacks(count: int) -> void:
 
 ## 消耗层数，返回实际消耗数（不超过现有层数）
 func consume_stacks(count: int) -> int:
-	var consumed := min(count, stacks)
+	var consumed: int = min(count, stacks)
 	stacks -= consumed
 	return consumed
 

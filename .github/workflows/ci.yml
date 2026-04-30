@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 env:
-  GODOT_VERSION: "4.3"
+  GODOT_VERSION: "4.6"
   GODOT_RELEASE: "stable"
 
 jobs:
@@ -87,7 +87,7 @@ jobs:
           - platform: macos
             runner: macos-latest
             export_preset: "macOS"
-            artifact_path: "build/macos/TimeChain.dmg"
+            artifact_path: "build/macos/TimeChain.zip"
 
     steps:
       - uses: actions/checkout@v4
