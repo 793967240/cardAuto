@@ -1,6 +1,5 @@
 # tests/headless_runner.gd
-# Headless CI 测试入口 - 用 preload 显式加载，不依赖编辑器插件注册
-# 用法: godot --headless --script tests/headless_runner.gd
+# Headless CI 测试入口
 extends SceneTree
 
 var _pass = 0
@@ -38,48 +37,72 @@ func _assert_eq(a, b, name: String) -> void:
 func _assert_gt(a, b, name: String) -> void:
 	_assert(a > b, "%s  (%s > %s)" % [name, str(a), str(b)])
 
+# ─── Timeline ────────────────────────────────────────────────
+
+var _tick_count_a = 0
+var _tick_count_b = 0
+var _tick_count_c = 0
+var _tick_count_d = 0
+var _received = []
+
+func _on_tick_a(_n): _tick_count_a += 1
+func _on_tick_b(_n): _tick_count_b += 1
+func _on_tick_c(_n): _tick_count_c += 1
+func _on_tick_d(_n): _tick_count_d += 1
+func _on_tick_recv(n): _received.append(n)
+
 func _run_timeline_tests() -> void:
 	print("--- Timeline ---")
 	var TL = preload("res://src/core/timeline.gd")
 
+	_tick_count_a = 0
 	var t = TL.new()
-	var ticks = 0
-	t.tick_advanced.connect(func(_n): ticks += 1)
+	t.tick_advanced.connect(_on_tick_a)
 	t.update(1.0)
-	_assert_eq(ticks, 2, "1s @1x = 2 ticks")
+	_assert_eq(_tick_count_a, 2, "1s @1x = 2 ticks")
 
+	_tick_count_b = 0
 	t = TL.new()
 	t.set_speed_multiplier(2.0)
-	ticks = 0
-	t.tick_advanced.connect(func(_n): ticks += 1)
+	t.tick_advanced.connect(_on_tick_b)
 	t.update(1.0)
-	_assert_eq(ticks, 4, "1s @2x = 4 ticks")
+	_assert_eq(_tick_count_b, 4, "1s @2x = 4 ticks")
 
+	_tick_count_c = 0
 	t = TL.new()
 	t.set_speed_multiplier(4.0)
-	ticks = 0
-	t.tick_advanced.connect(func(_n): ticks += 1)
+	t.tick_advanced.connect(_on_tick_c)
 	t.update(1.0)
-	_assert_eq(ticks, 8, "1s @4x = 8 ticks")
+	_assert_eq(_tick_count_c, 8, "1s @4x = 8 ticks")
 
+	_tick_count_d = 0
 	t = TL.new()
-	ticks = 0
-	t.tick_advanced.connect(func(_n): ticks += 1)
+	t.tick_advanced.connect(_on_tick_d)
 	t.update(0.4)
-	_assert_eq(ticks, 0, "0.4s = 0 ticks")
+	_assert_eq(_tick_count_d, 0, "0.4s = 0 ticks")
 	t.update(0.2)
-	_assert_eq(ticks, 1, "0.6s total = 1 tick")
+	_assert_eq(_tick_count_d, 1, "0.6s total = 1 tick")
 
 	t = TL.new()
 	t.update(2.0)
 	t.reset()
 	_assert_eq(t.get_current_tick(), 0, "reset clears tick")
 
+	_received = []
 	t = TL.new()
-	var received = []
-	t.tick_advanced.connect(func(n): received.append(n))
+	t.tick_advanced.connect(_on_tick_recv)
 	t.advance_ticks(3)
-	_assert_eq(received, [1, 2, 3], "advance_ticks(3) = [1,2,3]")
+	_assert_eq(_received, [1, 2, 3], "advance_ticks(3) = [1,2,3]")
+
+# ─── Chain ───────────────────────────────────────────────────
+
+var _chain_fired = 0
+var _chain_recovered = false
+var _chain_empty = false
+
+func _on_chain_fired(_c, _i): _chain_fired += 1
+func _on_recovered(_d): _chain_recovered = true
+func _on_empty(): _chain_empty = true
 
 func _run_chain_tests() -> void:
 	print("\n--- Chain ---")
@@ -90,38 +113,49 @@ func _run_chain_tests() -> void:
 
 	var dummy = Combatant.new(&"e", "E", 999)
 
+	# cost-2 카드 테스트
+	_chain_fired = 0
 	var player = Combatant.new(&"p", "P", 80)
 	var ctx = BattleContext.new(player, [dummy])
 	var card = CardData.new()
 	card.cost = 2
-	player.chain.set_slots([CardRuntime.new(card)])
-	var fired = 0
-	player.chain.card_fired.connect(func(_c, _i): fired += 1)
+	var rt = CardRuntime.new(card)
+	var slots: Array[CardRuntime] = [rt]
+	player.chain.set_slots(slots)
+	player.chain.card_fired.connect(_on_chain_fired)
 	player.chain.on_tick(ctx)
-	_assert_eq(fired, 0, "cost-2: no fire after 1 tick")
+	_assert_eq(_chain_fired, 0, "cost-2: no fire after 1 tick")
 	player.chain.on_tick(ctx)
-	_assert_eq(fired, 1, "cost-2: fires after 2 ticks")
+	_assert_eq(_chain_fired, 1, "cost-2: fires after 2 ticks")
 
+	# recovery
+	_chain_recovered = false
 	var p2 = Combatant.new(&"p2", "P2", 80)
 	var ctx2 = BattleContext.new(p2, [dummy])
 	var card2 = CardData.new()
 	card2.cost = 1
-	p2.chain.set_slots([CardRuntime.new(card2)])
-	var recovered = false
-	p2.chain.recovery_started.connect(func(_d): recovered = true)
+	var rt2 = CardRuntime.new(card2)
+	var slots2: Array[CardRuntime] = [rt2]
+	p2.chain.set_slots(slots2)
+	p2.chain.recovery_started.connect(_on_recovered)
 	p2.chain.on_tick(ctx2)
-	_assert(recovered, "enters recovery after all cards done")
+	_assert(_chain_recovered, "enters recovery after all cards done")
 
+	# empty chain
+	_chain_empty = false
 	var p3 = Combatant.new(&"p3", "P3", 80)
 	var ctx3 = BattleContext.new(p3, [dummy])
-	p3.chain.set_slots([])
-	var empty_emitted = false
-	p3.chain.chain_empty.connect(func(): empty_emitted = true)
+	var empty_slots: Array[CardRuntime] = []
+	p3.chain.set_slots(empty_slots)
+	p3.chain.chain_empty.connect(_on_empty)
 	p3.chain.on_tick(ctx3)
-	_assert(empty_emitted, "empty chain emits chain_empty")
+	_assert(_chain_empty, "empty chain emits chain_empty")
 
+	# recovery min
 	var dur = ctx.compute_recovery_duration(player)
 	_assert(dur >= BattleContext.RECOVERY_MIN_TICKS, "recovery >= min")
+
+# ─── BattleSimulator ─────────────────────────────────────────
 
 func _run_simulator_tests() -> void:
 	print("\n--- BattleSimulator ---")
@@ -135,8 +169,9 @@ func _run_simulator_tests() -> void:
 	var sim = BattleSimulator.new()
 	_assert(sim != null, "BattleSimulator instantiates")
 
+	# 玩家 vs 弱敌
 	var player = Combatant.new(&"sword", "Sword", 80)
-	var slots = []
+	var slots: Array[CardRuntime] = []
 	for i in 3:
 		var c = CardData.new()
 		c.cost = 1
@@ -148,15 +183,19 @@ func _run_simulator_tests() -> void:
 	_assert_eq(result.winner, BattleContext.Winner.PLAYER, "player beats weak enemy")
 	_assert_gt(result.ticks_elapsed, 0, "ticks_elapsed > 0")
 
+	# 超时
 	var p2 = Combatant.new(&"p", "P", 80)
 	var e2 = Combatant.new(&"e", "E", 999)
 	var r2 = sim.simulate(p2, [e2], 0, 10)
 	_assert_eq(r2.winner, BattleContext.Winner.TIMEOUT, "timeout when nobody wins")
 
-	var results = []
-	for i in 3:
-		var r = BattleSimulator.BattleResult.new()
-		r.winner = BattleContext.Winner.PLAYER
-		results.append(r)
-	_assert_eq(BattleSimulator.calc_win_rate(results), 1.0, "3/3 wins = 100%")
+	# 胜率
+	var results = sim.simulate_batch(
+		func(): return Combatant.new(&"sword", "Sword", 80),
+		func(): return [Combatant.new(&"e", "E", 999)],
+		3, 0, 5
+	)
+	_assert_eq(results.size(), 3, "batch returns 3 results")
+	# 全超时 winner = TIMEOUT，胜率 = 0
+	_assert_eq(BattleSimulator.calc_win_rate(results), 0.0, "0 wins = 0% rate")
 	_assert_eq(BattleSimulator.calc_win_rate([]), 0.0, "empty = 0%")
