@@ -120,7 +120,7 @@ func _run_chain_tests() -> void:
 	var card = CardData.new()
 	card.cost = 2
 	var rt = CardRuntime.new(card)
-	var slots: Array[CardRuntime] = [rt]
+	var slots: Array = [rt]
 	player.chain.set_slots(slots)
 	player.chain.card_fired.connect(_on_chain_fired)
 	player.chain.on_tick(ctx)
@@ -135,7 +135,7 @@ func _run_chain_tests() -> void:
 	var card2 = CardData.new()
 	card2.cost = 1
 	var rt2 = CardRuntime.new(card2)
-	var slots2: Array[CardRuntime] = [rt2]
+	var slots2: Array = [rt2]
 	p2.chain.set_slots(slots2)
 	p2.chain.recovery_started.connect(_on_recovered)
 	p2.chain.on_tick(ctx2)
@@ -145,7 +145,7 @@ func _run_chain_tests() -> void:
 	_chain_empty = false
 	var p3 = Combatant.new(&"p3", "P3", 80)
 	var ctx3 = BattleContext.new(p3, [dummy])
-	var empty_slots: Array[CardRuntime] = []
+	var empty_slots: Array = []
 	p3.chain.set_slots(empty_slots)
 	p3.chain.chain_empty.connect(_on_empty)
 	p3.chain.on_tick(ctx3)
@@ -171,7 +171,7 @@ func _run_simulator_tests() -> void:
 
 	# 玩家 vs 弱敌
 	var player = Combatant.new(&"sword", "Sword", 80)
-	var slots: Array[CardRuntime] = []
+	var slots: Array = []
 	for i in 3:
 		var c = CardData.new()
 		c.cost = 1
