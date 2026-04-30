@@ -92,16 +92,29 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Compute Godot template directory
+        id: tpl
+        shell: bash
+        run: |
+          if [ "$RUNNER_OS" = "macOS" ]; then
+            echo "dir=$HOME/Library/Application Support/Godot" >> $GITHUB_OUTPUT
+          else
+            echo "dir=$HOME/.local/share/godot" >> $GITHUB_OUTPUT
+          fi
+
       - name: Cache Godot binary
         id: cache-godot
         uses: actions/cache@v4
         with:
-          path: ~/.local/share/godot
+          path: ${{ steps.tpl.outputs.dir }}
           key: godot-${{ env.GODOT_VERSION }}-${{ env.GODOT_RELEASE }}-${{ matrix.runner }}
 
       - name: Download Godot + Export Templates
         if: steps.cache-godot.outputs.cache-hit != 'true'
+        shell: bash
         run: |
+          set -euo pipefail
+          TPL_DIR="${{ steps.tpl.outputs.dir }}"
           if [ "$RUNNER_OS" = "Linux" ]; then
             GODOT_FILENAME="Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_linux.x86_64"
             wget -q "https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}-${GODOT_RELEASE}/${GODOT_FILENAME}.zip"
@@ -117,9 +130,9 @@ jobs:
           fi
           TEMPLATES="Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_export_templates.tpz"
           wget -q "https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}-${GODOT_RELEASE}/${TEMPLATES}"
-          mkdir -p ~/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_RELEASE}
+          mkdir -p "${TPL_DIR}/export_templates/${GODOT_VERSION}.${GODOT_RELEASE}"
           unzip -q "${TEMPLATES}" -d /tmp/templates
-          mv /tmp/templates/templates/* ~/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_RELEASE}/
+          mv /tmp/templates/templates/* "${TPL_DIR}/export_templates/${GODOT_VERSION}.${GODOT_RELEASE}/"
 
       - name: Create build directory
         run: mkdir -p build/${{ matrix.platform }}
