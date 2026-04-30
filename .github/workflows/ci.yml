@@ -57,22 +57,11 @@ jobs:
         run: |
           godot --headless --import 2>&1 | tail -5 || true
 
-      - name: Run unit tests
+      - name: Run all tests
+        timeout-minutes: 5
         run: |
           godot --headless --path . \
-            --script addons/gut/gut_cmdln.gd \
-            -gdir=res://tests/unit \
-            -gprefix=test_ \
-            -gexit \
-            2>&1
-
-      - name: Run integration tests
-        run: |
-          godot --headless --path . \
-            --script addons/gut/gut_cmdln.gd \
-            -gdir=res://tests/integration \
-            -gprefix=test_ \
-            -gexit \
+            --script tests/headless_runner.gd \
             2>&1
 
   # ──────────────────────────────────────────────────────────────
