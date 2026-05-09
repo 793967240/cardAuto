@@ -65,6 +65,42 @@ jobs:
             2>&1
 
   # ──────────────────────────────────────────────────────────────
+  # 平衡 gate（警告级，不阻塞）
+  # ──────────────────────────────────────────────────────────────
+  balance_gate:
+    name: Balance Gate
+    runs-on: ubuntu-latest
+    needs: unit_tests
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache Godot binary
+        id: cache-godot
+        uses: actions/cache@v4
+        with:
+          path: /usr/local/bin/godot
+          key: godot-${{ env.GODOT_VERSION }}-${{ env.GODOT_RELEASE }}-linux
+
+      - name: Download Godot
+        if: steps.cache-godot.outputs.cache-hit != 'true'
+        run: |
+          GODOT_FILENAME="Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_linux.x86_64"
+          wget -q "https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}-${GODOT_RELEASE}/${GODOT_FILENAME}.zip"
+          unzip -q "${GODOT_FILENAME}.zip"
+          chmod +x "${GODOT_FILENAME}"
+          mv "${GODOT_FILENAME}" /usr/local/bin/godot
+
+      - name: Import project assets
+        run: godot --headless --import 2>&1 | tail -5 || true
+
+      - name: Run balance gate (200 battles per matchup)
+        timeout-minutes: 5
+        run: |
+          godot --headless --path . \
+            --script tests/balance_gate.gd \
+            2>&1
+
+  # ──────────────────────────────────────────────────────────────
   # PC 三平台构建烟雾测试（仅 main 分支）
   # ──────────────────────────────────────────────────────────────
   build_smoke:

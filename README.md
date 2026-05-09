@@ -77,6 +77,28 @@ python3 tools/i18n_check.py        # 检查缺失 key + 占位符一致性
 python3 tools/i18n_no_hardcode.py  # 检查硬编码字符串
 ```
 
+### 验收命令（阶段 1 工程 Gate）
+
+```bash
+cd project/
+
+# 1. 平衡基线跑批（1000 局/敌人 × 5 个敌人）
+godot --headless --path . --script tests/baseline_runner.gd -- \
+  --count 1000 --out reports/baseline/baseline_v1.json
+
+# 2. 平衡 gate（200 局/敌人小批量，对比 baseline；CI 自动跑）
+godot --headless --path . --script tests/balance_gate.gd
+
+# 3. 战斗逻辑 4x 性能基准（1000 tick wall clock < 1s）
+godot --headless --path . --script tests/perf_battle_4x.gd
+
+# 4. 多分辨率 UI 巡检（4 档 × 4 场景 = 16 张截图 + overflow 检测）
+#    注意：不能 headless，需要真实渲染
+godot --path . --script tools/ui_resolution_check.gd
+```
+
+每条命令退出码 0 即通过；产物分别在 `reports/baseline/`、`reports/perf/`、`reports/ui_audit/`。
+
 ### 生成 AI 美术
 
 > 需要先登录 animal-mediakit skill：
@@ -115,8 +137,18 @@ project/
 ├── tests/             # gut 测试代码
 ├── tools/             # 开发工具（生图 / i18n 校验 / 平衡回归）
 ├── translations/      # i18n CSV 文件
+├── reports/           # 验收报告（baseline / perf / ui_audit / e2e）
 └── .github/workflows/ # GitHub Actions CI
 ```
+
+### reports/ 目录
+
+| 子目录 | 内容 | 何时刷新 |
+|---|---|---|
+| `baseline/` | 平衡基线 JSON（1000 局/敌人）+ README | 卡牌/敌人/调参变更后重跑 `tests/baseline_runner.gd` |
+| `perf/` | 战斗逻辑性能基准（1000 tick wall clock） | 战斗核心代码改动后重跑 `tests/perf_battle_4x.gd` |
+| `ui_audit/` | 4 分辨率 × 4 场景截图 + overflow 检测 + README | UI 改动后本地重跑 `tools/ui_resolution_check.gd` |
+| `e2e/` | 完整 11 节点通关日志（gut 集成测试副产物） | 战斗/地图/存档变更后通过 gut 自动产出 |
 
 ---
 
@@ -143,7 +175,7 @@ project/
 | 阶段 | 状态 | 目标 |
 |------|------|------|
 | 0 · 地基 | ✅ 完成 | 项目骨架 + CI + 美术 Pipeline + i18n |
-| 1 · 核心循环 MVP | 🚧 进行中 | 可玩一场完整战斗（PC 键鼠） |
+| 1 · 核心循环 MVP | ✅ 工程层完成 | 可玩一场完整战斗（PC 键鼠）；玩法体感由用户人工试玩验证 |
 | 2 · 构筑深度 | ⏳ 待启动 | 词条 + 扩展底座 + 卡池扩充 |
 | 3 · Roguelike 外壳 | ⏳ 待启动 | 完整爬塔 + Act 1+2 |
 | 3.5 · EA 准备期 | ⏳ 待启动 | Steam 集成 + 商店页 + 体验抛光 |
