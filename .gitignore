@@ -5,9 +5,9 @@
 *.translation
 # export_presets.cfg is committed (needed for CI three-platform smoke build)
 
-# Build outputs
-build/
-dist/
+# Build outputs (仅匹配仓库根的 build/，不影响 src/ui/build / scenes/build)
+/build/
+/dist/
 
 # macOS
 .DS_Store
