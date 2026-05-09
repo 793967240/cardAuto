@@ -19,6 +19,9 @@ func fire(ctx: BattleContext, source: Combatant) -> void:
 			source.remove_status(StatusInstance.ID_CHARGE)
 
 	var total_damage := base_damage + int(charge_stacks * charge_multiplier)
+	# 词条修饰：PASSIVE 词条对最终伤害的修饰
+	if source.chain:
+		total_damage = source.chain.modify_damage(source.chain.get_current_card(), total_damage)
 	var dealt := target.take_damage(total_damage, source.tags)
 	ctx.stats.damage_dealt += dealt
 	ctx.stats.cards_fired += 1

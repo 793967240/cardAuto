@@ -7,10 +7,14 @@ class_name EffectComboChargeAttack extends CardEffect
 @export var charge_cap: int = 99
 
 func fire(ctx: BattleContext, source: Combatant) -> void:
+	# 词条修饰：source.chain.modify_damage 聚合 PASSIVE 词条对伤害的修饰
+	var dmg := damage
+	if source.chain:
+		dmg = source.chain.modify_damage(source.chain.get_current_card(), dmg)
 	# 攻击
 	var target := ctx.choose_target(source)
 	if target and target.is_alive():
-		var dealt := target.take_damage(damage, source.tags)
+		var dealt := target.take_damage(dmg, source.tags)
 		ctx.stats.damage_dealt += dealt
 
 	# 充能

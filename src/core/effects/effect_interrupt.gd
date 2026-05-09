@@ -24,9 +24,12 @@ func fire(ctx: BattleContext, source: Combatant) -> void:
 			target.apply_status(immune)
 			ctx.stats.interrupts_landed += 1
 
-	# 附加伤害照常结算
+	# 附加伤害照常结算（含词条修饰）
 	if also_damage > 0:
-		var dealt := target.take_damage(also_damage, source.tags)
+		var dmg := also_damage
+		if source.chain:
+			dmg = source.chain.modify_damage(source.chain.get_current_card(), dmg)
+		var dealt := target.take_damage(dmg, source.tags)
 		ctx.stats.damage_dealt += dealt
 
 	ctx.stats.cards_fired += 1
