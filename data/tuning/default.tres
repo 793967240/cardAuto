@@ -1,0 +1,15 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://tuning_default"]
+
+[ext_resource type="Script" path="res://src/data_models/tuning.gd" id="1_data"]
+
+[resource]
+script = ExtResource("1_data")
+tick_duration_sec = 0.5
+base_recovery_ticks = 2
+recovery_min_ticks = 1
+player_base_hp = 80
+charge_cap = 99
+interrupt_immune_duration = 4
+speed_options = [1.0, 2.0, 4.0]
+default_speed_index = 1
+max_battle_ticks = 600

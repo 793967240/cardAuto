@@ -1,0 +1,33 @@
+[gd_resource type="Resource" load_steps=5 format=3 uid="uid://enemy_slime"]
+
+[ext_resource type="Script" path="res://src/data_models/enemy_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="2_card"]
+[ext_resource type="Script" path="res://src/core/effects/effect_attack.gd" id="3_fx"]
+
+[sub_resource type="Resource" id="fx_1"]
+script = ExtResource("3_fx")
+damage = 4
+hits = 1
+
+[sub_resource type="Resource" id="card_1"]
+script = ExtResource("2_card")
+id = &"slime_strike"
+display_name_key = "enemy.slime_strike.name"
+desc_key = "enemy.slime_strike.desc"
+cost = 2
+card_type = 0
+tags = [&"enemy_attack"]
+rarity = 0
+description_template = "造成 4 点伤害。"
+effect = SubResource("fx_1")
+consumable = false
+
+[resource]
+script = ExtResource("1_data")
+id = &"slime"
+display_name_key = "enemy.slime.name"
+max_hp = 25
+tier = 0
+tags = [&"slime"]
+deck = [SubResource("card_1")]
+act = 1

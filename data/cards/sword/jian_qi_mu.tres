@@ -1,0 +1,22 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://card_jian_qi_mu"]
+
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_attack.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+damage = 20
+hits = 1
+
+[resource]
+script = ExtResource("1_data")
+id = &"jian_qi_mu"
+display_name_key = "card.jian_qi_mu.name"
+desc_key = "card.jian_qi_mu.desc"
+cost = 3
+card_type = 0
+tags = [&"sword", &"attack", &"heavy"]
+rarity = 1
+description_template = "造成 20 点伤害。"
+effect = SubResource("effect_1")
+consumable = false

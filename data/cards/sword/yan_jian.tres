@@ -1,0 +1,23 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://card_yan_jian"]
+
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_combo_charge_attack.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+damage = 8
+charge_amount = 0
+charge_cap = 99
+
+[resource]
+script = ExtResource("1_data")
+id = &"yan_jian"
+display_name_key = "card.yan_jian.name"
+desc_key = "card.yan_jian.desc"
+cost = 2
+card_type = 0
+tags = [&"sword", &"attack", &"fire"]
+rarity = 1
+description_template = "造成 8 点伤害，施加 3 层燃烧（持续 3 tick）。"
+effect = SubResource("effect_1")
+consumable = false

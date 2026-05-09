@@ -1,0 +1,23 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://card_xu_kong_jian"]
+
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_interrupt.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+also_damage = 5
+immune_duration = 4
+pierce_resistance = false
+
+[resource]
+script = ExtResource("1_data")
+id = &"xu_kong_jian"
+display_name_key = "card.xu_kong_jian.name"
+desc_key = "card.xu_kong_jian.desc"
+cost = 2
+card_type = 3
+tags = [&"sword", &"attack", &"interrupt"]
+rarity = 0
+description_template = "打断目标当前卡的蓄力进度，附加 5 点伤害。"
+effect = SubResource("effect_1")
+consumable = false
