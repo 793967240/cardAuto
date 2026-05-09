@@ -1,0 +1,21 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://trait_fragile_edge"]
+
+[ext_resource type="Script" path="res://src/data_models/trait_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/traits/trait_effect_fragile_cost.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+reduction = 1
+owner_hp_loss = 1
+
+[resource]
+script = ExtResource("1_data")
+id = &"fragile_edge"
+display_name_key = "trait.fragile_edge.name"
+desc_key = "trait.fragile_edge.desc"
+scope = 0
+trigger = 0
+tags = [&"cost_mod", &"trade_off"]
+mutex_tags = [&"cost_mod"]
+effect = SubResource("effect_1")
+description_template = "该槽位的卡 cost -1，但每次打出 owner -1 HP（待阶段 3 拆词条）。"

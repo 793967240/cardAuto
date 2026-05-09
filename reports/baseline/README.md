@@ -85,3 +85,13 @@ CI balance gate 警告阈值：
   ]
 }
 ```
+
+## 阶段 2 词条 schema 已知局限（2026-05-09 探路发现）
+
+1. **Trigger 互斥**：`Chain._effective_cost` 仅在 trigger==PASSIVE 时调 modify_cost；`_fire_trait_hook` 仅在 trigger!=PASSIVE 时触发事件 hook。  
+   → 一个词条不能同时有 PASSIVE 修饰（cost/damage）和事件副作用（on_play 等）。  
+   → 解法：拆成两个词条配合，或阶段 3 重构 Chain 让所有词条都参与 modify_*。
+
+2. **TraitEffect 是 Resource，状态全局共享**：含 `_triggered_count` 等运行时字段的子类（echo / chain_end_replay）在跨战斗时不会自动重置。  
+   → 阶段 2 内可接受（外部代码在战斗开始时手动调 reset()）。  
+   → 阶段 3 RunState 接入时改为给每场战斗 duplicate() 一份 TraitEffect 实例，根除污染。

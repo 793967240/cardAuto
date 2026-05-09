@@ -21,8 +21,15 @@ func modify_cost(card: CardRuntime, base: int) -> int:
 	return base
 
 ## 修饰卡牌伤害（base_damage → 返回新 damage）
+## 简单词条 override 这个即可
 func modify_damage(card: CardRuntime, base: int) -> int:
 	return base
+
+## 修饰卡牌伤害（带 chain 上下文版本，给共鸣型/扫链型词条用）
+## Chain.modify_damage 优先调用本方法；默认实现 fallback 到 modify_damage(card, base)
+## 子类按需 override
+func modify_damage_with_chain(card: CardRuntime, base: int, _chain) -> int:
+	return modify_damage(card, base)
 
 ## ===== 事件 hook =====
 

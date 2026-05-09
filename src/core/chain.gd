@@ -126,13 +126,15 @@ func _effective_cost(card: CardRuntime, ctx: BattleContext) -> int:
 	return max(1, base)
 
 ## 计算卡牌伤害修饰（由具体效果在 fire 时查询 chain.modify_damage）
+## 优先调用 modify_damage_with_chain（给共鸣型词条带 chain 上下文）；
+## 基类默认 fallback 到 modify_damage(card, base)
 func modify_damage(card: CardRuntime, base: int, slot_index: int = -1) -> int:
 	var idx := slot_index if slot_index >= 0 else current_index
 	var out := base
 	for t in _active_traits_for_index(idx):
 		var eff := (t as TraitInstance).get_effect()
 		if eff != null and (t as TraitInstance).data.trigger == TraitData.Trigger.PASSIVE:
-			out = eff.modify_damage(card, out)
+			out = eff.modify_damage_with_chain(card, out, self)
 	return out
 
 ## 取出指定槽位的所有生效词条（独立 + 共享）

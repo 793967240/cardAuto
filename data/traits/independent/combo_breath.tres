@@ -1,0 +1,21 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://trait_combo_breath"]
+
+[ext_resource type="Script" path="res://src/data_models/trait_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/traits/trait_effect_chain_end_replay.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+slot_offset_from_end = 0
+max_triggers_per_battle = 99
+
+[resource]
+script = ExtResource("1_data")
+id = &"combo_breath"
+display_name_key = "trait.combo_breath.name"
+desc_key = "trait.combo_breath.desc"
+scope = 0
+trigger = 3
+tags = [&"replay"]
+mutex_tags = [&"replay"]
+effect = SubResource("effect_1")
+description_template = "一轮链条结束时，重新触发链条最后一张卡。"

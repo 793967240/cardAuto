@@ -1,0 +1,21 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://trait_flame_aura"]
+
+[ext_resource type="Script" path="res://src/data_models/trait_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/traits/trait_effect_resonance.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+per_card_bonus = 1
+require_tag = &"fire"
+
+[resource]
+script = ExtResource("1_data")
+id = &"flame_aura"
+display_name_key = "trait.flame_aura.name"
+desc_key = "trait.flame_aura.desc"
+scope = 1
+trigger = 0
+tags = [&"resonance", &"fire_synergy"]
+mutex_tags = []
+effect = SubResource("effect_1")
+description_template = "链条中每有一张「火」卡，所有火卡 +1 伤。"
