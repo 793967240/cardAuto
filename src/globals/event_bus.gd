@@ -4,6 +4,7 @@
 extends Node
 
 # ─── 战斗事件 ────────────────────────────────────────────────
+signal battle_started()
 signal battle_tick_advanced(tick: int)
 signal card_fired(combatant_id: StringName, card_id: StringName, index: int)
 signal combatant_hp_changed(combatant_id: StringName, old_hp: int, new_hp: int)

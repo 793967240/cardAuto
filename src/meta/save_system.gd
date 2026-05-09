@@ -79,7 +79,7 @@ func _compute_checksum(data: Dictionary) -> String:
 func _verify_checksum(data: Dictionary) -> bool:
 	if not data.has("checksum"):
 		return false
-	var stored := data["checksum"]
+	var stored: String = str(data["checksum"])
 	return stored == _compute_checksum(data)
 
 func _rotate_backups() -> void:

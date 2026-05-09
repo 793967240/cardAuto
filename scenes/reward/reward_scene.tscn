@@ -1,0 +1,73 @@
+[gd_scene load_steps=2 format=3 uid="uid://reward_scene"]
+
+[ext_resource type="Script" path="res://src/ui/reward/reward_scene.gd" id="1_script"]
+
+[node name="RewardScene" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.06, 0.06, 0.1, 1)
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 60
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 60
+theme_override_constants/margin_bottom = 40
+
+[node name="VBox" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 24
+alignment = 1
+
+[node name="TitleLabel" type="Label" parent="Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.78, 0.4, 1)
+theme_override_font_sizes/font_size = 36
+text = "战斗胜利！"
+horizontal_alignment = 1
+
+[node name="SubtitleLabel" type="Label" parent="Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.78, 0.55, 1)
+theme_override_font_sizes/font_size = 18
+text = "选择一张卡牌加入卡组"
+horizontal_alignment = 1
+
+[node name="CardsArea" type="CenterContainer" parent="Margin/VBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="CardsRow" type="HBoxContainer" parent="Margin/VBox/CardsArea"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+theme_override_constants/separation = 32
+alignment = 1
+
+[node name="Footer" type="HBoxContainer" parent="Margin/VBox"]
+layout_mode = 2
+size_flags_horizontal = 4
+alignment = 1
+
+[node name="SkipBtn" type="Button" parent="Margin/VBox/Footer"]
+layout_mode = 2
+custom_minimum_size = Vector2(180, 48)
+text = "跳过"

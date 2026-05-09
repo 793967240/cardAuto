@@ -1,7 +1,129 @@
-[gd_scene format=3 uid="uid://map_scene"]
+[gd_scene load_steps=2 format=3 uid="uid://map_scene"]
+
+[ext_resource type="Script" path="res://src/ui/map/map_scene.gd" id="1_script"]
 
 [node name="MapScene" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.08, 0.08, 0.12, 1)
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 20
+
+[node name="Body" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Header" type="HBoxContainer" parent="Margin/Body"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 60)
+theme_override_constants/separation = 16
+
+[node name="TitleLabel" type="Label" parent="Margin/Body/Header"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+theme_override_colors/font_color = Color(0.85, 0.78, 0.55, 1)
+text = "天劫之路"
+
+[node name="Spacer" type="Control" parent="Margin/Body/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HPLabel" type="Label" parent="Margin/Body/Header"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(0.4, 0.85, 0.4, 1)
+text = "HP: 80 / 80"
+
+[node name="ActLabel" type="Label" parent="Margin/Body/Header"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(0.85, 0.78, 0.55, 1)
+text = "Act 1"
+
+[node name="BuildBtn" type="Button" parent="Margin/Body/Header"]
+layout_mode = 2
+custom_minimum_size = Vector2(120, 40)
+text = "构筑"
+
+[node name="BackBtn" type="Button" parent="Margin/Body/Header"]
+layout_mode = 2
+custom_minimum_size = Vector2(100, 40)
+text = "返回"
+
+[node name="Scroll" type="ScrollContainer" parent="Margin/Body"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="NodesVBox" type="VBoxContainer" parent="Margin/Body/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="CampfirePanel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -180.0
+offset_top = -120.0
+offset_right = 180.0
+offset_bottom = 120.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="CampfirePanel"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Margin" type="MarginContainer" parent="CampfirePanel/VBox"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="TitleLabel" type="Label" parent="CampfirePanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+theme_override_colors/font_color = Color(0.95, 0.78, 0.4, 1)
+horizontal_alignment = 1
+text = "静修之地"
+
+[node name="RestBtn" type="Button" parent="CampfirePanel/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(280, 50)
+text = "调息（恢复 30% 生命）"
+
+[node name="SkipBtn" type="Button" parent="CampfirePanel/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(280, 44)
+text = "继续"
+
+[node name="BottomPad" type="Control" parent="CampfirePanel/VBox"]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2

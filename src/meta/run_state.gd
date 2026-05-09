@@ -9,8 +9,10 @@ var hp: int = 80
 var max_hp: int = 80
 var gold: int = 0
 var deck: Array[CardData] = []
+var chain_cards: Array[CardData] = []  # 当前底座链条上的卡牌（按槽位顺序，可含null）
 var slots: Array[SlotData] = []
 var relics: Array     # Array[RelicData]（阶段3加入）
+var map_nodes: Array = []   # Array[Dictionary]，由 MapGenerator 生成的节点列表
 
 ## 序列化为存档 Dictionary
 func serialize() -> Dictionary:
@@ -22,8 +24,10 @@ func serialize() -> Dictionary:
 		"hp": hp,
 		"max_hp": max_hp,
 		"gold": gold,
-		"deck": deck.map(func(c): return str(c.id)),
+		"deck": deck.map(func(c): return str(c.id) if c else ""),
+		"chain": chain_cards.map(func(c): return str(c.id) if c else ""),
 		"slots": slots.map(func(s): return s.serialize()),
+		"map_nodes": map_nodes,
 		"relics": [],  # TODO: 阶段 3
 	}
 
@@ -36,5 +40,6 @@ static func from_dict(data: Dictionary) -> RunState:
 	state.hp = data.get("hp", 80)
 	state.max_hp = data.get("max_hp", 80)
 	state.gold = data.get("gold", 0)
-	# deck/slots/relics 需要由 SaveSystem 根据 ID 重建引用
+	state.map_nodes = data.get("map_nodes", [])
+	# deck/chain_cards/slots/relics 需要由 SaveSystem/调用方根据 ID 重建引用
 	return state
