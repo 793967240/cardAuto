@@ -53,16 +53,21 @@ jobs:
           chmod +x "${GODOT_FILENAME}"
           mv "${GODOT_FILENAME}" /usr/local/bin/godot
 
-      - name: Import project assets
+      - name: Import project assets (注册 class_name)
         run: |
+          # 第一次 import 注册脚本类 + 烘焙资源；第二次确保跨文件类引用解析
+          godot --headless --import 2>&1 | tail -5 || true
           godot --headless --import 2>&1 | tail -5 || true
 
-      - name: Run all tests
-        timeout-minutes: 5
+      - name: Run gut unit + integration tests
+        timeout-minutes: 10
         run: |
           godot --headless --path . \
-            --script tests/headless_runner.gd \
-            2>&1
+            -s addons/gut/gut_cmdln.gd \
+            -gdir=res://tests/unit \
+            -gdir=res://tests/integration \
+            -gexit
+          # gut 失败时返回非零退出码（GutRunner._handle_quit），CI 自动 fail
 
   # ──────────────────────────────────────────────────────────────
   # 平衡 gate（警告级，不阻塞）
