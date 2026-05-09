@@ -1,0 +1,15 @@
+[gd_resource type="StyleBoxTexture" load_steps=2 format=3 uid="uid://style_panel_enemy_bg"]
+
+[ext_resource type="Texture2D" path="res://assets/ui/enemy_panel_bg.png" id="1_tex"]
+
+[resource]
+content_margin_left = 24.0
+content_margin_top = 16.0
+content_margin_right = 24.0
+content_margin_bottom = 16.0
+texture = ExtResource("1_tex")
+texture_margin_left = 60.0
+texture_margin_top = 60.0
+texture_margin_right = 60.0
+texture_margin_bottom = 60.0
+modulate_color = Color(1, 0.98, 0.92, 1)
