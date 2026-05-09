@@ -10,10 +10,9 @@ func _make_player_with_attack_deck() -> Combatant:
 		var card := CardData.new()
 		card.id = StringName("test_atk_%d" % i)
 		card.cost = 1
-		var effect := preload("res://src/core/effects/effect_attack.gd").new()
-		effect.damage = 10
-		# 注意：effect_script 是 GDScript 引用，这里模拟一下
-		card.effect_script = preload("res://src/core/effects/effect_attack.gd")
+		var fx := EffectAttack.new()
+		fx.damage = 10
+		card.effect = fx
 		slots.append(CardRuntime.new(card))
 	player.chain.set_slots(slots)
 	return player

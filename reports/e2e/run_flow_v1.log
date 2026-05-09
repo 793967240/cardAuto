@@ -1,0 +1,19 @@
+# E2E run flow v1
+# generated_at=2026-05-06T10:58:49
+# seeds_tried=[20260506, 1, 42, 123, 777, 999, 7777, 31415]
+# winning_seed=31415
+
+seed=31415
+node 01  battle    enemy=slime        ticks= 17 dmg= 46 taken=  0 hp=80->72 won=YES
+node 02  battle    enemy=fire_imp     ticks= 12 dmg= 42 taken=  0 hp=72->54 won=YES
+node 03  campfire  heal=24 hp=54->78
+node 04  battle    enemy=shadow_blade ticks= 28 dmg=113 taken=  0 hp=78->22 won=YES
+node 05  campfire  heal=24 hp=22->46
+node 06  campfire  heal=24 hp=46->70
+node 07  campfire  heal=24 hp=70->80
+node 08  campfire  heal=24 hp=80->80
+node 09  campfire  heal=24 hp=80->80
+node 10  campfire  heal=24 hp=80->80
+node 11  boss      enemy=iron_golem   ticks= 39 dmg=152 taken=  0 hp=80->4 won=YES
+---
+battles_total=4  battles_won=4  boss_defeated=YES  hp_final=4

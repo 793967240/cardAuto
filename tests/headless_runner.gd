@@ -165,7 +165,9 @@ func _run_simulator_tests() -> void:
 	for i in 3:
 		var c = CardData.new()
 		c.cost = 1
-		c.effect_script = EffectAttack
+		var fx = EffectAttack.new()
+		fx.damage = 10
+		c.effect = fx
 		slots.append(CardRuntime.new(c))
 	player.chain.set_slots(slots)
 	var enemy = Combatant.new(&"slime", "Slime", 30)

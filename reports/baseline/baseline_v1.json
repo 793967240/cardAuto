@@ -1,0 +1,100 @@
+{
+  "battle_count_per_matchup": 1000,
+  "generated_at": "2026-05-06 03:12:56",
+  "godot_version": "4.6.2-stable (official)",
+  "matchups": [
+    {
+      "avg_cards_fired": 13.0,
+      "avg_damage_dealt": 46.0,
+      "avg_damage_taken": 0.0,
+      "avg_ticks": 17.0,
+      "enemies": [
+        "slime"
+      ],
+      "hp_remaining": {
+        "avg": 72.0,
+        "p50": 72,
+        "p90": 72
+      },
+      "name": "starter_vs_slime",
+      "player": "starter_sword",
+      "win_rate": 1.0
+    },
+    {
+      "avg_cards_fired": 15.0,
+      "avg_damage_dealt": 42.0,
+      "avg_damage_taken": 0.0,
+      "avg_ticks": 12.0,
+      "enemies": [
+        "fire_imp"
+      ],
+      "hp_remaining": {
+        "avg": 62.0,
+        "p50": 62,
+        "p90": 62
+      },
+      "name": "starter_vs_fire_imp",
+      "player": "starter_sword",
+      "win_rate": 1.0
+    },
+    {
+      "avg_cards_fired": 27.0,
+      "avg_damage_dealt": 113.0,
+      "avg_damage_taken": 0.0,
+      "avg_ticks": 28.0,
+      "enemies": [
+        "shadow_blade"
+      ],
+      "hp_remaining": {
+        "avg": 24.0,
+        "p50": 24,
+        "p90": 24
+      },
+      "name": "starter_vs_shadow_blade",
+      "player": "starter_sword",
+      "win_rate": 1.0
+    },
+    {
+      "avg_cards_fired": 37.0,
+      "avg_damage_dealt": 56.0,
+      "avg_damage_taken": 0.0,
+      "avg_ticks": 39.0,
+      "enemies": [
+        "stone_guard"
+      ],
+      "hp_remaining": {
+        "avg": 68.0,
+        "p50": 68,
+        "p90": 68
+      },
+      "name": "starter_vs_stone_guard",
+      "player": "starter_sword",
+      "win_rate": 1.0
+    },
+    {
+      "avg_cards_fired": 33.0,
+      "avg_damage_dealt": 152.0,
+      "avg_damage_taken": 0.0,
+      "avg_ticks": 39.0,
+      "enemies": [
+        "iron_golem"
+      ],
+      "hp_remaining": {
+        "avg": 4.0,
+        "p50": 4,
+        "p90": 4
+      },
+      "name": "starter_vs_iron_golem",
+      "player": "starter_sword",
+      "win_rate": 1.0
+    }
+  ],
+  "player_deck": [
+    "res://data/cards/sword/zhan.tres",
+    "res://data/cards/sword/xu_shi.tres",
+    "res://data/cards/sword/qiang_pi.tres",
+    "res://data/cards/sword/yu_jian_dun.tres",
+    "res://data/cards/sword/hui_xiang_jian.tres"
+  ],
+  "version": "v1"
+}
