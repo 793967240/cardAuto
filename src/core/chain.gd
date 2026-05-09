@@ -45,7 +45,7 @@ func on_tick(ctx: BattleContext) -> void:
 		return
 
 	current_card_progress += 1
-	if current_card_progress >= card.effective_cost(ctx):
+	if current_card_progress >= _effective_cost(card, ctx):
 		card.fire(ctx, owner)
 		card_fired.emit(card, current_index)
 		current_card_progress = 0
@@ -70,6 +70,14 @@ func _restart_chain(ctx: BattleContext) -> void:
 ## 重置当前卡进度（打断效果使用）
 func reset_current_card_progress() -> void:
 	current_card_progress = 0
+
+## 计算卡牌的实际 cost（考虑 owner 的 vulnerable 状态）
+func _effective_cost(card: CardRuntime, ctx: BattleContext) -> int:
+	var base := card.effective_cost(ctx)
+	# 易伤：cost +1
+	if owner and owner.has_status(StatusInstance.ID_VULNERABLE):
+		base += 1
+	return max(1, base)
 
 ## 设置链条卡牌
 func set_slots(cards: Array[CardRuntime]) -> void:

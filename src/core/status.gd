@@ -47,4 +47,32 @@ const ID_BURN := &"burn"               # 每 tick X 伤害
 const ID_FREEZE := &"freeze"           # 链条暂停 N tick
 const ID_MARK := &"mark"               # 下次受伤 +X
 const ID_CHARGE := &"charge"           # 玩家充能资源（剑修/炼丹师）
+const ID_SHIELD := &"shield"           # 护盾：抵消伤害
 const ID_INTERRUPT_IMMUNE := &"interrupt_immune"  # 打断免疫
+const ID_INTERRUPT_RESISTANCE := &"interrupt_resistance"  # 打断抗性（boss 专属）
+
+
+## ─── 预构建状态工厂 ──────────────────────────────────────────
+
+## 创建燃烧状态（每 tick 造成 burn_damage 伤害，持续 duration tick）
+static func make_burn(burn_damage: int, duration: int) -> StatusInstance:
+	var s := StatusInstance.new(ID_BURN, burn_damage, duration)
+	s.on_tick = func(owner: Combatant, ctx: BattleContext, self_status: StatusInstance) -> void:
+		var dealt := owner.take_damage(self_status.stacks, [])
+		ctx.stats.damage_dealt += dealt
+	return s
+
+
+## 创建易伤状态（cost +1，持续 duration tick）
+static func make_vulnerable(duration: int) -> StatusInstance:
+	return StatusInstance.new(ID_VULNERABLE, 1, duration)
+
+
+## 创建虚弱状态（受伤 +50%，持续 duration tick）
+static func make_weakness(duration: int) -> StatusInstance:
+	return StatusInstance.new(ID_WEAKNESS, 1, duration)
+
+
+## 创建护盾状态（stacks = 护盾量，持续到消耗完或战斗结束）
+static func make_shield(amount: int) -> StatusInstance:
+	return StatusInstance.new(ID_SHIELD, amount, -1)

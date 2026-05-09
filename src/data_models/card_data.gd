@@ -13,7 +13,7 @@ enum Rarity { COMMON, RARE, EPIC, LEGENDARY }
 @export var tags: Array[StringName] = []   # [&"fire", &"sword", &"charge"]
 @export var rarity: Rarity = Rarity.COMMON
 @export_multiline var description_template: String  # 编辑器预览用（不走 i18n）
-@export var effect_script: GDScript     # 指向具体效果脚本
+@export var effect: CardEffect          # 效果实例（Resource，含参数，可在编辑器里可视化编辑）
 @export var icon: Texture2D
 @export var consumable: bool = false    # 一次性卡（消耗标签）
 @export var upgrade: CardData = null    # +版本（GDD §9）

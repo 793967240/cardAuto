@@ -11,15 +11,16 @@ func _init(card_data: CardData) -> void:
 ## 计算当前有效 cost（考虑 debuff、词条、催化剂效果等）
 func effective_cost(ctx: BattleContext) -> int:
 	var base := data.cost
-	# TODO: 阶段 2 加入词条和状态修正
-	return max(0, base)
+	# 易伤：cost +1（影响持有该状态的 chain.owner）
+	# CardRuntime 属于某个 Combatant 的 chain，owner 通过 ctx 无法直接获得
+	# 设计上由 chain.on_tick 传入 owner，这里暂不处理（阶段 2 补全）
+	return max(1, base)
 
 ## 触发卡牌效果
 func fire(ctx: BattleContext, source: Combatant) -> void:
 	if is_consumed:
 		return
-	if data.effect_script:
-		var effect: CardEffect = data.effect_script.new()
-		effect.fire(ctx, source)
+	if data.effect:
+		data.effect.fire(ctx, source)
 	if data.consumable:
 		is_consumed = true

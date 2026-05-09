@@ -22,7 +22,7 @@ func _init(id: StringName, name: String, hp_max: int) -> void:
 	hp = hp_max
 	chain = Chain.new(self)
 
-## 受到伤害（考虑虚弱状态）
+## 受到伤害（考虑虚弱/护盾/印记等状态）
 func take_damage(amount: int, source_tags: Array[StringName] = []) -> int:
 	var final_dmg := amount
 	# 虚弱：受到伤害 +50%
@@ -33,6 +33,18 @@ func take_damage(amount: int, source_tags: Array[StringName] = []) -> int:
 	if mark:
 		final_dmg += mark.stacks
 		remove_status(StatusInstance.ID_MARK)
+
+	# 护盾：优先抵消伤害
+	var shield := get_status(StatusInstance.ID_SHIELD)
+	if shield and shield.stacks > 0:
+		var absorbed := mini(shield.stacks, final_dmg)
+		shield.stacks -= absorbed
+		final_dmg -= absorbed
+		if shield.stacks <= 0:
+			remove_status(StatusInstance.ID_SHIELD)
+
+	if final_dmg <= 0:
+		return 0
 
 	var old_hp := hp
 	hp = max(0, hp - final_dmg)

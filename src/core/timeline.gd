@@ -35,6 +35,14 @@ func get_speed_multiplier() -> float:
 func get_current_tick() -> int:
 	return _current_tick
 
+## 当前 tick 内已累积的进度（0.0 ~ 1.0），供 UI 60fps 平滑插值使用。
+## 注意：受 speed_multiplier 影响的实际推进速度已经体现在 _accumulator 中，
+## 这里只暴露归一化后的小数部分。
+func get_tick_progress() -> float:
+	if _tick_duration_sec <= 0.0:
+		return 0.0
+	return clampf(_accumulator / _tick_duration_sec, 0.0, 1.0)
+
 ## 重置时间轴（战斗开始时调用）
 func reset() -> void:
 	_accumulator = 0.0
