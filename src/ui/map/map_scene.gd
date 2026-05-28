@@ -13,7 +13,14 @@ class_name MapScene extends Control
 @onready var campfire_panel: PanelContainer = $CampfirePanel
 @onready var campfire_title: Label = $CampfirePanel/VBox/TitleLabel
 @onready var campfire_rest_btn: Button = $CampfirePanel/VBox/RestBtn
+@onready var campfire_forge_btn: Button = $CampfirePanel/VBox/ForgeBtn
 @onready var campfire_skip_btn: Button = $CampfirePanel/VBox/SkipBtn
+
+# Forge 子面板
+@onready var forge_panel: PanelContainer = $ForgePanel
+@onready var forge_title: Label = $ForgePanel/VBox/ForgeTitle
+@onready var forge_list_vbox: VBoxContainer = $ForgePanel/VBox/ForgeScroll/ForgeListVBox
+@onready var forge_cancel_btn: Button = $ForgePanel/VBox/ForgeCancelBtn
 
 func _ready() -> void:
 	if GameState.current_run == null:
@@ -27,8 +34,11 @@ func _ready() -> void:
 	back_btn.pressed.connect(_on_back_pressed)
 	build_btn.pressed.connect(_on_build_pressed)
 	campfire_rest_btn.pressed.connect(_on_campfire_rest)
+	campfire_forge_btn.pressed.connect(_on_campfire_forge)
 	campfire_skip_btn.pressed.connect(_on_campfire_skip)
+	forge_cancel_btn.pressed.connect(_on_forge_cancel)
 	campfire_panel.hide()
+	forge_panel.hide()
 
 	# 注：节点推进由战斗后流程负责（正式胜利→RewardScene._finalize；模拟/失败→BattleScene.resolve_post_battle）
 	_refresh_ui()
@@ -39,7 +49,10 @@ func _update_texts() -> void:
 	build_btn.text = tr("build.title")
 	campfire_title.text = tr("campfire.title")
 	campfire_rest_btn.text = tr("campfire.option.rest")
+	campfire_forge_btn.text = tr("campfire.option.forge")
 	campfire_skip_btn.text = tr("campfire.option.skip")
+	forge_title.text = tr("campfire.forge.title")
+	forge_cancel_btn.text = tr("ui.button.cancel")
 
 func _refresh_ui() -> void:
 	var run := GameState.current_run
@@ -114,6 +127,66 @@ func _on_campfire_rest() -> void:
 	var heal_amount: int = int(ceil(run.max_hp * 0.3))
 	run.hp = mini(run.max_hp, run.hp + heal_amount)
 	campfire_panel.hide()
+	_advance_node()
+
+func _on_campfire_forge() -> void:
+	# 打开 forge 子面板
+	campfire_panel.hide()
+	_rebuild_forge_list()
+	forge_panel.show()
+
+func _on_forge_cancel() -> void:
+	forge_panel.hide()
+	campfire_panel.show()
+
+func _rebuild_forge_list() -> void:
+	for child in forge_list_vbox.get_children():
+		child.queue_free()
+	var run := GameState.current_run
+	if run == null:
+		return
+	# 列出卡组中所有可升级（upgrade != null）且尚未升级的卡，按 id 去重
+	var seen: Dictionary = {}
+	for c in run.deck:
+		if c == null:
+			continue
+		if c.upgrade == null:
+			continue
+		if c.is_upgraded():
+			continue
+		if seen.has(c.id):
+			continue
+		seen[c.id] = true
+		var btn := Button.new()
+		btn.custom_minimum_size = Vector2(0, 44)
+		btn.text = "%s → %s" % [tr(c.get_name_key()), tr(c.upgrade.get_name_key())]
+		btn.tooltip_text = tr(c.upgrade.get_desc_key()) if c.upgrade.desc_key != "" else ""
+		btn.pressed.connect(_on_forge_card_picked.bind(c))
+		forge_list_vbox.add_child(btn)
+	if forge_list_vbox.get_child_count() == 0:
+		var lbl := Label.new()
+		lbl.text = tr("campfire.forge.no_upgradable")
+		lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		forge_list_vbox.add_child(lbl)
+
+func _on_forge_card_picked(card: CardData) -> void:
+	if card == null or card.upgrade == null:
+		return
+	var run := GameState.current_run
+	if run == null:
+		return
+	# 把 deck 里所有 id 与 card.id 相同的实例替换为 upgrade
+	for i in range(run.deck.size()):
+		if run.deck[i] != null and run.deck[i].id == card.id:
+			run.deck[i] = card.upgrade
+	for i in range(run.chain_cards.size()):
+		if run.chain_cards[i] != null and run.chain_cards[i].id == card.id:
+			run.chain_cards[i] = card.upgrade
+	for k in run.base_cards:
+		var c: CardData = run.base_cards[k]
+		if c != null and c.id == card.id:
+			run.base_cards[k] = card.upgrade
+	forge_panel.hide()
 	_advance_node()
 
 func _on_campfire_skip() -> void:

@@ -1,0 +1,20 @@
+[gd_resource type="Resource" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/data_models/gem_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/gems/gem_effect_cost_reduction.gd" id="2_effect"]
+
+[sub_resource type="Resource" id="GemEffectCostReduction_001"]
+script = ExtResource("2_effect")
+reduction = 1
+required_tag = &""
+
+[resource]
+script = ExtResource("1_data")
+id = &"sapphire"
+display_name_key = "gem.sapphire.name"
+desc_key = "gem.sapphire.desc"
+trigger = 0
+tags = [&"cost_mod"]
+mutex_tags = [&"cost_mod"]
+description_template = "-1 cost"
+effect = SubResource("GemEffectCostReduction_001")

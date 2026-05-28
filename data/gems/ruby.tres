@@ -1,0 +1,20 @@
+[gd_resource type="Resource" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/data_models/gem_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/gems/gem_effect_damage_bonus.gd" id="2_effect"]
+
+[sub_resource type="Resource" id="GemEffectDamageBonus_001"]
+script = ExtResource("2_effect")
+bonus = 2
+required_tag = &""
+
+[resource]
+script = ExtResource("1_data")
+id = &"ruby"
+display_name_key = "gem.ruby.name"
+desc_key = "gem.ruby.desc"
+trigger = 0
+tags = [&"damage_mod"]
+mutex_tags = []
+description_template = "+2 damage"
+effect = SubResource("GemEffectDamageBonus_001")

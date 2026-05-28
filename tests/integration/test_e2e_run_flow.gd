@@ -51,7 +51,7 @@ func test_load_tuning_resource() -> void:
 	assert_not_null(t, "tuning/default.tres 加载成功")
 	if t:
 		assert_almost_eq(t.tick_duration_sec, 0.5, 0.001, "tick_duration_sec = 0.5")
-		assert_eq(t.base_recovery_ticks, 2, "base_recovery_ticks = 2")
+		assert_eq(t.base_count, 8, "base_count = 8")
 
 # ─── 测试 2: MapGenerator 行为正确 ─────────────────────────────
 
@@ -291,7 +291,7 @@ func _reset_player_between_battles(c: Combatant) -> void:
 		if slot != null:
 			slot.is_consumed = false
 	c.chain.set_slots(existing)
-	c.chain.recovery_remaining = 0
+	c.chain.current_card_progress = 0
 
 # ─── 测试 6: 中途存档 + 加载状态一致 ──────────────────────────
 

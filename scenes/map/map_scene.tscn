@@ -119,6 +119,11 @@ layout_mode = 2
 custom_minimum_size = Vector2(280, 50)
 text = "调息（恢复 30% 生命）"
 
+[node name="ForgeBtn" type="Button" parent="CampfirePanel/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(280, 50)
+text = "修炼（强化一张卡牌）"
+
 [node name="SkipBtn" type="Button" parent="CampfirePanel/VBox"]
 layout_mode = 2
 custom_minimum_size = Vector2(280, 44)
@@ -127,3 +132,50 @@ text = "继续"
 [node name="BottomPad" type="Control" parent="CampfirePanel/VBox"]
 custom_minimum_size = Vector2(0, 16)
 layout_mode = 2
+
+[node name="ForgePanel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -260.0
+offset_top = -240.0
+offset_right = 260.0
+offset_bottom = 240.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="ForgePanel"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="ForgeMargin" type="MarginContainer" parent="ForgePanel/VBox"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="ForgeTitle" type="Label" parent="ForgePanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.95, 0.78, 0.4, 1)
+horizontal_alignment = 1
+text = "选一张卡升级"
+
+[node name="ForgeScroll" type="ScrollContainer" parent="ForgePanel/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 320)
+size_flags_vertical = 3
+
+[node name="ForgeListVBox" type="VBoxContainer" parent="ForgePanel/VBox/ForgeScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="ForgeCancelBtn" type="Button" parent="ForgePanel/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 40)
+text = "取消"

@@ -1,12 +1,12 @@
-# src/ui/build/build_scene.gd
-# 构筑界面 - 1×6 链条槽位 + 卡牌侧栏（拖拽 + 点击双模式）
 class_name BuildScene extends Control
 
-const SLOT_COUNT: int = 6
-const TICK_DURATION: float = 0.5  # 与 Tuning.tick_duration_sec 一致
+const TICK_DURATION: float = 0.5
 const CARD_VIEW_SCENE = preload("res://scenes/components/card_view.tscn")
 
-@onready var slot_container: HBoxContainer = $VBox/SlotPanel/Margin/SlotHBox
+@onready var base_grid: GridContainer = $VBox/Body/BasePanel/BaseMargin/BaseGrid
+@onready var gem_title: Label = $VBox/Body/GemPanel/GemMargin/GemVBox/GemTitle
+@onready var gem_target_label: Label = $VBox/Body/GemPanel/GemMargin/GemVBox/GemTargetLabel
+@onready var gem_list_vbox: VBoxContainer = $VBox/Body/GemPanel/GemMargin/GemVBox/GemScroll/GemListVBox
 @onready var deck_grid: GridContainer = $VBox/Body/DeckPanel/DeckMargin/DeckVBox/Scroll/DeckGrid
 @onready var deck_label: Label = $VBox/Body/DeckPanel/DeckMargin/DeckVBox/DeckLabel
 @onready var total_duration_label: Label = $VBox/Footer/TotalDurationLabel
@@ -15,12 +15,10 @@ const CARD_VIEW_SCENE = preload("res://scenes/components/card_view.tscn")
 @onready var back_btn: Button = $VBox/Footer/BackBtn
 @onready var title_label: Label = $VBox/Header/TitleLabel
 
-## 当前选中的链条卡（与 RunState.chain_cards 同步）
-var _chain_cards: Array[CardData] = []
-
-## 当前选中的卡（用于"点击放入槽位"模式，作为拖拽的备用交互）
 var _selected_card: CardData = null
 var _selected_card_view: CardView = null
+
+var _gem_target_base_id: StringName = &""
 
 
 func _ready() -> void:
@@ -30,105 +28,149 @@ func _ready() -> void:
 	confirm_btn.pressed.connect(_on_confirm_pressed)
 	back_btn.pressed.connect(_on_back_pressed)
 
-	# 从 GameState 加载当前 RunState（如无则启动一个新 Run）
 	if GameState.current_run == null:
 		GameState.start_run(&"sword")
 
-	_chain_cards = GameState.current_run.chain_cards.duplicate()
-	# 确保槽数为 6
-	while _chain_cards.size() < SLOT_COUNT:
-		_chain_cards.append(null)
-
-	_rebuild_slots()
-	_rebuild_deck_list()
-	_update_total_duration()
+	_refresh_all()
 
 func _update_texts() -> void:
 	title_label.text = tr("build.title")
 	deck_label.text = tr("build.label.deck")
+	gem_title.text = tr("build.label.gems")
 	simulate_btn.text = tr("build.button.simulate")
 	confirm_btn.text = tr("build.button.confirm")
 	back_btn.text = tr("ui.button.back")
 
-# ─── 链条槽位 UI ────────────────────────────────────────────────
-
-func _rebuild_slots() -> void:
-	for child in slot_container.get_children():
-		child.queue_free()
-
-	for i in range(SLOT_COUNT):
-		var view := CARD_VIEW_SCENE.instantiate() as CardView
-		slot_container.add_child(view)
-		view.setup_build_slot(_chain_cards[i])
-		view.set_meta(&"slot_index", i)
-		view.set_meta(&"on_drop", Callable(self, "_on_slot_drop"))
-		view.pressed.connect(_on_slot_pressed.bind(i, view))
-
-func _on_slot_pressed(button_index: int, slot_index: int, _view: CardView) -> void:
-	if button_index == MOUSE_BUTTON_LEFT:
-		# 左键：把当前点击选中的卡放进这个槽（拖拽的备用交互）
-		if _selected_card != null:
-			_place_card_in_slot(_selected_card, slot_index)
-			_clear_selection()
-	elif button_index == MOUSE_BUTTON_RIGHT:
-		# 右键：把槽里的卡取出
-		if _chain_cards[slot_index] != null:
-			_chain_cards[slot_index] = null
-			_refresh_all()
-
-## 拖拽投放回调（由 CardView meta 触发）
-##   target_slot_index: 目标槽位索引
-##   payload: { source: "deck_item" | "slot", card: CardData, slot_index?: int }
-func _on_slot_drop(target_slot_index: int, payload: Dictionary) -> void:
-	if target_slot_index < 0 or target_slot_index >= SLOT_COUNT:
-		return
-	var card: CardData = payload.get("card", null)
-	if card == null:
-		return
-
-	var source: String = payload.get("source", "")
-	if source == "deck_item":
-		# 从卡组拖入：放置（覆盖原有）
-		_place_card_in_slot(card, target_slot_index)
-	elif source == "slot":
-		var src_index: int = int(payload.get("slot_index", -1))
-		if src_index < 0 or src_index >= SLOT_COUNT or src_index == target_slot_index:
-			return
-		# 槽位间互换
-		var tmp: CardData = _chain_cards[target_slot_index]
-		_chain_cards[target_slot_index] = _chain_cards[src_index]
-		_chain_cards[src_index] = tmp
-		_refresh_all()
-
-## 放置一张卡到指定槽（用于点击 / 拖入）；会覆盖该槽原有内容
-func _place_card_in_slot(card: CardData, slot_index: int) -> void:
-	_chain_cards[slot_index] = card
-	_refresh_all()
-
 func _refresh_all() -> void:
-	_rebuild_slots()
+	_rebuild_bases()
+	_rebuild_gem_panel()
 	_rebuild_deck_list()
 	_update_total_duration()
 
-# ─── 卡组侧栏 UI ─────────────────────────────────────────────────
+func _rebuild_bases() -> void:
+	for child in base_grid.get_children():
+		child.queue_free()
+	var run := GameState.current_run
+	if run == null:
+		return
+	for s in run.bases:
+		var sd: SlotData = s
+		var card: CardData = run.base_cards.get(sd.id, null)
+		var gems: Array = run.base_gems.get(sd.id, [])
+
+		var panel := VBoxContainer.new()
+		panel.add_theme_constant_override(&"separation", 4)
+		base_grid.add_child(panel)
+
+		var name_label := Label.new()
+		name_label.text = "#%s" % str(sd.id).replace("base_", "")
+		name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		panel.add_child(name_label)
+
+		var view := CARD_VIEW_SCENE.instantiate() as CardView
+		panel.add_child(view)
+		view.setup_build_slot(card)
+		view.set_meta(&"base_id", sd.id)
+		view.pressed.connect(_on_base_slot_pressed.bind(sd.id, view))
+
+		if _gem_target_base_id == sd.id:
+			view.set_selected(true)
+
+		var gem_label := Label.new()
+		if gems.size() > 0 and gems[0] != null:
+			var gd: GemData = gems[0]
+			gem_label.text = "[ %s ]" % tr(gd.get_name_key())
+		else:
+			gem_label.text = tr("build.gem.empty")
+		gem_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		gem_label.add_theme_font_size_override(&"font_size", 12)
+		panel.add_child(gem_label)
+
+func _on_base_slot_pressed(button_index: int, base_id: StringName, _view: CardView) -> void:
+	var run := GameState.current_run
+	if run == null:
+		return
+	if button_index == MOUSE_BUTTON_RIGHT:
+		if run.base_cards.has(base_id) and run.base_cards[base_id] != null:
+			run.base_cards[base_id] = null
+			_refresh_all()
+		return
+	if _selected_card != null:
+		run.base_cards[base_id] = _selected_card
+		_clear_selection()
+		_refresh_all()
+	else:
+		_gem_target_base_id = base_id
+		_refresh_all()
+
+func _rebuild_gem_panel() -> void:
+	for child in gem_list_vbox.get_children():
+		child.queue_free()
+	var run := GameState.current_run
+	if run == null:
+		return
+
+	if _gem_target_base_id == &"":
+		gem_target_label.text = tr("build.gem.no_target")
+		return
+
+	gem_target_label.text = tr("build.gem.target") % str(_gem_target_base_id).replace("base_", "#")
+
+	var current_gems: Array = run.base_gems.get(_gem_target_base_id, [])
+	var current_gem: GemData = null
+	if current_gems.size() > 0:
+		current_gem = current_gems[0]
+
+	if current_gem != null:
+		var clear_btn := Button.new()
+		clear_btn.text = tr("build.gem.clear")
+		clear_btn.pressed.connect(_on_gem_clear_pressed)
+		gem_list_vbox.add_child(clear_btn)
+
+	for g in run.gems:
+		var gd: GemData = g
+		var btn := Button.new()
+		var label := tr(gd.get_name_key())
+		if current_gem != null and current_gem.id == gd.id:
+			label = "● " + label
+		btn.text = label
+		btn.tooltip_text = tr(gd.get_desc_key())
+		btn.pressed.connect(_on_gem_pick_pressed.bind(gd))
+		gem_list_vbox.add_child(btn)
+
+func _on_gem_pick_pressed(gd: GemData) -> void:
+	var run := GameState.current_run
+	if run == null or _gem_target_base_id == &"":
+		return
+	run.base_gems[_gem_target_base_id] = [gd]
+	_refresh_all()
+
+func _on_gem_clear_pressed() -> void:
+	var run := GameState.current_run
+	if run == null or _gem_target_base_id == &"":
+		return
+	run.base_gems[_gem_target_base_id] = []
+	_refresh_all()
 
 func _rebuild_deck_list() -> void:
 	for child in deck_grid.get_children():
 		child.queue_free()
+	var run := GameState.current_run
+	if run == null:
+		return
 
-	# 统计卡组里每张卡的总数和已使用数
-	var deck := GameState.current_run.deck
 	var used_counts: Dictionary = {}
-	for c in _chain_cards:
+	for k in run.base_cards:
+		var c: CardData = run.base_cards[k]
 		if c != null:
 			used_counts[c.id] = int(used_counts.get(c.id, 0)) + 1
 
 	var deck_counts: Dictionary = {}
-	for c in deck:
+	for c in run.deck:
 		deck_counts[c.id] = int(deck_counts.get(c.id, 0)) + 1
 
 	var displayed: Dictionary = {}
-	for c in deck:
+	for c in run.deck:
 		if displayed.has(c.id):
 			continue
 		displayed[c.id] = true
@@ -146,7 +188,6 @@ func _on_deck_card_pressed(button_index: int, card: CardData, view: CardView, av
 		return
 	if available <= 0:
 		return
-	# 点击选中：作为拖拽的备用交互（点选 + 点击空槽放入）
 	_clear_selection()
 	_selected_card = card
 	_selected_card_view = view
@@ -158,53 +199,57 @@ func _clear_selection() -> void:
 	_selected_card = null
 	_selected_card_view = null
 
-# ─── 链条总时长 ──────────────────────────────────────────────────
-
 func _update_total_duration() -> void:
+	var run := GameState.current_run
 	var total_ticks: int = 0
-	for c in _chain_cards:
-		if c != null:
-			total_ticks += c.cost
-	# 加上修整时长（默认 2 tick）
-	total_ticks += 2
+	if run != null:
+		var spec := ChainComposer.Spec.new()
+		spec.bases = run.bases.duplicate()
+		spec.base_cards = run.base_cards.duplicate()
+		spec.base_gems = run.base_gems.duplicate()
+		var result := ChainComposer.compose(spec)
+		total_ticks = result.total_cost
 	var seconds: float = total_ticks * TICK_DURATION
 	total_duration_label.text = tr("build.label.total_duration") + ": %d tick (%.1fs)" % [total_ticks, seconds]
 
-# ─── 按钮事件 ────────────────────────────────────────────────────
-
 func _on_simulate_pressed() -> void:
-	# 模拟战斗：当前链条进入 BattleScene 试打一场，结果不影响存档/血量/进度
-	# 把当前链条同步到 RunState，让 BattleScene 能用同一套读取逻辑构建玩家链
-	GameState.current_run.chain_cards = _chain_cards.duplicate()
+	_persist_chain_cards_compat()
 	GameState.is_simulation = true
-	# 选取下一个未通关的 BATTLE/BOSS 节点的敌人；如下个不是战斗节点则 fallback
 	GameState.next_battle_enemy_id = _pick_simulation_enemy_id()
 	get_tree().change_scene_to_file("res://scenes/battle/battle_scene.tscn")
 
 func _on_confirm_pressed() -> void:
-	GameState.current_run.chain_cards = _chain_cards.duplicate()
-	# 保存
+	_persist_chain_cards_compat()
 	var save := SaveSystem.new()
 	save.save_run(GameState.current_run)
-	# 回到进来的地方（地图 / 主菜单等），由调用方在跳进 BuildScene 前设置
 	get_tree().change_scene_to_file(GameState.build_return_scene)
 
 func _on_back_pressed() -> void:
-	# "返回"语义上等于不保存改动地退出。同样回到进来的地方。
 	get_tree().change_scene_to_file(GameState.build_return_scene)
 
-## 选模拟战斗的敌人：从下一个未通关的 BATTLE/BOSS 节点取 enemy_id
-## 找不到则返回 "slime" 兜底
+func _persist_chain_cards_compat() -> void:
+	var run := GameState.current_run
+	if run == null:
+		return
+	var spec := ChainComposer.Spec.new()
+	spec.bases = run.bases.duplicate()
+	spec.base_cards = run.base_cards.duplicate()
+	spec.base_gems = run.base_gems.duplicate()
+	var result := ChainComposer.compose(spec)
+	var flat: Array[CardData] = []
+	for cs in result.layout:
+		var slot: ChainSlot = cs
+		if slot.card and slot.card.data:
+			flat.append(slot.card.data)
+	run.chain_cards = flat
+
 func _pick_simulation_enemy_id() -> String:
 	return BuildScene.pick_simulation_enemy_id(GameState.current_run)
 
-## 静态版（便于测试）：给定 RunState，返回应该模拟的敌人 id
-##   - run 为 null / 没有未通关战斗节点 → "slime"
-##   - 否则 → 从 run.node_index+1 起，第一个非空 enemy_id 节点的 enemy_id
 static func pick_simulation_enemy_id(run: RunState) -> String:
 	if run == null or run.map_nodes == null:
 		return "slime"
-	var start_idx: int = run.node_index + 1  # 下一个未通关节点
+	var start_idx: int = run.node_index + 1
 	for i in range(start_idx, run.map_nodes.size()):
 		var n: Dictionary = run.map_nodes[i]
 		var enemy_id: String = n.get("enemy_id", "")

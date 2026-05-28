@@ -43,30 +43,64 @@ theme_override_font_sizes/font_size = 28
 theme_override_colors/font_color = Color(0.85, 0.78, 0.55, 1)
 text = "构筑"
 
-[node name="SlotPanel" type="PanelContainer" parent="VBox"]
-layout_mode = 2
-custom_minimum_size = Vector2(0, 248)
-
-[node name="Margin" type="MarginContainer" parent="VBox/SlotPanel"]
-layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
-
-[node name="SlotHBox" type="HBoxContainer" parent="VBox/SlotPanel/Margin"]
-layout_mode = 2
-theme_override_constants/separation = 12
-alignment = 1
-
 [node name="Body" type="HBoxContainer" parent="VBox"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 12
 
-[node name="Spacer" type="Control" parent="VBox/Body"]
+[node name="BasePanel" type="PanelContainer" parent="VBox/Body"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+
+[node name="BaseMargin" type="MarginContainer" parent="VBox/Body/BasePanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="BaseGrid" type="GridContainer" parent="VBox/Body/BasePanel/BaseMargin"]
+layout_mode = 2
+size_flags_horizontal = 3
+columns = 4
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 12
+
+[node name="GemPanel" type="PanelContainer" parent="VBox/Body"]
+layout_mode = 2
+custom_minimum_size = Vector2(240, 0)
+
+[node name="GemMargin" type="MarginContainer" parent="VBox/Body/GemPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="GemVBox" type="VBoxContainer" parent="VBox/Body/GemPanel/GemMargin"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="GemTitle" type="Label" parent="VBox/Body/GemPanel/GemMargin/GemVBox"]
+layout_mode = 2
+text = "宝石"
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(0.85, 0.78, 0.55, 1)
+
+[node name="GemTargetLabel" type="Label" parent="VBox/Body/GemPanel/GemMargin/GemVBox"]
+layout_mode = 2
+text = "选中底座：（无）"
+autowrap_mode = 2
+
+[node name="GemScroll" type="ScrollContainer" parent="VBox/Body/GemPanel/GemMargin/GemVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="GemListVBox" type="VBoxContainer" parent="VBox/Body/GemPanel/GemMargin/GemVBox/GemScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 4
 
 [node name="DeckPanel" type="PanelContainer" parent="VBox/Body"]
 layout_mode = 2

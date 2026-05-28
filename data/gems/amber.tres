@@ -1,0 +1,19 @@
+[gd_resource type="Resource" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/data_models/gem_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/gems/gem_effect_charge_on_play.gd" id="2_effect"]
+
+[sub_resource type="Resource" id="GemEffectChargeOnPlay_001"]
+script = ExtResource("2_effect")
+charge_amount = 1
+
+[resource]
+script = ExtResource("1_data")
+id = &"amber"
+display_name_key = "gem.amber.name"
+desc_key = "gem.amber.desc"
+trigger = 1
+tags = [&"charge_gen"]
+mutex_tags = []
+description_template = "+1 charge on play"
+effect = SubResource("GemEffectChargeOnPlay_001")

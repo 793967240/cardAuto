@@ -1,25 +1,23 @@
-[gd_resource type="Resource" load_steps=4 format=3 uid="uid://card_qiang_pi"]
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://card_qiang_pi_plus"]
 
 [ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
 [ext_resource type="Script" path="res://src/core/effects/effect_power_strike.gd" id="2_fx"]
-[ext_resource type="Resource" path="res://data/cards/sword/qiang_pi_plus.tres" id="3_up"]
 
 [sub_resource type="Resource" id="effect_1"]
 script = ExtResource("2_fx")
-base_damage = 10
+base_damage = 14
 charge_multiplier = 2.0
 consume_all_charge = true
 
 [resource]
 script = ExtResource("1_data")
-id = &"qiang_pi"
-display_name_key = "card.qiang_pi.name"
-desc_key = "card.qiang_pi.desc"
+id = &"qiang_pi_plus"
+display_name_key = "card.qiang_pi_plus.name"
+desc_key = "card.qiang_pi_plus.desc"
 cost = 3
 card_type = 0
 tags = [&"sword", &"attack", &"charge_consume"]
 rarity = 0
-description_template = "消耗所有充能，造成 10+充能×2 点伤害。"
+description_template = "消耗所有充能，造成 14+充能×2 点伤害。（升级版强劈）"
 effect = SubResource("effect_1")
 consumable = false
-upgrade = ExtResource("3_up")

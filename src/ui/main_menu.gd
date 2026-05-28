@@ -2,11 +2,15 @@
 # 主菜单 UI 控制器
 extends Control
 
+const SETTINGS_SCENE := preload("res://scenes/settings_panel.tscn")
+
 @onready var start_button: Button = $CenterContainer/VBoxContainer/StartButton
 @onready var continue_button: Button = $CenterContainer/VBoxContainer/ContinueButton
 @onready var settings_button: Button = $CenterContainer/VBoxContainer/SettingsButton
 @onready var quit_button: Button = $CenterContainer/VBoxContainer/QuitButton
 @onready var title_label: Label = $CenterContainer/VBoxContainer/Title
+
+var _settings_panel: Control = null
 
 func _ready() -> void:
 	_update_texts()
@@ -39,7 +43,16 @@ func _on_continue_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/map/map_scene.tscn")
 
 func _on_settings_pressed() -> void:
-	pass
+	if _settings_panel:
+		return
+	_settings_panel = SETTINGS_SCENE.instantiate()
+	_settings_panel.back_pressed.connect(_on_settings_closed)
+	add_child(_settings_panel)
+
+func _on_settings_closed() -> void:
+	if _settings_panel:
+		_settings_panel.queue_free()
+		_settings_panel = null
 
 func _on_quit_pressed() -> void:
 	get_tree().quit()

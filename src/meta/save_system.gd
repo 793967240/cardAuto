@@ -105,6 +105,106 @@ func _try_load_backup() -> RunState:
 
 func _migrate_if_needed(data: Dictionary) -> RunState:
 	var version: int = data.get("version", 1)
-	# 版本迁移（随版本号增加）
-	# if version < 2: data = _migrate_v1_to_v2(data)
-	return RunState.from_dict(data)
+	var state := RunState.from_dict(data)
+	_rehydrate(state, data)
+	return state
+
+func _rehydrate(state: RunState, data: Dictionary) -> void:
+	var card_index := _build_card_index()
+	var gem_index := _build_gem_index()
+
+	var deck_ids: Array = data.get("deck", [])
+	state.deck.clear()
+	for cid in deck_ids:
+		if cid != "" and card_index.has(cid):
+			state.deck.append(card_index[cid])
+
+	var chain_ids: Array = data.get("chain", [])
+	state.chain_cards.clear()
+	for cid in chain_ids:
+		if cid != "" and card_index.has(cid):
+			state.chain_cards.append(card_index[cid])
+
+	var tuning := Tuning.get_default()
+	var base_slot := load(GameState.BASE_SLOT_PATH) as SlotData
+	if base_slot == null:
+		base_slot = SlotData.new()
+		base_slot.id = &"base_slot"
+		base_slot.gem_socket_count = 1
+
+	var base_ids: Array = data.get("bases", [])
+	state.bases.clear()
+	for i in range(base_ids.size()):
+		var slot := base_slot.duplicate() as SlotData
+		slot.id = StringName(base_ids[i])
+		state.bases.append(slot)
+
+	if state.bases.is_empty():
+		for i in range(tuning.base_count):
+			var slot := base_slot.duplicate() as SlotData
+			slot.id = StringName("base_%d" % i)
+			state.bases.append(slot)
+
+	var raw_base_cards: Dictionary = data.get("base_cards", {})
+	state.base_cards.clear()
+	for k in raw_base_cards:
+		var cid: String = raw_base_cards[k]
+		var bid := StringName(k)
+		if cid != "" and card_index.has(cid):
+			state.base_cards[bid] = card_index[cid]
+		else:
+			state.base_cards[bid] = null
+
+	var raw_base_gems: Dictionary = data.get("base_gems", {})
+	state.base_gems.clear()
+	for s in state.bases:
+		state.base_gems[s.id] = []
+	for k in raw_base_gems:
+		var bid := StringName(k)
+		var gem_ids_arr: Array = raw_base_gems[k]
+		var arr: Array = []
+		for gid in gem_ids_arr:
+			if gid != "" and gem_index.has(gid):
+				arr.append(gem_index[gid])
+		state.base_gems[bid] = arr
+
+	var gem_ids: Array = data.get("gems", [])
+	state.gems.clear()
+	for gid in gem_ids:
+		if gid != "" and gem_index.has(gid):
+			state.gems.append(gem_index[gid])
+
+func _build_card_index() -> Dictionary:
+	var index: Dictionary = {}
+	var dirs := ["res://data/cards/sword/"]
+	for dir_path in dirs:
+		var dir := DirAccess.open(dir_path)
+		if dir == null:
+			continue
+		dir.list_dir_begin()
+		var fname := dir.get_next()
+		while fname != "":
+			if not dir.current_is_dir() and fname.ends_with(".tres"):
+				var res := load(dir_path + fname) as CardData
+				if res and res.id != &"":
+					index[str(res.id)] = res
+			fname = dir.get_next()
+		dir.list_dir_end()
+	return index
+
+func _build_gem_index() -> Dictionary:
+	var index: Dictionary = {}
+	var dir_path := "res://data/gems/"
+	var dir := DirAccess.open(dir_path)
+	if dir == null:
+		return index
+	dir.list_dir_begin()
+	var fname := dir.get_next()
+	while fname != "":
+		if not dir.current_is_dir() and fname.ends_with(".tres"):
+			var res := load(dir_path + fname) as GemData
+			if res and res.id != &"":
+				index[str(res.id)] = res
+		fname = dir.get_next()
+	dir.list_dir_end()
+	return index

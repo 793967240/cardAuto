@@ -1,0 +1,10 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/data_models/slot_data.gd" id="1_data"]
+
+[resource]
+script = ExtResource("1_data")
+id = &"base_slot"
+display_name_key = "slot.base.name"
+description_key = "slot.base.desc"
+gem_socket_count = 1

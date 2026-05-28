@@ -1,13 +1,9 @@
-# src/core/battle_controller.gd
-# 战斗控制器 - 驱动 BattleContext，桥接 EventBus
-# 挂载在 BattleScene 的子节点上，或由 BattleScene 直接实例化
 class_name BattleController extends Node
 
 var ctx: BattleContext
 var _is_running: bool = false
 
 func _ready() -> void:
-	# 监听速度切换
 	EventBus.speed_changed.connect(_on_speed_changed)
 
 func _process(delta: float) -> void:
@@ -15,30 +11,23 @@ func _process(delta: float) -> void:
 		return
 	ctx.timeline.update(delta)
 
-## 初始化并开始一场战斗
 func start_battle(player: Combatant, enemies: Array[Combatant], seed: int = 0) -> void:
 	ctx = BattleContext.new(player, enemies, seed)
 
-	# 连接信号到 EventBus
 	ctx.timeline.tick_advanced.connect(_on_tick_advanced)
 	ctx.battle_ended.connect(_on_battle_ended)
 
-	# 连接 Combatant 信号
 	_connect_combatant_signals(player)
 	for e in enemies:
 		_connect_combatant_signals(e)
 
-	# 设置默认速度（2x）
 	var tuning := Tuning.get_default()
-	ctx.base_recovery_ticks = tuning.base_recovery_ticks
 	ctx.timeline.setup(tuning.tick_duration_sec)
 	ctx.timeline.set_speed_multiplier(tuning.speed_options[tuning.default_speed_index])
 
-	# 初始化完成后保持暂停，等待玩家手动点击"开始战斗"
 	_is_running = false
 	EventBus.battle_started.emit()
 
-## 暂停/继续战斗
 func toggle_pause() -> void:
 	_is_running = not _is_running
 
@@ -48,13 +37,10 @@ func set_paused(paused: bool) -> void:
 func is_running() -> bool:
 	return _is_running
 
-## 投降
 func surrender() -> void:
 	if ctx and not ctx.is_finished():
 		_is_running = false
 		EventBus.battle_ended.emit(BattleContext.Winner.ENEMY)
-
-# ─── 私有方法 ──────────────────────────────────────────────────
 
 func _on_tick_advanced(tick: int) -> void:
 	if ctx == null or ctx.is_finished():
@@ -91,11 +77,7 @@ func _connect_combatant_signals(combatant: Combatant) -> void:
 		func(card: CardRuntime, index: int):
 			EventBus.card_fired.emit(combatant.combatant_id, card.data.id, index)
 	)
-	combatant.chain.recovery_started.connect(
-		func(duration: int):
-			EventBus.chain_recovery_started.emit(combatant.combatant_id, duration)
-	)
-	combatant.chain.recovery_ended.connect(
+	combatant.chain.cycle_completed.connect(
 		func():
-			EventBus.chain_recovery_ended.emit(combatant.combatant_id)
+			EventBus.chain_cycle_completed.emit(combatant.combatant_id)
 	)

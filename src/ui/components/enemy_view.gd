@@ -13,8 +13,6 @@ var combatant_id: StringName
 var _chain: Chain
 var _max_hp: int
 var _enemy_name_key: String = ""
-## 战斗时间轴引用，用于 60fps 平滑刷新 intent 进度条。
-## 由 BattleScene 在 start_battle 后通过 bind_timeline() 注入，可能为 null。
 var _timeline: Timeline
 
 signal clicked(combatant_id: StringName)
@@ -28,10 +26,8 @@ func setup(combatant: Combatant) -> void:
 	_chain = combatant.chain
 	_max_hp = combatant.max_hp
 
-	# 名字优先用 combatant.display_name（已被 BattleScene tr() 过）
 	name_label.text = combatant.display_name
 
-	# 立绘：尝试加载 assets/enemies/<id>.png，没有则保留默认占位
 	_load_portrait(combatant.combatant_id)
 
 	hp_bar.max_value = _max_hp
@@ -44,8 +40,6 @@ func setup(combatant: Combatant) -> void:
 
 	_update_intent()
 
-## 注入 Timeline 引用，开启 60fps 平滑刷新 intent 进度条。
-## 倒计时数字仍按 tick 跳变（避免数字闪烁刺眼）。
 func bind_timeline(timeline: Timeline) -> void:
 	_timeline = timeline
 	_update_intent()
@@ -63,8 +57,6 @@ func _load_portrait(id: StringName) -> void:
 			texture_rect.texture = tex
 			texture_rect.modulate = Color.WHITE
 			return
-	# fallback：用纯色 GradientTexture2D 而不是 PlaceholderTexture2D
-	# （PlaceholderTexture2D 在某些分辨率下渲染为紫红色马赛克）
 	var grad := Gradient.new()
 	grad.set_color(0, Color(0.32, 0.28, 0.22, 0.9))
 	grad.set_color(1, Color(0.18, 0.14, 0.10, 0.9))
@@ -93,19 +85,9 @@ func _update_intent() -> void:
 	var prog: int = _chain.current_card_progress
 	var remaining: int = max(0, cost - prog)
 
-	if _chain.is_recovering():
-		intent_label.text = tr("battle.label.recovery")
-		countdown_label.text = "%dt" % _chain.recovery_remaining
-		intent_progress.max_value = max(1, _chain.slots.size())  # 避免除零
-		intent_progress.value = 0
-		intent_desc_label.text = tr("build.tooltip.recovery")
-		return
-
-	# 倒计时数字保留整数（按 tick 跳变，避免数字闪烁刺眼）
 	intent_label.text = tr(card.data.display_name_key)
 	countdown_label.text = "%dt" % remaining
 	intent_progress.max_value = cost
-	# 进度条按 60fps 平滑插值：整数 prog + tick 内累积的小数部分
 	var frac: float = _timeline.get_tick_progress() if _timeline != null else 0.0
 	intent_progress.value = minf(float(cost), float(prog) + frac)
 	intent_desc_label.text = tr(card.data.desc_key)
@@ -122,7 +104,6 @@ func _on_died(id: StringName) -> void:
 	tween.tween_callback(queue_free)
 
 func _on_tick_advanced(_tick: int) -> void:
-	# 已绑定 Timeline 时由 _process 每帧刷新，避免重复
 	if _timeline != null:
 		return
 	_update_intent()

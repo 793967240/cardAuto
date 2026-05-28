@@ -1,6 +1,3 @@
-# src/globals/game_state.gd
-# 全局游戏状态单例
-# AutoLoad 为 "GameState"
 extends Node
 
 enum GamePhase {
@@ -15,21 +12,15 @@ enum GamePhase {
 }
 
 var current_phase: GamePhase = GamePhase.MAIN_MENU
-var current_run: RunState = null   # 当前 Run 状态（null = 无进行中的 Run）
+var current_run: RunState = null
 
-## 下次战斗的元数据（由 MapScene 写入，由 BattleScene 读取）
 var next_battle_enemy_id: String = ""
 var next_battle_is_boss: bool = false
 
-## 模拟战斗（构筑界面"模拟战斗"按钮）：
-## 战斗结束后不推进 node_index、不写血量、不存档，跳回构筑界面。
 var is_simulation: bool = false
 
-## 构筑界面"确认/返回"应该跳回的场景路径。
-## 由进入 BuildScene 之前的场景设置（默认地图）。
 var build_return_scene: String = "res://scenes/map/map_scene.tscn"
 
-## 命令行参数
 var is_smoke_test: bool = false
 
 func _ready() -> void:
@@ -40,10 +31,9 @@ func _parse_launch_args() -> void:
 	if "--smoke-test" in args:
 		is_smoke_test = true
 
-## 剑修角色起始 10 张卡（路径列表）
 const SWORD_STARTER_DECK: Array[String] = [
 	"res://data/cards/sword/zhan.tres",
-	"res://data/cards/sword/zhan.tres",          # 斩 ×2
+	"res://data/cards/sword/zhan.tres",
 	"res://data/cards/sword/jian_qi.tres",
 	"res://data/cards/sword/xu_shi.tres",
 	"res://data/cards/sword/qiang_pi.tres",
@@ -54,11 +44,19 @@ const SWORD_STARTER_DECK: Array[String] = [
 	"res://data/cards/sword/qing_feng_zhan.tres",
 ]
 
+const BASE_SLOT_PATH := "res://data/slots/base/base_slot.tres"
+
+const STARTER_GEMS: Array[String] = [
+	"res://data/gems/ruby.tres",
+	"res://data/gems/sapphire.tres",
+	"res://data/gems/amber.tres",
+	"res://data/gems/jade.tres",
+]
+
 func start_run(character_id: StringName) -> void:
 	current_run = RunState.new()
 	current_run.character_id = character_id
 
-	# 加载起始卡组
 	if character_id == &"sword":
 		current_run.deck.clear()
 		for path in SWORD_STARTER_DECK:
@@ -66,17 +64,55 @@ func start_run(character_id: StringName) -> void:
 			if card_data:
 				current_run.deck.append(card_data)
 
-	# 初始化 1×6 链条（全 null = 空槽位）
-	current_run.chain_cards.resize(6)
-	# 默认放入前 6 张作为初始构筑（玩家可在 BuildScene 调整）
-	for i in range(min(6, current_run.deck.size())):
-		current_run.chain_cards[i] = current_run.deck[i]
+	_init_bases(character_id)
 
-	# 生成地图
+	current_run.chain_cards = _flatten_chain_cards(current_run)
+
 	current_run.map_nodes = MapGenerator.generate()
 	current_run.node_index = 0
 
 	EventBus.run_started.emit(character_id)
+
+func _init_bases(character_id: StringName) -> void:
+	current_run.bases.clear()
+	current_run.base_cards.clear()
+	current_run.base_gems.clear()
+
+	var tuning := Tuning.get_default()
+	var base_count := tuning.base_count
+
+	var base_slot := load(BASE_SLOT_PATH) as SlotData
+	if base_slot == null:
+		base_slot = SlotData.new()
+		base_slot.id = &"base_slot"
+		base_slot.display_name_key = "slot.base.name"
+		base_slot.gem_socket_count = 1
+
+	for i in range(base_count):
+		var slot := base_slot.duplicate() as SlotData
+		slot.id = StringName("base_%d" % i)
+		current_run.bases.append(slot)
+		current_run.base_gems[slot.id] = []
+
+	if character_id == &"sword":
+		for i in range(min(base_count, current_run.deck.size())):
+			current_run.base_cards[current_run.bases[i].id] = current_run.deck[i]
+
+	current_run.gems.clear()
+	for path in STARTER_GEMS:
+		var gem_data := load(path) as GemData
+		if gem_data:
+			current_run.gems.append(gem_data)
+
+static func _flatten_chain_cards(run: RunState) -> Array[CardData]:
+	var out: Array[CardData] = []
+	if run == null:
+		return out
+	for s in run.bases:
+		var c: CardData = run.base_cards.get(s.id, null)
+		if c != null:
+			out.append(c)
+	return out
 
 func end_run(won: bool) -> void:
 	EventBus.run_ended.emit(won)
