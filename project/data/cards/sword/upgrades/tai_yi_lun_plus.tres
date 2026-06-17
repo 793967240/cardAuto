@@ -1,0 +1,26 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://card_tai_yi_lun_plus"]
+
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_timechain.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+cycle_threshold_played = 6
+cycle_threshold_heal = 8
+cycle_threshold_haste = 2
+cycle_heal = 11
+cycle_haste = 2
+
+[resource]
+script = ExtResource("1_data")
+id = &"tai_yi_lun_plus"
+display_name_key = "card.tai_yi_lun_plus.name"
+desc_key = "card.tai_yi_lun_plus.desc"
+cost = 3
+card_type = 5
+tags = [&"sword", &"time"]
+rarity = 2
+description_template = "周天结束时，若本周天打出了 6 张以上牌，恢复 8 生命并获得加速 2。（升级版）"
+effect = SubResource("effect_1")
+consumable = false
+

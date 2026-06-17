@@ -1,0 +1,25 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://card_kai_tian_zhan_plus"]
+
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_timechain.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+charge_consume = true
+charge_base_damage = 28
+charge_multiplier = 4.5
+damage = 4
+
+[resource]
+script = ExtResource("1_data")
+id = &"kai_tian_zhan_plus"
+display_name_key = "card.kai_tian_zhan_plus.name"
+desc_key = "card.kai_tian_zhan_plus.desc"
+cost = 4
+card_type = 0
+tags = [&"sword", &"attack", &"charge_consume"]
+rarity = 2
+description_template = "消耗所有充能，造成 24+充能×4 点伤害。（升级版）"
+effect = SubResource("effect_1")
+consumable = false
+

@@ -1,0 +1,23 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://card_jian_qi_plus"]
+
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_attack.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+damage = 15
+hits = 1
+
+[resource]
+script = ExtResource("1_data")
+id = &"jian_qi_plus"
+display_name_key = "card.jian_qi_plus.name"
+desc_key = "card.jian_qi_plus.desc"
+cost = 2
+card_type = 0
+tags = [&"sword", &"attack"]
+rarity = 0
+description_template = "造成 12 点伤害。（升级版）"
+effect = SubResource("effect_1")
+consumable = false
+

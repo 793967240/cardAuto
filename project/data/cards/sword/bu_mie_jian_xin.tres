@@ -1,0 +1,23 @@
+[gd_resource type="Resource" load_steps=4 format=3 uid="uid://card_bu_mie_jian_xin"]
+
+[ext_resource type="Resource" path="res://data/cards/sword/upgrades/bu_mie_jian_xin_plus.tres" id="3_up"]
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_timechain.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+shield = 20
+
+[resource]
+script = ExtResource("1_data")
+id = &"bu_mie_jian_xin"
+display_name_key = "card.bu_mie_jian_xin.name"
+desc_key = "card.bu_mie_jian_xin.desc"
+cost = 3
+card_type = 1
+tags = [&"sword", &"defense"]
+rarity = 2
+description_template = "获得 20 点护盾。周天结束时保留一半护盾。"
+effect = SubResource("effect_1")
+consumable = false
+upgrade = ExtResource("3_up")

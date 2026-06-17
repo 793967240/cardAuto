@@ -1,0 +1,25 @@
+[gd_resource type="Resource" load_steps=4 format=3 uid="uid://card_qian_zhan"]
+
+[ext_resource type="Resource" path="res://data/cards/sword/upgrades/qian_zhan_plus.tres" id="3_up"]
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_power_strike.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+base_damage = 20
+charge_multiplier = 3.0
+consume_all_charge = true
+
+[resource]
+script = ExtResource("1_data")
+id = &"qian_zhan"
+display_name_key = "card.qian_zhan.name"
+desc_key = "card.qian_zhan.desc"
+cost = 4
+card_type = 0
+tags = [&"sword", &"attack", &"charge_consume", &"consumable"]
+rarity = 2
+description_template = "消耗所有充能，造成 20+充能×3 点伤害（一次性）。"
+effect = SubResource("effect_1")
+consumable = true
+upgrade = ExtResource("3_up")

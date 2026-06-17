@@ -1,0 +1,23 @@
+[gd_resource type="Resource" load_steps=4 format=3 uid="uid://card_yu_jian_dun"]
+
+[ext_resource type="Resource" path="res://data/cards/sword/upgrades/yu_jian_dun_plus.tres" id="3_up"]
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_defense.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+shield_amount = 6
+
+[resource]
+script = ExtResource("1_data")
+id = &"yu_jian_dun"
+display_name_key = "card.yu_jian_dun.name"
+desc_key = "card.yu_jian_dun.desc"
+cost = 1
+card_type = 1
+tags = [&"sword", &"defense"]
+rarity = 0
+description_template = "获得 6 点护盾。"
+effect = SubResource("effect_1")
+consumable = false
+upgrade = ExtResource("3_up")

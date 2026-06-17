@@ -1,0 +1,22 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://card_jian_ying_plus"]
+
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_timechain.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+echo_previous = 2
+
+[resource]
+script = ExtResource("1_data")
+id = &"jian_ying_plus"
+display_name_key = "card.jian_ying_plus.name"
+desc_key = "card.jian_ying_plus.desc"
+cost = 1
+card_type = 5
+tags = [&"sword", &"echo"]
+rarity = 0
+description_template = "复制前一张普通攻击牌。（升级版）"
+effect = SubResource("effect_1")
+consumable = false
+

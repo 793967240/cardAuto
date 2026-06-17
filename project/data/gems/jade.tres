@@ -1,0 +1,19 @@
+[gd_resource type="Resource" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/data_models/gem_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/gems/gem_effect_cycle_heal.gd" id="2_effect"]
+
+[sub_resource type="Resource" id="GemEffectCycleHeal_001"]
+script = ExtResource("2_effect")
+heal_amount = 3
+
+[resource]
+script = ExtResource("1_data")
+id = &"jade"
+display_name_key = "gem.jade.name"
+desc_key = "gem.jade.desc"
+trigger = 2
+tags = [&"healing"]
+mutex_tags = []
+description_template = "Heal 3 HP per cycle"
+effect = SubResource("GemEffectCycleHeal_001")

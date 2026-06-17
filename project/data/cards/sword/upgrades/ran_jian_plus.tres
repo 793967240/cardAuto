@@ -1,0 +1,26 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://card_ran_jian_plus"]
+
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_timechain.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+burn_stacks = 2
+burn_duration = 4
+damage = 12
+bonus_per_target_status_stack = &"burn"
+bonus_per_stack = 1
+
+[resource]
+script = ExtResource("1_data")
+id = &"ran_jian_plus"
+display_name_key = "card.ran_jian_plus.name"
+desc_key = "card.ran_jian_plus.desc"
+cost = 2
+card_type = 0
+tags = [&"sword", &"attack", &"fire"]
+rarity = 1
+description_template = "造成 9 点伤害。目标每有 1 层燃烧，额外 +1。（升级版）"
+effect = SubResource("effect_1")
+consumable = false
+

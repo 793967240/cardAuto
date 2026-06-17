@@ -1,0 +1,123 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://src/ui/components/enemy_view.gd" id="1_script"]
+[ext_resource type="StyleBoxTexture" path="res://assets/ui/styles/panel_enemy_bg.tres" id="2_panel"]
+[ext_resource type="StyleBoxFlat" path="res://assets/ui/styles/panel_dark.tres" id="3_intent"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hp_fill"]
+bg_color = Color(0.78, 0.16, 0.18, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hp_bg"]
+bg_color = Color(0.18, 0.08, 0.06, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.4, 0.32, 0.22, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[node name="EnemyView" type="PanelContainer"]
+custom_minimum_size = Vector2(260, 380)
+offset_right = 260.0
+offset_bottom = 380.0
+mouse_filter = 1
+theme_override_styles/panel = ExtResource("2_panel")
+script = ExtResource("1_script")
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="NameLabel" type="Label" parent="VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.32, 0.22, 0.16, 1)
+theme_override_font_sizes/font_size = 22
+text = "敌人"
+horizontal_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="VBox"]
+custom_minimum_size = Vector2(220, 200)
+layout_mode = 2
+size_flags_horizontal = 4
+expand_mode = 1
+stretch_mode = 5
+
+[node name="HpBar" type="ProgressBar" parent="VBox"]
+custom_minimum_size = Vector2(0, 22)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_hp_bg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_hp_fill")
+step = 1.0
+value = 50.0
+show_percentage = false
+
+[node name="HpLabel" type="Label" parent="VBox/HpBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 0.95, 0.86, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 14
+text = "50 / 100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="IntentPanel" type="PanelContainer" parent="VBox"]
+custom_minimum_size = Vector2(0, 78)
+layout_mode = 2
+mouse_filter = 1
+theme_override_styles/panel = ExtResource("3_intent")
+
+[node name="IntentMargin" type="MarginContainer" parent="VBox/IntentPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="IntentVBox" type="VBoxContainer" parent="VBox/IntentPanel/IntentMargin"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="IntentHeader" type="HBoxContainer" parent="VBox/IntentPanel/IntentMargin/IntentVBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="IntentLabel" type="Label" parent="VBox/IntentPanel/IntentMargin/IntentVBox/IntentHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.96, 0.92, 0.78, 1)
+theme_override_font_sizes/font_size = 16
+text = "意图"
+
+[node name="CountdownLabel" type="Label" parent="VBox/IntentPanel/IntentMargin/IntentVBox/IntentHeader"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.86, 0.45, 1)
+theme_override_font_sizes/font_size = 16
+text = "0t"
+
+[node name="IntentProgress" type="ProgressBar" parent="VBox/IntentPanel/IntentMargin/IntentVBox"]
+custom_minimum_size = Vector2(0, 6)
+layout_mode = 2
+step = 1.0
+show_percentage = false
+
+[node name="IntentDescLabel" type="Label" parent="VBox/IntentPanel/IntentMargin/IntentVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.92, 0.85, 0.7, 1)
+theme_override_font_sizes/font_size = 13
+text = "..."
+autowrap_mode = 3
+clip_text = true

@@ -1,0 +1,24 @@
+[gd_resource type="Resource" load_steps=4 format=3 uid="uid://card_huo_xing"]
+
+[ext_resource type="Resource" path="res://data/cards/sword/upgrades/huo_xing_plus.tres" id="3_up"]
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_timechain.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+burn_stacks = 1
+burn_duration = 3
+
+[resource]
+script = ExtResource("1_data")
+id = &"huo_xing"
+display_name_key = "card.huo_xing.name"
+desc_key = "card.huo_xing.desc"
+cost = 1
+card_type = 0
+tags = [&"sword", &"attack", &"fire"]
+rarity = 0
+description_template = "造成 3 点伤害，施加 1 层燃烧 3 tick。"
+effect = SubResource("effect_1")
+consumable = false
+upgrade = ExtResource("3_up")

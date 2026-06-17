@@ -1,0 +1,25 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://card_kong_gu_hui_xiang_plus"]
+
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_timechain.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+haste_duration = 2
+echo_previous = 2
+echo_haste_on_success = 3
+cycle_haste = 2
+
+[resource]
+script = ExtResource("1_data")
+id = &"kong_gu_hui_xiang_plus"
+display_name_key = "card.kong_gu_hui_xiang_plus.name"
+desc_key = "card.kong_gu_hui_xiang_plus.desc"
+cost = 2
+card_type = 5
+tags = [&"sword", &"echo", &"time"]
+rarity = 2
+description_template = "固有：前后两张牌 cost -1。若此卡复制成功，获得加速 2。（升级版）"
+effect = SubResource("effect_1")
+consumable = false
+passive_adjacent_cost_reduction = 2

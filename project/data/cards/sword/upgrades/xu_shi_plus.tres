@@ -1,0 +1,23 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://card_xu_shi_plus"]
+
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_buildup.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+charge_amount = 3
+charge_cap = 99
+
+[resource]
+script = ExtResource("1_data")
+id = &"xu_shi_plus"
+display_name_key = "card.xu_shi_plus.name"
+desc_key = "card.xu_shi_plus.desc"
+cost = 2
+card_type = 2
+tags = [&"sword", &"charge"]
+rarity = 0
+description_template = "获得 2 层充能。（升级版）"
+effect = SubResource("effect_1")
+consumable = false
+

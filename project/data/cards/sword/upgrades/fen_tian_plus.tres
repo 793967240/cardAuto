@@ -1,0 +1,25 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://card_fen_tian_plus"]
+
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_timechain.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+burn_stacks = 2
+burn_duration = 4
+damage = 21
+burn_detonate_ratio = 0.5
+
+[resource]
+script = ExtResource("1_data")
+id = &"fen_tian_plus"
+display_name_key = "card.fen_tian_plus.name"
+desc_key = "card.fen_tian_plus.desc"
+cost = 3
+card_type = 0
+tags = [&"sword", &"attack", &"fire"]
+rarity = 2
+description_template = "造成 18 点伤害。引爆目标燃烧，立即结算剩余燃烧伤害的一半。（升级版）"
+effect = SubResource("effect_1")
+consumable = false
+

@@ -1,0 +1,23 @@
+[gd_resource type="Resource" load_steps=4 format=3 uid="uid://card_yu_bu"]
+
+[ext_resource type="Resource" path="res://data/cards/sword/upgrades/yu_bu_plus.tres" id="3_up"]
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_timechain.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+shield = 5
+
+[resource]
+script = ExtResource("1_data")
+id = &"yu_bu"
+display_name_key = "card.yu_bu.name"
+desc_key = "card.yu_bu.desc"
+cost = 1
+card_type = 1
+tags = [&"sword", &"defense"]
+rarity = 0
+description_template = "获得 5 点护盾。"
+effect = SubResource("effect_1")
+consumable = false
+upgrade = ExtResource("3_up")

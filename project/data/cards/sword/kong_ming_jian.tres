@@ -1,0 +1,25 @@
+[gd_resource type="Resource" load_steps=4 format=3 uid="uid://card_kong_ming_jian"]
+
+[ext_resource type="Resource" path="res://data/cards/sword/upgrades/kong_ming_jian_plus.tres" id="3_up"]
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_timechain.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+interrupt = true
+interrupt_damage = 8
+interrupt_immune_duration = 4
+
+[resource]
+script = ExtResource("1_data")
+id = &"kong_ming_jian"
+display_name_key = "card.kong_ming_jian.name"
+desc_key = "card.kong_ming_jian.desc"
+cost = 2
+card_type = 3
+tags = [&"sword", &"attack", &"interrupt"]
+rarity = 1
+description_template = "打断目标，附加 8 点伤害。"
+effect = SubResource("effect_1")
+consumable = false
+upgrade = ExtResource("3_up")

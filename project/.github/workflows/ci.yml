@@ -1,0 +1,196 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  GODOT_VERSION: "4.6"
+  GODOT_RELEASE: "stable"
+
+jobs:
+  # ──────────────────────────────────────────────────────────────
+  # i18n 校验（最快，先跑）
+  # ──────────────────────────────────────────────────────────────
+  i18n_check:
+    name: i18n Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Check i18n keys and placeholders
+        run: python3 tools/i18n_check.py
+      - name: Check for hardcoded UI strings
+        run: python3 tools/i18n_no_hardcode.py
+
+  # ──────────────────────────────────────────────────────────────
+  # 单元测试 + 集成测试（Headless Godot）
+  # ──────────────────────────────────────────────────────────────
+  unit_tests:
+    name: Unit & Integration Tests
+    runs-on: ubuntu-latest
+    needs: i18n_check
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache Godot binary
+        id: cache-godot
+        uses: actions/cache@v4
+        with:
+          path: /usr/local/bin/godot
+          key: godot-${{ env.GODOT_VERSION }}-${{ env.GODOT_RELEASE }}-linux
+
+      - name: Download Godot
+        if: steps.cache-godot.outputs.cache-hit != 'true'
+        run: |
+          GODOT_FILENAME="Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_linux.x86_64"
+          wget -q "https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}-${GODOT_RELEASE}/${GODOT_FILENAME}.zip"
+          unzip -q "${GODOT_FILENAME}.zip"
+          chmod +x "${GODOT_FILENAME}"
+          mv "${GODOT_FILENAME}" /usr/local/bin/godot
+
+      - name: Import project assets (注册 class_name)
+        run: |
+          # 第一次 import 注册脚本类 + 烘焙资源；第二次确保跨文件类引用解析
+          godot --headless --import 2>&1 | tail -5 || true
+          godot --headless --import 2>&1 | tail -5 || true
+
+      - name: Run gut unit + integration tests
+        timeout-minutes: 10
+        run: |
+          godot --headless --path . \
+            -s addons/gut/gut_cmdln.gd \
+            -gdir=res://tests/unit \
+            -gdir=res://tests/integration \
+            -gexit
+          # gut 失败时返回非零退出码（GutRunner._handle_quit），CI 自动 fail
+
+  # ──────────────────────────────────────────────────────────────
+  # 平衡 gate（警告级，不阻塞）
+  # ──────────────────────────────────────────────────────────────
+  balance_gate:
+    name: Balance Gate
+    runs-on: ubuntu-latest
+    needs: unit_tests
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache Godot binary
+        id: cache-godot
+        uses: actions/cache@v4
+        with:
+          path: /usr/local/bin/godot
+          key: godot-${{ env.GODOT_VERSION }}-${{ env.GODOT_RELEASE }}-linux
+
+      - name: Download Godot
+        if: steps.cache-godot.outputs.cache-hit != 'true'
+        run: |
+          GODOT_FILENAME="Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_linux.x86_64"
+          wget -q "https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}-${GODOT_RELEASE}/${GODOT_FILENAME}.zip"
+          unzip -q "${GODOT_FILENAME}.zip"
+          chmod +x "${GODOT_FILENAME}"
+          mv "${GODOT_FILENAME}" /usr/local/bin/godot
+
+      - name: Import project assets
+        run: godot --headless --import 2>&1 | tail -5 || true
+
+      - name: Run balance gate (200 battles per matchup)
+        timeout-minutes: 5
+        run: |
+          godot --headless --path . \
+            --script tests/balance_gate.gd \
+            2>&1
+
+  # ──────────────────────────────────────────────────────────────
+  # PC 三平台构建烟雾测试（仅 main 分支）
+  # ──────────────────────────────────────────────────────────────
+  build_smoke:
+    name: Build Smoke (${{ matrix.platform }})
+    runs-on: ${{ matrix.runner }}
+    needs: unit_tests
+    if: github.ref == 'refs/heads/main'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: windows
+            runner: ubuntu-latest
+            export_preset: "Windows Desktop"
+            artifact_path: "build/windows/timechain.exe"
+          - platform: linux
+            runner: ubuntu-latest
+            export_preset: "Linux/X11"
+            artifact_path: "build/linux/timechain.x86_64"
+          - platform: macos
+            runner: macos-latest
+            export_preset: "macOS"
+            artifact_path: "build/macos/TimeChain.zip"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compute Godot template directory
+        id: tpl
+        shell: bash
+        run: |
+          if [ "$RUNNER_OS" = "macOS" ]; then
+            echo "dir=$HOME/Library/Application Support/Godot" >> $GITHUB_OUTPUT
+          else
+            echo "dir=$HOME/.local/share/godot" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Cache Godot binary
+        id: cache-godot
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.tpl.outputs.dir }}
+          key: godot-${{ env.GODOT_VERSION }}-${{ env.GODOT_RELEASE }}-${{ matrix.runner }}
+
+      - name: Download Godot + Export Templates
+        if: steps.cache-godot.outputs.cache-hit != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          TPL_DIR="${{ steps.tpl.outputs.dir }}"
+          if [ "$RUNNER_OS" = "Linux" ]; then
+            GODOT_FILENAME="Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_linux.x86_64"
+            wget -q "https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}-${GODOT_RELEASE}/${GODOT_FILENAME}.zip"
+            unzip -q "${GODOT_FILENAME}.zip"
+            chmod +x "${GODOT_FILENAME}"
+            sudo mv "${GODOT_FILENAME}" /usr/local/bin/godot
+          else
+            GODOT_FILENAME="Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_macos.universal"
+            wget -q "https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}-${GODOT_RELEASE}/${GODOT_FILENAME}.zip"
+            unzip -q "${GODOT_FILENAME}.zip"
+            sudo mv "Godot.app" /Applications/Godot.app
+            sudo ln -s "/Applications/Godot.app/Contents/MacOS/Godot" /usr/local/bin/godot
+          fi
+          TEMPLATES="Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_export_templates.tpz"
+          wget -q "https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}-${GODOT_RELEASE}/${TEMPLATES}"
+          mkdir -p "${TPL_DIR}/export_templates/${GODOT_VERSION}.${GODOT_RELEASE}"
+          unzip -q "${TEMPLATES}" -d /tmp/templates
+          mv /tmp/templates/templates/* "${TPL_DIR}/export_templates/${GODOT_VERSION}.${GODOT_RELEASE}/"
+
+      - name: Create build directory
+        run: mkdir -p build/${{ matrix.platform }}
+
+      - name: Import project
+        run: godot --headless --import 2>&1 | tail -5 || true
+
+      - name: Export ${{ matrix.platform }}
+        run: |
+          godot --headless --path . \
+            --export-release "${{ matrix.export_preset }}" \
+            "${{ matrix.artifact_path }}" \
+            2>&1
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ matrix.platform }}
+          path: build/${{ matrix.platform }}/
+          retention-days: 7

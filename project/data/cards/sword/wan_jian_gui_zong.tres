@@ -1,0 +1,24 @@
+[gd_resource type="Resource" load_steps=4 format=3 uid="uid://card_wan_jian_gui_zong"]
+
+[ext_resource type="Resource" path="res://data/cards/sword/upgrades/wan_jian_gui_zong_plus.tres" id="3_up"]
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_timechain.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+damage = 3
+hits = 8
+
+[resource]
+script = ExtResource("1_data")
+id = &"wan_jian_gui_zong"
+display_name_key = "card.wan_jian_gui_zong.name"
+desc_key = "card.wan_jian_gui_zong.desc"
+cost = 5
+card_type = 0
+tags = [&"sword", &"attack", &"multi_hit"]
+rarity = 2
+description_template = "造成 8 次 3 点伤害。"
+effect = SubResource("effect_1")
+consumable = false
+upgrade = ExtResource("3_up")

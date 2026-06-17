@@ -1,0 +1,23 @@
+[gd_resource type="Resource" load_steps=4 format=3 uid="uid://card_ning_qi"]
+
+[ext_resource type="Resource" path="res://data/cards/sword/upgrades/ning_qi_plus.tres" id="3_up"]
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_timechain.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+charge = 1
+
+[resource]
+script = ExtResource("1_data")
+id = &"ning_qi"
+display_name_key = "card.ning_qi.name"
+desc_key = "card.ning_qi.desc"
+cost = 2
+card_type = 2
+tags = [&"sword", &"charge"]
+rarity = 0
+description_template = "获得 1 层充能。流转：下一张充能牌额外 +1 充能。"
+effect = SubResource("effect_1")
+consumable = false
+upgrade = ExtResource("3_up")

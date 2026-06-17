@@ -1,0 +1,24 @@
+[gd_resource type="Resource" load_steps=4 format=3 uid="uid://card_liu_huo"]
+
+[ext_resource type="Resource" path="res://data/cards/sword/upgrades/liu_huo_plus.tres" id="3_up"]
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_timechain.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+next_tag_damage_bonus_tag = &"fire"
+next_tag_damage_bonus = 3
+
+[resource]
+script = ExtResource("1_data")
+id = &"liu_huo"
+display_name_key = "card.liu_huo.name"
+desc_key = "card.liu_huo.desc"
+cost = 2
+card_type = 0
+tags = [&"sword", &"attack", &"fire"]
+rarity = 0
+description_template = "造成 5 点伤害。流转：下一张火牌 +3 伤害。"
+effect = SubResource("effect_1")
+consumable = false
+upgrade = ExtResource("3_up")

@@ -1,0 +1,23 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://card_tian_he_yi_jian_plus"]
+
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_attack.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+damage = 31
+hits = 1
+
+[resource]
+script = ExtResource("1_data")
+id = &"tian_he_yi_jian_plus"
+display_name_key = "card.tian_he_yi_jian_plus.name"
+desc_key = "card.tian_he_yi_jian_plus.desc"
+cost = 3
+card_type = 0
+tags = [&"sword", &"attack", &"heavy"]
+rarity = 2
+description_template = "造成 28 点伤害。（升级版）"
+effect = SubResource("effect_1")
+consumable = false
+

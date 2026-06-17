@@ -1,0 +1,25 @@
+[gd_resource type="Resource" load_steps=4 format=3 uid="uid://card_chong_neng_zhan"]
+
+[ext_resource type="Resource" path="res://data/cards/sword/upgrades/chong_neng_zhan_plus.tres" id="3_up"]
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_combo_charge_attack.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+damage = 5
+charge_amount = 1
+charge_cap = 99
+
+[resource]
+script = ExtResource("1_data")
+id = &"chong_neng_zhan"
+display_name_key = "card.chong_neng_zhan.name"
+desc_key = "card.chong_neng_zhan.desc"
+cost = 2
+card_type = 0
+tags = [&"sword", &"attack", &"charge"]
+rarity = 0
+description_template = "造成 5 点伤害，获得 1 层充能。"
+effect = SubResource("effect_1")
+consumable = false
+upgrade = ExtResource("3_up")

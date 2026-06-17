@@ -1,0 +1,26 @@
+[gd_resource type="Resource" load_steps=4 format=3 uid="uid://card_po_jia"]
+
+[ext_resource type="Resource" path="res://data/cards/sword/upgrades/po_jia_plus.tres" id="3_up"]
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_apply_status.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+target_type = 0
+status_id = &"vulnerable"
+stacks = 1
+duration = 3
+
+[resource]
+script = ExtResource("1_data")
+id = &"po_jia"
+display_name_key = "card.po_jia.name"
+desc_key = "card.po_jia.desc"
+cost = 2
+card_type = 3
+tags = [&"sword", &"control", &"debuff"]
+rarity = 1
+description_template = "施加易伤 3 tick（目标所有卡 cost +1）。"
+effect = SubResource("effect_1")
+consumable = false
+upgrade = ExtResource("3_up")

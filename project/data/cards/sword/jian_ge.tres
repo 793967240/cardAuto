@@ -1,0 +1,23 @@
+[gd_resource type="Resource" load_steps=4 format=3 uid="uid://card_jian_ge"]
+
+[ext_resource type="Resource" path="res://data/cards/sword/upgrades/jian_ge_plus.tres" id="3_up"]
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_timechain.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+shield = 10
+
+[resource]
+script = ExtResource("1_data")
+id = &"jian_ge"
+display_name_key = "card.jian_ge.name"
+desc_key = "card.jian_ge.desc"
+cost = 2
+card_type = 1
+tags = [&"sword", &"defense"]
+rarity = 0
+description_template = "获得 10 点护盾。"
+effect = SubResource("effect_1")
+consumable = false
+upgrade = ExtResource("3_up")

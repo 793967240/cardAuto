@@ -1,0 +1,25 @@
+[gd_resource type="Resource" load_steps=4 format=3 uid="uid://card_lie_shan_pi"]
+
+[ext_resource type="Resource" path="res://data/cards/sword/upgrades/lie_shan_pi_plus.tres" id="3_up"]
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_timechain.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+charge_consume = true
+charge_base_damage = 16
+charge_multiplier = 2.5
+
+[resource]
+script = ExtResource("1_data")
+id = &"lie_shan_pi"
+display_name_key = "card.lie_shan_pi.name"
+desc_key = "card.lie_shan_pi.desc"
+cost = 4
+card_type = 0
+tags = [&"sword", &"attack", &"charge_consume"]
+rarity = 1
+description_template = "消耗所有充能，造成 16+充能×2.5 点伤害。"
+effect = SubResource("effect_1")
+consumable = false
+upgrade = ExtResource("3_up")

@@ -1,0 +1,25 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://card_duan_yue_zhan_plus"]
+
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_power_strike.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+base_damage = 16
+charge_multiplier = 3.5
+consume_all_charge = true
+damage = 4
+
+[resource]
+script = ExtResource("1_data")
+id = &"duan_yue_zhan_plus"
+display_name_key = "card.duan_yue_zhan_plus.name"
+desc_key = "card.duan_yue_zhan_plus.desc"
+cost = 3
+card_type = 0
+tags = [&"sword", &"attack", &"charge_consume", &"heavy"]
+rarity = 1
+description_template = "消耗所有充能，造成 12+充能×2.5 点伤害。（升级版）"
+effect = SubResource("effect_1")
+consumable = false
+

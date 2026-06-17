@@ -1,0 +1,24 @@
+[gd_resource type="Resource" load_steps=4 format=3 uid="uid://card_yu_jian_fan_ji"]
+
+[ext_resource type="Resource" path="res://data/cards/sword/upgrades/yu_jian_fan_ji_plus.tres" id="3_up"]
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_timechain.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+damage = 7
+bonus_damage = 2
+
+[resource]
+script = ExtResource("1_data")
+id = &"yu_jian_fan_ji"
+display_name_key = "card.yu_jian_fan_ji.name"
+desc_key = "card.yu_jian_fan_ji.desc"
+cost = 2
+card_type = 0
+tags = [&"sword", &"attack", &"defense"]
+rarity = 1
+description_template = "造成 7 点伤害；本周天每获得过 5 点护盾，额外 +2。"
+effect = SubResource("effect_1")
+consumable = false
+upgrade = ExtResource("3_up")

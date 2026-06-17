@@ -1,0 +1,54 @@
+# Godot
+.godot/
+*.uid
+*.import
+*.translation
+# export_presets.cfg is committed (needed for CI three-platform smoke build)
+
+# Build outputs (仅匹配仓库根的 build/，不影响 src/ui/build / scenes/build)
+/build/
+/dist/
+
+# macOS
+.DS_Store
+*.DS_Store
+__MACOSX/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+dist/
+
+# Test reports
+reports/balance_*.json
+reports/balance_*.html
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Secrets
+.env
+*.secret
+steamworks_sdk/
+steam_appid.txt
+
+# Large assets (use Git LFS for these)
+# assets/**/*.png (managed separately - use LFS if >100KB)
+assets/_pending/
+
+# Fonts - 完整字体包太大不入 Git，子集化后的文件可提交
+assets/fonts/*_full.otf
+assets/fonts/*_full.ttf
+assets/fonts/source_han_serif_sc_regular.otf
+assets/fonts/source_han_serif_cn_regular.otf
+
+# OS
+Thumbs.db

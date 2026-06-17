@@ -1,0 +1,24 @@
+[gd_resource type="Resource" load_steps=4 format=3 uid="uid://card_wu_ying_jian"]
+
+[ext_resource type="Resource" path="res://data/cards/sword/upgrades/wu_ying_jian_plus.tres" id="3_up"]
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_attack.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+damage = 4
+hits = 4
+
+[resource]
+script = ExtResource("1_data")
+id = &"wu_ying_jian"
+display_name_key = "card.wu_ying_jian.name"
+desc_key = "card.wu_ying_jian.desc"
+cost = 2
+card_type = 0
+tags = [&"sword", &"attack", &"multi_hit"]
+rarity = 2
+description_template = "造成 4 次 4 点伤害（共 16 点）。"
+effect = SubResource("effect_1")
+consumable = false
+upgrade = ExtResource("3_up")

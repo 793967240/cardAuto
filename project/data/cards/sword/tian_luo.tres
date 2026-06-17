@@ -1,0 +1,23 @@
+[gd_resource type="Resource" load_steps=4 format=3 uid="uid://card_tian_luo"]
+
+[ext_resource type="Resource" path="res://data/cards/sword/upgrades/tian_luo_plus.tres" id="3_up"]
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_timechain.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+vulnerable_duration = 6
+
+[resource]
+script = ExtResource("1_data")
+id = &"tian_luo"
+display_name_key = "card.tian_luo.name"
+desc_key = "card.tian_luo.desc"
+cost = 3
+card_type = 3
+tags = [&"sword", &"control", &"debuff"]
+rarity = 2
+description_template = "施加迟滞 6 tick。目标本周天下一张牌 cost 额外 +1。"
+effect = SubResource("effect_1")
+consumable = false
+upgrade = ExtResource("3_up")

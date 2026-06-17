@@ -1,0 +1,24 @@
+[gd_resource type="Resource" load_steps=4 format=3 uid="uid://card_ce_shen"]
+
+[ext_resource type="Resource" path="res://data/cards/sword/upgrades/ce_shen_plus.tres" id="3_up"]
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_timechain.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+next_card_cost_reduction = 1
+shield = 4
+
+[resource]
+script = ExtResource("1_data")
+id = &"ce_shen"
+display_name_key = "card.ce_shen.name"
+desc_key = "card.ce_shen.desc"
+cost = 1
+card_type = 1
+tags = [&"sword", &"defense", &"time"]
+rarity = 0
+description_template = "获得 4 点护盾。本周天结束前，下一张牌 cost -1。"
+effect = SubResource("effect_1")
+consumable = false
+upgrade = ExtResource("3_up")

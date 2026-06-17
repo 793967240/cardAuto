@@ -1,0 +1,24 @@
+[gd_resource type="Resource" load_steps=4 format=3 uid="uid://card_zhan_nian"]
+
+[ext_resource type="Resource" path="res://data/cards/sword/upgrades/zhan_nian_plus.tres" id="3_up"]
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_timechain.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+damage = 12
+bonus_per_debuff_kind = 8
+
+[resource]
+script = ExtResource("1_data")
+id = &"zhan_nian"
+display_name_key = "card.zhan_nian.name"
+desc_key = "card.zhan_nian.desc"
+cost = 3
+card_type = 0
+tags = [&"sword", &"attack", &"debuff"]
+rarity = 2
+description_template = "造成 12 点伤害。目标每有一种负面状态，额外 +8。"
+effect = SubResource("effect_1")
+consumable = false
+upgrade = ExtResource("3_up")

@@ -1,0 +1,25 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://card_lie_kou_plus"]
+
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_timechain.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+vulnerable_duration = 3
+damage = 10
+bonus_damage = 3
+bonus_if_target_status = &"vulnerable"
+
+[resource]
+script = ExtResource("1_data")
+id = &"lie_kou_plus"
+display_name_key = "card.lie_kou_plus.name"
+desc_key = "card.lie_kou_plus.desc"
+cost = 2
+card_type = 0
+tags = [&"sword", &"attack", &"debuff"]
+rarity = 0
+description_template = "造成 7 点伤害；若目标有迟滞，额外 +3。（升级版）"
+effect = SubResource("effect_1")
+consumable = false
+

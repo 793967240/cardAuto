@@ -1,0 +1,54 @@
+[gd_resource type="Resource" load_steps=7 format=3 uid="uid://enemy_iron_golem"]
+
+[ext_resource type="Script" path="res://src/data_models/enemy_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="2_card"]
+[ext_resource type="Script" path="res://src/core/effects/effect_attack.gd" id="3_atk"]
+[ext_resource type="Script" path="res://src/core/effects/effect_apply_status.gd" id="4_status"]
+
+[sub_resource type="Resource" id="fx_heavy"]
+script = ExtResource("3_atk")
+damage = 14
+hits = 1
+
+[sub_resource type="Resource" id="fx_slow"]
+script = ExtResource("4_status")
+target_type = 0
+status_id = &"slow"
+stacks = 1
+duration = 2
+
+[sub_resource type="Resource" id="card_heavy_blow"]
+script = ExtResource("2_card")
+id = &"golem_heavy_blow"
+display_name_key = "enemy.golem_heavy_blow.name"
+desc_key = "enemy.golem_heavy_blow.desc"
+cost = 3
+card_type = 0
+tags = [&"enemy_attack", &"heavy"]
+rarity = 0
+description_template = "造成 14 点伤害。"
+effect = SubResource("fx_heavy")
+consumable = false
+
+[sub_resource type="Resource" id="card_stomp"]
+script = ExtResource("2_card")
+id = &"golem_stomp"
+display_name_key = "enemy.golem_stomp.name"
+desc_key = "enemy.golem_stomp.desc"
+cost = 2
+card_type = 3
+tags = [&"enemy_debuff"]
+rarity = 0
+description_template = "施加缓速 2 tick。"
+effect = SubResource("fx_slow")
+consumable = false
+
+[resource]
+script = ExtResource("1_data")
+id = &"iron_golem"
+display_name_key = "enemy.iron_golem.name"
+max_hp = 70
+tier = 2
+tags = [&"construct", &"heavy"]
+deck = [SubResource("card_stomp"), SubResource("card_heavy_blow"), SubResource("card_heavy_blow")]
+act = 1

@@ -1,0 +1,23 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://card_feng_chi_plus"]
+
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_timechain.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+haste_duration = 3
+cycle_haste = 2
+
+[resource]
+script = ExtResource("1_data")
+id = &"feng_chi_plus"
+display_name_key = "card.feng_chi_plus.name"
+desc_key = "card.feng_chi_plus.desc"
+cost = 2
+card_type = 2
+tags = [&"sword", &"haste"]
+rarity = 1
+description_template = "获得加速 2。（升级版）"
+effect = SubResource("effect_1")
+consumable = false
+

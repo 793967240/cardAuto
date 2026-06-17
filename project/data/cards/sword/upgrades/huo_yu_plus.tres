@@ -1,0 +1,24 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://card_huo_yu_plus"]
+
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_timechain.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+vulnerable_duration = 3
+burn_stacks = "3/4"
+burn_duration = 4
+
+[resource]
+script = ExtResource("1_data")
+id = &"huo_yu_plus"
+display_name_key = "card.huo_yu_plus.name"
+desc_key = "card.huo_yu_plus.desc"
+cost = 2
+card_type = 3
+tags = [&"sword", &"fire", &"debuff"]
+rarity = 1
+description_template = "施加 3 层燃烧 4 tick 和迟滞 2 tick。（升级版）"
+effect = SubResource("effect_1")
+consumable = false
+

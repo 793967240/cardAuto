@@ -1,0 +1,23 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://card_tai_xu_ju_qi_plus"]
+
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_timechain.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+charge = 5
+
+[resource]
+script = ExtResource("1_data")
+id = &"tai_xu_ju_qi_plus"
+display_name_key = "card.tai_xu_ju_qi_plus.name"
+desc_key = "card.tai_xu_ju_qi_plus.desc"
+cost = 2
+card_type = 2
+tags = [&"sword", &"charge", &"time"]
+rarity = 2
+description_template = "获得 4 层充能。固有：相邻充能消耗牌 cost -1。（升级版）"
+effect = SubResource("effect_1")
+consumable = false
+passive_adjacent_cost_reduction = 2
+passive_adjacent_required_tag = &"charge_consume"

@@ -1,0 +1,184 @@
+[gd_scene load_steps=3 format=3 uid="uid://build_scene"]
+
+[ext_resource type="Script" path="res://src/ui/build/build_scene.gd" id="1_script"]
+[ext_resource type="Script" path="res://src/ui/build/deck_drop_area.gd" id="2_deck_drop"]
+
+[node name="BuildScene" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.12, 0.1, 0.08, 1)
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 8
+
+[node name="Header" type="HBoxContainer" parent="VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 64)
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="HeaderPad" type="Control" parent="VBox/Header"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="VBox/Header"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+theme_override_colors/font_color = Color(0.85, 0.78, 0.55, 1)
+text = "构筑"
+
+[node name="HeaderSpacer" type="Control" parent="VBox/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TotalDurationLabel" type="Label" parent="VBox/Header"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(0.85, 0.85, 0.85, 1)
+text = "总时长: 0 tick"
+
+[node name="BackBtn" type="Button" parent="VBox/Header"]
+layout_mode = 2
+custom_minimum_size = Vector2(112, 44)
+text = "返回"
+
+[node name="SimulateBtn" type="Button" parent="VBox/Header"]
+layout_mode = 2
+custom_minimum_size = Vector2(148, 44)
+text = "模拟战斗"
+
+[node name="ConfirmBtn" type="Button" parent="VBox/Header"]
+layout_mode = 2
+custom_minimum_size = Vector2(132, 44)
+text = "确认"
+
+[node name="HeaderPadRight" type="Control" parent="VBox/Header"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="Body" type="HBoxContainer" parent="VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 12
+
+[node name="MainArea" type="VBoxContainer" parent="VBox/Body"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 5.0
+theme_override_constants/separation = 10
+
+[node name="BasePanel" type="PanelContainer" parent="VBox/Body/MainArea"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 288)
+
+[node name="BaseMargin" type="MarginContainer" parent="VBox/Body/MainArea/BasePanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 8
+
+[node name="BaseScroll" type="ScrollContainer" parent="VBox/Body/MainArea/BasePanel/BaseMargin"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+horizontal_scroll_mode = 2
+vertical_scroll_mode = 0
+
+[node name="BaseChainHBox" type="HBoxContainer" parent="VBox/Body/MainArea/BasePanel/BaseMargin/BaseScroll"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="DeckPanel" type="PanelContainer" parent="VBox/Body/MainArea"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 250)
+size_flags_vertical = 3
+size_flags_stretch_ratio = 1.0
+
+[node name="DeckMargin" type="MarginContainer" parent="VBox/Body/MainArea/DeckPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="DeckVBox" type="VBoxContainer" parent="VBox/Body/MainArea/DeckPanel/DeckMargin"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="DeckLabel" type="Label" parent="VBox/Body/MainArea/DeckPanel/DeckMargin/DeckVBox"]
+layout_mode = 2
+text = "卡牌仓库"
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(0.24, 0.18, 0.12, 1)
+
+[node name="Scroll" type="ScrollContainer" parent="VBox/Body/MainArea/DeckPanel/DeckMargin/DeckVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="DeckGrid" type="GridContainer" parent="VBox/Body/MainArea/DeckPanel/DeckMargin/DeckVBox/Scroll"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 170)
+size_flags_horizontal = 3
+size_flags_vertical = 3
+columns = 8
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+script = ExtResource("2_deck_drop")
+
+[node name="GemPanel" type="PanelContainer" parent="VBox/Body"]
+layout_mode = 2
+custom_minimum_size = Vector2(210, 0)
+size_flags_vertical = 3
+
+[node name="GemMargin" type="MarginContainer" parent="VBox/Body/GemPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="GemVBox" type="VBoxContainer" parent="VBox/Body/GemPanel/GemMargin"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="GemTitle" type="Label" parent="VBox/Body/GemPanel/GemMargin/GemVBox"]
+layout_mode = 2
+text = "宝石"
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(0.24, 0.18, 0.12, 1)
+
+[node name="GemTargetLabel" type="Label" parent="VBox/Body/GemPanel/GemMargin/GemVBox"]
+layout_mode = 2
+text = "选中底座：（无）"
+theme_override_colors/font_color = Color(0.42, 0.34, 0.24, 1)
+autowrap_mode = 2
+
+[node name="GemScroll" type="ScrollContainer" parent="VBox/Body/GemPanel/GemMargin/GemVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="GemListVBox" type="VBoxContainer" parent="VBox/Body/GemPanel/GemMargin/GemVBox/GemScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 4

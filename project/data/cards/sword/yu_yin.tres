@@ -1,0 +1,24 @@
+[gd_resource type="Resource" load_steps=4 format=3 uid="uid://card_yu_yin"]
+
+[ext_resource type="Resource" path="res://data/cards/sword/upgrades/yu_yin_plus.tres" id="3_up"]
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_timechain.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+next_tag_damage_bonus_tag = &"attack"
+next_tag_damage_bonus = 5
+
+[resource]
+script = ExtResource("1_data")
+id = &"yu_yin"
+display_name_key = "card.yu_yin.name"
+desc_key = "card.yu_yin.desc"
+cost = 1
+card_type = 5
+tags = [&"sword", &"echo"]
+rarity = 1
+description_template = "流转：下一张被复制的牌 +5 伤害。"
+effect = SubResource("effect_1")
+consumable = false
+upgrade = ExtResource("3_up")

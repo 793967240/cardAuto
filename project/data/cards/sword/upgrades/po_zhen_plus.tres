@@ -1,0 +1,24 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://card_po_zhen_plus"]
+
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_timechain.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+vulnerable_duration = 3
+damage = 16
+bonus_if_target_status = &"vulnerable"
+
+[resource]
+script = ExtResource("1_data")
+id = &"po_zhen_plus"
+display_name_key = "card.po_zhen_plus.name"
+desc_key = "card.po_zhen_plus.desc"
+cost = 2
+card_type = 0
+tags = [&"sword", &"attack", &"debuff"]
+rarity = 1
+description_template = "造成 13 点伤害。若目标有迟滞，打断目标。（升级版）"
+effect = SubResource("effect_1")
+consumable = false
+

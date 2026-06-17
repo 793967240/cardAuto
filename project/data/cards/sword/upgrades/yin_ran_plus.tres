@@ -1,0 +1,24 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://card_yin_ran_plus"]
+
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_timechain.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+burn_stacks = 2
+burn_duration = 4
+burn_extend = 2
+
+[resource]
+script = ExtResource("1_data")
+id = &"yin_ran_plus"
+display_name_key = "card.yin_ran_plus.name"
+desc_key = "card.yin_ran_plus.desc"
+cost = 1
+card_type = 3
+tags = [&"sword", &"fire", &"debuff"]
+rarity = 0
+description_template = "若目标已有燃烧，使其燃烧持续 +2 tick。（升级版）"
+effect = SubResource("effect_1")
+consumable = false
+

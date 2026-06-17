@@ -1,0 +1,23 @@
+[gd_resource type="Resource" load_steps=4 format=3 uid="uid://card_wu_bu_yi_sha"]
+
+[ext_resource type="Resource" path="res://data/cards/sword/upgrades/wu_bu_yi_sha_plus.tres" id="3_up"]
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_timechain.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+haste_duration = 1
+
+[resource]
+script = ExtResource("1_data")
+id = &"wu_bu_yi_sha"
+display_name_key = "card.wu_bu_yi_sha.name"
+desc_key = "card.wu_bu_yi_sha.desc"
+cost = 4
+card_type = 0
+tags = [&"sword", &"attack", &"haste"]
+rarity = 2
+description_template = "造成 24 点伤害。若你有加速，此牌 cost 减半。"
+effect = SubResource("effect_1")
+consumable = false
+upgrade = ExtResource("3_up")

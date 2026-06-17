@@ -1,0 +1,24 @@
+[gd_resource type="Resource" load_steps=4 format=3 uid="uid://card_ju_qi"]
+
+[ext_resource type="Resource" path="res://data/cards/sword/upgrades/ju_qi_plus.tres" id="3_up"]
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_buildup.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+charge_amount = 1
+charge_cap = 99
+
+[resource]
+script = ExtResource("1_data")
+id = &"ju_qi"
+display_name_key = "card.ju_qi.name"
+desc_key = "card.ju_qi.desc"
+cost = 1
+card_type = 2
+tags = [&"sword", &"charge"]
+rarity = 0
+description_template = "获得 1 层充能。"
+effect = SubResource("effect_1")
+consumable = false
+upgrade = ExtResource("3_up")

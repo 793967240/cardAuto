@@ -1,0 +1,72 @@
+[gd_resource type="Resource" load_steps=8 format=3 uid="uid://enemy_shadow_blade"]
+
+[ext_resource type="Script" path="res://src/data_models/enemy_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="2_card"]
+[ext_resource type="Script" path="res://src/core/effects/effect_attack.gd" id="3_atk"]
+[ext_resource type="Script" path="res://src/core/effects/effect_apply_status.gd" id="4_status"]
+
+[sub_resource type="Resource" id="fx_quick"]
+script = ExtResource("3_atk")
+damage = 5
+hits = 1
+
+[sub_resource type="Resource" id="fx_strike"]
+script = ExtResource("3_atk")
+damage = 10
+hits = 1
+
+[sub_resource type="Resource" id="fx_weak"]
+script = ExtResource("4_status")
+target_type = 0
+status_id = &"weakness"
+stacks = 1
+duration = 3
+
+[sub_resource type="Resource" id="card_quick_slash"]
+script = ExtResource("2_card")
+id = &"shadow_quick_slash"
+display_name_key = "enemy.shadow_quick_slash.name"
+desc_key = "enemy.shadow_quick_slash.desc"
+cost = 1
+card_type = 0
+tags = [&"enemy_attack", &"fast"]
+rarity = 0
+description_template = "造成 5 点伤害。"
+effect = SubResource("fx_quick")
+consumable = false
+
+[sub_resource type="Resource" id="card_shadow_strike"]
+script = ExtResource("2_card")
+id = &"shadow_strike"
+display_name_key = "enemy.shadow_strike.name"
+desc_key = "enemy.shadow_strike.desc"
+cost = 2
+card_type = 0
+tags = [&"enemy_attack"]
+rarity = 0
+description_template = "造成 10 点伤害。"
+effect = SubResource("fx_strike")
+consumable = false
+
+[sub_resource type="Resource" id="card_weaken"]
+script = ExtResource("2_card")
+id = &"shadow_weaken"
+display_name_key = "enemy.shadow_weaken.name"
+desc_key = "enemy.shadow_weaken.desc"
+cost = 2
+card_type = 3
+tags = [&"enemy_debuff"]
+rarity = 0
+description_template = "施加虚弱 3 tick（受到伤害 +50%）。"
+effect = SubResource("fx_weak")
+consumable = false
+
+[resource]
+script = ExtResource("1_data")
+id = &"shadow_blade"
+display_name_key = "enemy.shadow_blade.name"
+max_hp = 45
+tier = 2
+tags = [&"humanoid", &"shadow"]
+deck = [SubResource("card_quick_slash"), SubResource("card_weaken"), SubResource("card_shadow_strike")]
+act = 1

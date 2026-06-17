@@ -1,0 +1,54 @@
+[gd_resource type="Resource" load_steps=7 format=3 uid="uid://enemy_fire_imp"]
+
+[ext_resource type="Script" path="res://src/data_models/enemy_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="2_card"]
+[ext_resource type="Script" path="res://src/core/effects/effect_attack.gd" id="3_atk"]
+[ext_resource type="Script" path="res://src/core/effects/effect_apply_status.gd" id="4_burn"]
+
+[sub_resource type="Resource" id="fx_atk"]
+script = ExtResource("3_atk")
+damage = 3
+hits = 2
+
+[sub_resource type="Resource" id="fx_burn"]
+script = ExtResource("4_burn")
+target_type = 0
+status_id = &"burn"
+stacks = 2
+duration = 3
+
+[sub_resource type="Resource" id="card_double_strike"]
+script = ExtResource("2_card")
+id = &"imp_double_strike"
+display_name_key = "enemy.imp_double_strike.name"
+desc_key = "enemy.imp_double_strike.desc"
+cost = 1
+card_type = 0
+tags = [&"enemy_attack", &"fire"]
+rarity = 0
+description_template = "造成 2 次 3 点伤害。"
+effect = SubResource("fx_atk")
+consumable = false
+
+[sub_resource type="Resource" id="card_ignite"]
+script = ExtResource("2_card")
+id = &"imp_ignite"
+display_name_key = "enemy.imp_ignite.name"
+desc_key = "enemy.imp_ignite.desc"
+cost = 2
+card_type = 3
+tags = [&"enemy_debuff", &"fire"]
+rarity = 0
+description_template = "施加 2 层燃烧（持续 3 tick）。"
+effect = SubResource("fx_burn")
+consumable = false
+
+[resource]
+script = ExtResource("1_data")
+id = &"fire_imp"
+display_name_key = "enemy.fire_imp.name"
+max_hp = 20
+tier = 0
+tags = [&"demon", &"fire"]
+deck = [SubResource("card_double_strike"), SubResource("card_ignite")]
+act = 1

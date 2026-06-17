@@ -1,0 +1,24 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://card_shun_pu_plus"]
+
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_timechain.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+next_tag_damage_bonus_tag = &"attack"
+next_tag_damage_bonus = 4
+damage = 4
+
+[resource]
+script = ExtResource("1_data")
+id = &"shun_pu_plus"
+display_name_key = "card.shun_pu_plus.name"
+desc_key = "card.shun_pu_plus.desc"
+cost = 2
+card_type = 0
+tags = [&"sword", &"attack"]
+rarity = 0
+description_template = "造成 9 点伤害。流转：下一张攻击牌 +2 伤害。（升级版）"
+effect = SubResource("effect_1")
+consumable = false
+

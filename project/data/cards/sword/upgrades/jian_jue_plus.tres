@@ -1,0 +1,23 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://card_jian_jue_plus"]
+
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_attack.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+damage = 4
+hits = 3
+
+[resource]
+script = ExtResource("1_data")
+id = &"jian_jue_plus"
+display_name_key = "card.jian_jue_plus.name"
+desc_key = "card.jian_jue_plus.desc"
+cost = 1
+card_type = 0
+tags = [&"sword", &"attack", &"multi_hit"]
+rarity = 0
+description_template = "造成 2 次 3 点伤害（共 6 点）。（升级版）"
+effect = SubResource("effect_1")
+consumable = false
+

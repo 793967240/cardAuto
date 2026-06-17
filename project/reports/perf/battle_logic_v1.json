@@ -1,0 +1,10 @@
+{
+  "generated_at": "2026-05-09 09:46:06",
+  "godot_version": "4.6.2-stable (official)",
+  "max_allowed_wall_ms": 1000,
+  "min_required_ticks_per_sec": 240.0,
+  "ticks": 1000,
+  "ticks_per_sec": 266382.52530634,
+  "version": "v1",
+  "wall_ms": 3
+}

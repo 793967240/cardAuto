@@ -1,0 +1,23 @@
+[gd_resource type="Resource" load_steps=4 format=3 uid="uid://card_yun_ti"]
+
+[ext_resource type="Resource" path="res://data/cards/sword/upgrades/yun_ti_plus.tres" id="3_up"]
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_defense.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+shield_amount = 12
+
+[resource]
+script = ExtResource("1_data")
+id = &"yun_ti"
+display_name_key = "card.yun_ti.name"
+desc_key = "card.yun_ti.desc"
+cost = 2
+card_type = 1
+tags = [&"sword", &"defense"]
+rarity = 1
+description_template = "获得 12 点护盾。"
+effect = SubResource("effect_1")
+consumable = false
+upgrade = ExtResource("3_up")

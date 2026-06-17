@@ -1,0 +1,25 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://card_qiang_pi_plus"]
+
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_power_strike.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+base_damage = 14
+charge_multiplier = 3
+consume_all_charge = true
+damage = 4
+
+[resource]
+script = ExtResource("1_data")
+id = &"qiang_pi_plus"
+display_name_key = "card.qiang_pi_plus.name"
+desc_key = "card.qiang_pi_plus.desc"
+cost = 3
+card_type = 0
+tags = [&"sword", &"attack", &"charge_consume"]
+rarity = 0
+description_template = "消耗所有充能，造成 10+充能×2 点伤害。（升级版）"
+effect = SubResource("effect_1")
+consumable = false
+

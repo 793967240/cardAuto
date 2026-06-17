@@ -1,0 +1,51 @@
+[gd_resource type="Resource" load_steps=7 format=3 uid="uid://enemy_stone_guard"]
+
+[ext_resource type="Script" path="res://src/data_models/enemy_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="2_card"]
+[ext_resource type="Script" path="res://src/core/effects/effect_attack.gd" id="3_atk"]
+[ext_resource type="Script" path="res://src/core/effects/effect_defense.gd" id="4_def"]
+
+[sub_resource type="Resource" id="fx_atk"]
+script = ExtResource("3_atk")
+damage = 6
+hits = 1
+
+[sub_resource type="Resource" id="fx_def"]
+script = ExtResource("4_def")
+shield_amount = 4
+
+[sub_resource type="Resource" id="card_strike"]
+script = ExtResource("2_card")
+id = &"guard_strike"
+display_name_key = "enemy.guard_strike.name"
+desc_key = "enemy.guard_strike.desc"
+cost = 2
+card_type = 0
+tags = [&"enemy_attack"]
+rarity = 0
+description_template = "造成 6 点伤害。"
+effect = SubResource("fx_atk")
+consumable = false
+
+[sub_resource type="Resource" id="card_defend"]
+script = ExtResource("2_card")
+id = &"guard_defend"
+display_name_key = "enemy.guard_defend.name"
+desc_key = "enemy.guard_defend.desc"
+cost = 1
+card_type = 1
+tags = [&"enemy_defense"]
+rarity = 0
+description_template = "获得 4 点护盾。"
+effect = SubResource("fx_def")
+consumable = false
+
+[resource]
+script = ExtResource("1_data")
+id = &"stone_guard"
+display_name_key = "enemy.stone_guard.name"
+max_hp = 40
+tier = 1
+tags = [&"construct"]
+deck = [SubResource("card_defend"), SubResource("card_strike")]
+act = 1

@@ -1,0 +1,27 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://card_hui_qi_plus"]
+
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_timechain.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+charge_consume = true
+charge_base_damage = 12
+charge_multiplier = 2.5
+charge_refund_threshold = 3
+charge_refund = 1
+damage = 4
+
+[resource]
+script = ExtResource("1_data")
+id = &"hui_qi_plus"
+display_name_key = "card.hui_qi_plus.name"
+desc_key = "card.hui_qi_plus.desc"
+cost = 2
+card_type = 0
+tags = [&"sword", &"attack", &"charge_consume"]
+rarity = 1
+description_template = "消耗所有充能造成 8+充能×2 伤害；若消耗 3 层以上，返还 1 层。（升级版）"
+effect = SubResource("effect_1")
+consumable = false
+

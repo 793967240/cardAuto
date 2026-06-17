@@ -1,0 +1,24 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://card_zhen_mai_plus"]
+
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/core/effects/effect_timechain.gd" id="2_fx"]
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_fx")
+next_tag_damage_bonus_tag = &"attack"
+next_tag_damage_bonus = 8
+vulnerable_duration = 4
+
+[resource]
+script = ExtResource("1_data")
+id = &"zhen_mai_plus"
+display_name_key = "card.zhen_mai_plus.name"
+desc_key = "card.zhen_mai_plus.desc"
+cost = 2
+card_type = 3
+tags = [&"sword", &"control", &"debuff"]
+rarity = 1
+description_template = "施加迟滞 3 tick。流转：下一张攻击牌对迟滞目标 +6 伤害。（升级版）"
+effect = SubResource("effect_1")
+consumable = false
+

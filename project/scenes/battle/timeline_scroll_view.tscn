@@ -1,0 +1,81 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://src/ui/components/timeline_scroll_view.gd" id="1_script"]
+[ext_resource type="StyleBoxFlat" path="res://assets/ui/styles/panel_dark.tres" id="2_tooltip"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cursor_glow"]
+bg_color = Color(0.95, 0.78, 0.32, 0.95)
+border_width_left = 0
+border_width_top = 0
+border_width_right = 0
+border_width_bottom = 0
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+shadow_color = Color(1, 0.78, 0.32, 0.65)
+shadow_size = 14
+
+[node name="TimelineScrollView" type="ScrollContainer"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -140.0
+grow_horizontal = 2
+grow_vertical = 0
+horizontal_scroll_mode = 2
+vertical_scroll_mode = 0
+script = ExtResource("1_script")
+
+[node name="TimelineContainer" type="Control" parent="."]
+custom_minimum_size = Vector2(1920, 140)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="CardsHBox" type="HBoxContainer" parent="TimelineContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 24.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+theme_override_constants/separation = 4
+
+[node name="CursorGlow" type="Panel" parent="TimelineContainer"]
+layout_mode = 0
+offset_top = 14.0
+offset_right = 4.0
+offset_bottom = 126.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_cursor_glow")
+
+[node name="TooltipPanel" type="PanelContainer" parent="."]
+visible = false
+layout_mode = 0
+offset_right = 240.0
+offset_bottom = 100.0
+mouse_filter = 2
+theme_override_styles/panel = ExtResource("2_tooltip")
+
+[node name="Margin" type="MarginContainer" parent="TooltipPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 10
+
+[node name="Label" type="Label" parent="TooltipPanel/Margin"]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.92, 0.78, 1)
+theme_override_font_sizes/font_size = 14
+text = "Card Name
+Cost: 1
+Description"
+autowrap_mode = 3
