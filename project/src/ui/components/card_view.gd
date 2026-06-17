@@ -28,12 +28,12 @@ const BUILD_CHAIN_SLOT_EMPTY_H := 250
 
 ## 类型 → 卡面占位色（无 icon 时）
 const TYPE_COLORS: Dictionary = {
-	0: Color(0.55, 0.18, 0.15, 1),  # ATTACK 红
-	1: Color(0.18, 0.32, 0.55, 1),  # DEFENSE 蓝
-	2: Color(0.20, 0.45, 0.22, 1),  # BUFF 绿
-	3: Color(0.40, 0.22, 0.50, 1),  # CONTROL 紫
-	4: Color(0.55, 0.45, 0.15, 1),  # SUMMON 黄
-	5: Color(0.30, 0.30, 0.35, 1),  # SPECIAL 灰
+	0: Color(0.48, 0.15, 0.12, 1),  # ATTACK 朱砂
+	1: Color(0.18, 0.30, 0.42, 1),  # DEFENSE 青黛
+	2: Color(0.20, 0.38, 0.28, 1),  # BUFF 松绿
+	3: Color(0.34, 0.24, 0.42, 1),  # CONTROL 暮紫
+	4: Color(0.52, 0.40, 0.16, 1),  # SUMMON 金墨
+	5: Color(0.30, 0.28, 0.24, 1),  # SPECIAL 淡墨
 }
 
 ## 类型 → 显示文字（i18n key）
@@ -48,12 +48,12 @@ const TYPE_LABEL_KEYS: Dictionary = {
 
 ## 类型 → 横条颜色
 const TYPE_BAR_COLORS: Dictionary = {
-	0: Color(0.45, 0.13, 0.10, 0.95),
-	1: Color(0.13, 0.25, 0.45, 0.95),
-	2: Color(0.15, 0.38, 0.18, 0.95),
-	3: Color(0.32, 0.16, 0.42, 0.95),
-	4: Color(0.45, 0.36, 0.12, 0.95),
-	5: Color(0.22, 0.22, 0.27, 0.95),
+	0: Color(0.40, 0.10, 0.08, 0.95),
+	1: Color(0.12, 0.22, 0.36, 0.95),
+	2: Color(0.12, 0.30, 0.20, 0.95),
+	3: Color(0.26, 0.15, 0.34, 0.95),
+	4: Color(0.40, 0.30, 0.10, 0.95),
+	5: Color(0.20, 0.19, 0.17, 0.95),
 }
 
 ## 稀有度 → 边框颜色（普通=灰、罕见=蓝、稀有=金）
@@ -64,8 +64,8 @@ const RARITY_BORDER_COLORS: Dictionary = {
 	3: Color(0.78, 0.42, 0.92, 1.00),
 }
 
-const BUILD_TEXT_COLOR := Color(1.0, 0.96, 0.84, 1.0)
-const BUILD_TEXT_OUTLINE := Color(0.03, 0.02, 0.015, 0.95)
+const BUILD_TEXT_COLOR := Color(0.97, 0.91, 0.74, 1.0)
+const BUILD_TEXT_OUTLINE := Color(0.04, 0.025, 0.015, 0.95)
 const DISABLED_TEXT_COLOR := Color(0.88, 0.82, 0.64, 1.0)
 const DRAG_START_DISTANCE := 8.0
 

@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://build_scene"]
+[gd_scene load_steps=4 format=3 uid="uid://build_scene"]
 
 [ext_resource type="Script" path="res://src/ui/build/build_scene.gd" id="1_script"]
 [ext_resource type="Script" path="res://src/ui/build/deck_drop_area.gd" id="2_deck_drop"]
+[ext_resource type="Texture2D" path="res://assets/ui/build/ink_build_bg.png" id="3_ink_bg"]
 
 [node name="BuildScene" type="Control"]
 layout_mode = 3
@@ -12,28 +13,43 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_script")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="TextureRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.12, 0.1, 0.08, 1)
+texture = ExtResource("3_ink_bg")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="InkWash" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.08, 0.065, 0.045, 0.24)
 
 [node name="VBox" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 18.0
+offset_top = 12.0
+offset_right = -18.0
+offset_bottom = -18.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 12
 
 [node name="Header" type="HBoxContainer" parent="VBox"]
 layout_mode = 2
-custom_minimum_size = Vector2(0, 64)
-theme_override_constants/separation = 12
+custom_minimum_size = Vector2(0, 58)
+theme_override_constants/separation = 10
 alignment = 1
 
 [node name="HeaderPad" type="Control" parent="VBox/Header"]
@@ -42,8 +58,10 @@ layout_mode = 2
 
 [node name="TitleLabel" type="Label" parent="VBox/Header"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 28
-theme_override_colors/font_color = Color(0.85, 0.78, 0.55, 1)
+theme_override_font_sizes/font_size = 30
+theme_override_colors/font_color = Color(0.96, 0.88, 0.62, 1)
+theme_override_colors/font_outline_color = Color(0.08, 0.06, 0.04, 0.95)
+theme_override_constants/outline_size = 3
 text = "构筑"
 
 [node name="HeaderSpacer" type="Control" parent="VBox/Header"]
@@ -52,8 +70,10 @@ size_flags_horizontal = 3
 
 [node name="TotalDurationLabel" type="Label" parent="VBox/Header"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
-theme_override_colors/font_color = Color(0.85, 0.85, 0.85, 1)
+theme_override_font_sizes/font_size = 17
+theme_override_colors/font_color = Color(0.90, 0.84, 0.68, 1)
+theme_override_colors/font_outline_color = Color(0.08, 0.06, 0.04, 0.95)
+theme_override_constants/outline_size = 2
 text = "总时长: 0 tick"
 
 [node name="BackBtn" type="Button" parent="VBox/Header"]
@@ -78,25 +98,25 @@ layout_mode = 2
 [node name="Body" type="HBoxContainer" parent="VBox"]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_constants/separation = 12
+theme_override_constants/separation = 14
 
 [node name="MainArea" type="VBoxContainer" parent="VBox/Body"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 5.0
-theme_override_constants/separation = 10
+theme_override_constants/separation = 12
 
 [node name="BasePanel" type="PanelContainer" parent="VBox/Body/MainArea"]
 layout_mode = 2
-custom_minimum_size = Vector2(0, 288)
+custom_minimum_size = Vector2(0, 318)
 
 [node name="BaseMargin" type="MarginContainer" parent="VBox/Body/MainArea/BasePanel"]
 layout_mode = 2
-theme_override_constants/margin_left = 12
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 12
-theme_override_constants/margin_bottom = 8
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 14
 
 [node name="BaseScroll" type="ScrollContainer" parent="VBox/Body/MainArea/BasePanel/BaseMargin"]
 layout_mode = 2
@@ -111,16 +131,16 @@ theme_override_constants/separation = 4
 
 [node name="DeckPanel" type="PanelContainer" parent="VBox/Body/MainArea"]
 layout_mode = 2
-custom_minimum_size = Vector2(0, 250)
+custom_minimum_size = Vector2(0, 300)
 size_flags_vertical = 3
 size_flags_stretch_ratio = 1.0
 
 [node name="DeckMargin" type="MarginContainer" parent="VBox/Body/MainArea/DeckPanel"]
 layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 8
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 16
 
 [node name="DeckVBox" type="VBoxContainer" parent="VBox/Body/MainArea/DeckPanel/DeckMargin"]
 layout_mode = 2
@@ -129,8 +149,8 @@ theme_override_constants/separation = 6
 [node name="DeckLabel" type="Label" parent="VBox/Body/MainArea/DeckPanel/DeckMargin/DeckVBox"]
 layout_mode = 2
 text = "卡牌仓库"
-theme_override_font_sizes/font_size = 18
-theme_override_colors/font_color = Color(0.24, 0.18, 0.12, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(0.18, 0.13, 0.09, 1)
 
 [node name="Scroll" type="ScrollContainer" parent="VBox/Body/MainArea/DeckPanel/DeckMargin/DeckVBox"]
 layout_mode = 2
@@ -138,25 +158,25 @@ size_flags_vertical = 3
 
 [node name="DeckGrid" type="GridContainer" parent="VBox/Body/MainArea/DeckPanel/DeckMargin/DeckVBox/Scroll"]
 layout_mode = 2
-custom_minimum_size = Vector2(0, 170)
+custom_minimum_size = Vector2(0, 214)
 size_flags_horizontal = 3
 size_flags_vertical = 3
 columns = 8
-theme_override_constants/h_separation = 10
-theme_override_constants/v_separation = 10
+theme_override_constants/h_separation = 14
+theme_override_constants/v_separation = 14
 script = ExtResource("2_deck_drop")
 
 [node name="GemPanel" type="PanelContainer" parent="VBox/Body"]
 layout_mode = 2
-custom_minimum_size = Vector2(210, 0)
+custom_minimum_size = Vector2(270, 0)
 size_flags_vertical = 3
 
 [node name="GemMargin" type="MarginContainer" parent="VBox/Body/GemPanel"]
 layout_mode = 2
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 8
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
 
 [node name="GemVBox" type="VBoxContainer" parent="VBox/Body/GemPanel/GemMargin"]
 layout_mode = 2
@@ -165,8 +185,8 @@ theme_override_constants/separation = 6
 [node name="GemTitle" type="Label" parent="VBox/Body/GemPanel/GemMargin/GemVBox"]
 layout_mode = 2
 text = "宝石"
-theme_override_font_sizes/font_size = 18
-theme_override_colors/font_color = Color(0.24, 0.18, 0.12, 1)
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.18, 0.13, 0.09, 1)
 
 [node name="GemTargetLabel" type="Label" parent="VBox/Body/GemPanel/GemMargin/GemVBox"]
 layout_mode = 2

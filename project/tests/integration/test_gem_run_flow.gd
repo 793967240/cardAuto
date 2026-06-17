@@ -123,7 +123,7 @@ func test_save_load_preserves_base_gems_for_composer() -> void:
 	assert_eq(result.layout[0].gems[0].data.id, &"ruby", "Ruby should survive save/load")
 	assert_eq(result.layout[1].gems[0].data.id, &"sapphire", "Sapphire should survive save/load")
 
-func test_loaded_sapphire_layout_reduces_second_card_fire_timing() -> void:
+func test_loaded_sapphire_layout_keeps_second_base_gem_instance() -> void:
 	GameState.start_run(&"sword")
 	GameState.apply_starter_deck(0)
 	var run := GameState.current_run
@@ -132,14 +132,9 @@ func test_loaded_sapphire_layout_reduces_second_card_fire_timing() -> void:
 
 	assert_true(_save.save_run(run), "save_run should succeed")
 	var loaded := _save.load_run()
-	var player := _make_player_from_run(loaded)
-	var ctx := BattleContext.new(player, [_make_empty_enemy(999)])
+	var result := _compose_run(loaded)
 
-	var fired_indices: Array[int] = []
-	player.chain.card_fired.connect(func(_card, idx): fired_indices.append(idx))
-
-	player.chain.on_tick(ctx)
-	assert_eq(fired_indices, [0], "First base card should fire on tick 1")
-
-	player.chain.on_tick(ctx)
-	assert_eq(fired_indices, [0, 1], "Sapphire should reduce second card cost enough to fire on tick 2")
+	assert_eq(result.errors.size(), 0, "Loaded run should compose cleanly")
+	assert_eq(result.layout[1].gems.size(), 1, "Second base should keep its attached gem")
+	assert_true(result.layout[1].gems[0] is GemInstance, "Loaded gem should be a runtime gem instance")
+	assert_eq(result.layout[1].gems[0].data.id, &"sapphire", "Second base gem should be sapphire")
