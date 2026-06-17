@@ -71,13 +71,15 @@ func test_yang_jian_shi_grants_strength() -> void:
 	var e := _make_enemy(40)
 	var ctx := _make_ctx(p, e)
 	var card := load("res://data/cards/sword/yang_jian_shi.tres") as CardData
-	p.chain.set_slots([CardRuntime.new(card)])
+	var runtime := CardRuntime.new(card)
+	p.chain.set_slots([runtime])
 
 	for _i in range(4):
 		p.chain.on_tick(ctx)
 
 	assert_eq(p.get_status(StatusInstance.ID_STRENGTH).stacks, 1,
 		"yang_jian_shi should grant 1 Strength")
+	assert_true(runtime.is_consumed, "yang_jian_shi should be consumed after firing")
 
 func test_ci_jian_gets_bonus_after_attack_card() -> void:
 	var p := _make_player()
