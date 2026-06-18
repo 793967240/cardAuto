@@ -2,6 +2,7 @@ class_name BuildScene extends Control
 
 const TICK_DURATION: float = 0.5
 const CARD_VIEW_SCENE = preload("res://scenes/components/card_view.tscn")
+const ARRAY_SLOT_TEXTURE_PATH := "res://assets/ui/build/array_slot_base.png"
 const PAPER_TEXT_COLOR := Color(0.24, 0.18, 0.12, 1.0)
 const PAPER_MUTED_TEXT_COLOR := Color(0.42, 0.34, 0.24, 1.0)
 const GOLD_TEXT_COLOR := Color(0.92, 0.82, 0.50, 1.0)
@@ -9,8 +10,17 @@ const GEM_BUTTON_TEXT_COLOR := Color(0.96, 0.94, 0.88, 1.0)
 const GEM_BUTTON_SELECTED_TEXT_COLOR := Color(1.0, 0.92, 0.62, 1.0)
 const GEM_BUTTON_DESC_TEXT_COLOR := Color(0.86, 0.84, 0.78, 1.0)
 const GEM_BUTTON_COLLAPSED_HEIGHT := 44.0
-const GEM_BUTTON_EXPANDED_HEIGHT := 104.0
+const GEM_BUTTON_EXPANDED_HEIGHT := 126.0
 const MAX_CONSUMABLE_CARDS_PER_CHAIN := 2
+const INK_TEXT := Color(0.17, 0.12, 0.08, 1.0)
+const INK_MUTED := Color(0.45, 0.36, 0.24, 1.0)
+const INK_GOLD := Color(0.78, 0.58, 0.22, 1.0)
+const JADE_ACCENT := Color(0.28, 0.56, 0.48, 1.0)
+const PANEL_INK := Color(0.96, 0.91, 0.78, 0.82)
+const PANEL_DARK_INK := Color(0.14, 0.11, 0.08, 0.78)
+const ARRAY_SLOT_BG := Color(0.84, 0.76, 0.58, 0.42)
+const ARRAY_SLOT_BORDER := Color(0.44, 0.31, 0.17, 0.70)
+const REPOSITORY_WASH := Color(0.86, 0.78, 0.58, 0.30)
 
 @onready var base_chain_hbox: HBoxContainer = $VBox/Body/MainArea/BasePanel/BaseMargin/BaseScroll/BaseChainHBox
 @onready var gem_title: Label = $VBox/Body/GemPanel/GemMargin/GemVBox/GemTitle
@@ -23,6 +33,9 @@ const MAX_CONSUMABLE_CARDS_PER_CHAIN := 2
 @onready var confirm_btn: Button = $VBox/Header/ConfirmBtn
 @onready var back_btn: Button = $VBox/Header/BackBtn
 @onready var title_label: Label = $VBox/Header/TitleLabel
+@onready var base_panel: PanelContainer = $VBox/Body/MainArea/BasePanel
+@onready var deck_panel: PanelContainer = $VBox/Body/MainArea/DeckPanel
+@onready var gem_panel: PanelContainer = $VBox/Body/GemPanel
 
 var _selected_card: CardData = null
 var _selected_card_view: CardView = null
@@ -30,9 +43,11 @@ var _selected_card_view: CardView = null
 var _gem_target_base_id: StringName = &""
 var _tip_label: Label = null
 var _tip_tween: Tween = null
+var _array_slot_texture: Texture2D = null
 
 
 func _ready() -> void:
+	_apply_ink_theme()
 	_apply_static_text_contrast()
 	deck_grid.set_meta(&"on_drop", Callable(self, "_on_deck_area_drop"))
 	_update_texts()
@@ -56,10 +71,47 @@ func _update_texts() -> void:
 	back_btn.text = tr("ui.button.back")
 
 func _apply_static_text_contrast() -> void:
-	deck_label.add_theme_color_override(&"font_color", PAPER_TEXT_COLOR)
-	gem_title.add_theme_color_override(&"font_color", PAPER_TEXT_COLOR)
-	gem_target_label.add_theme_color_override(&"font_color", PAPER_MUTED_TEXT_COLOR)
-	total_duration_label.add_theme_color_override(&"font_color", Color(0.86, 0.86, 0.82, 1.0))
+	title_label.add_theme_color_override(&"font_color", Color(0.11, 0.07, 0.04, 1.0))
+	title_label.add_theme_color_override(&"font_outline_color", Color(0.98, 0.92, 0.72, 0.80))
+	title_label.add_theme_constant_override(&"outline_size", 5)
+	deck_label.add_theme_color_override(&"font_color", INK_TEXT)
+	gem_title.add_theme_color_override(&"font_color", INK_TEXT)
+	gem_target_label.add_theme_color_override(&"font_color", INK_MUTED)
+	total_duration_label.add_theme_color_override(&"font_color", Color(0.10, 0.065, 0.035, 1.0))
+	total_duration_label.add_theme_color_override(&"font_outline_color", Color(0.98, 0.91, 0.70, 0.88))
+	total_duration_label.add_theme_constant_override(&"outline_size", 5)
+
+func _apply_ink_theme() -> void:
+	base_panel.add_theme_stylebox_override(&"panel", _make_panel_style(Color(0.94, 0.87, 0.68, 0.80), Color(0.28, 0.20, 0.12, 0.90), 6, 12))
+	deck_panel.add_theme_stylebox_override(&"panel", _make_panel_style(Color(0.93, 0.86, 0.67, 0.78), Color(0.28, 0.20, 0.12, 0.88), 6, 10))
+	gem_panel.add_theme_stylebox_override(&"panel", _make_panel_style(Color(0.91, 0.83, 0.63, 0.88), Color(0.24, 0.17, 0.10, 0.90), 6, 12))
+	for btn in [back_btn, simulate_btn, confirm_btn]:
+		btn.add_theme_stylebox_override(&"normal", _make_panel_style(PANEL_DARK_INK, Color(0.72, 0.56, 0.31, 0.72), 5, 0))
+		btn.add_theme_stylebox_override(&"hover", _make_panel_style(Color(0.21, 0.16, 0.10, 0.88), Color(0.95, 0.72, 0.33, 0.95), 5, 0))
+		btn.add_theme_stylebox_override(&"pressed", _make_panel_style(Color(0.09, 0.075, 0.055, 0.90), Color(0.95, 0.72, 0.33, 1.0), 5, 0))
+		btn.add_theme_color_override(&"font_color", Color(0.92, 0.84, 0.68, 1.0))
+		btn.add_theme_color_override(&"font_hover_color", Color(1.0, 0.90, 0.62, 1.0))
+
+static func _make_panel_style(bg: Color, border: Color, radius: int, shadow: int) -> StyleBoxFlat:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = bg
+	sb.border_color = border
+	sb.border_width_left = 2
+	sb.border_width_top = 2
+	sb.border_width_right = 2
+	sb.border_width_bottom = 2
+	sb.corner_radius_top_left = radius
+	sb.corner_radius_top_right = radius
+	sb.corner_radius_bottom_left = radius
+	sb.corner_radius_bottom_right = radius
+	sb.shadow_size = shadow
+	sb.shadow_color = Color(0.05, 0.035, 0.02, 0.30)
+	sb.shadow_offset = Vector2(0, 3)
+	sb.content_margin_left = 14
+	sb.content_margin_top = 10
+	sb.content_margin_right = 14
+	sb.content_margin_bottom = 10
+	return sb
 
 func _refresh_all() -> void:
 	_rebuild_bases()
@@ -78,42 +130,84 @@ func _rebuild_bases() -> void:
 		var sd: SlotData = s
 		var card: CardData = run.base_cards.get(sd.id, null)
 		var gems: Array = run.base_gems.get(sd.id, [])
+		var selected := _gem_target_base_id == sd.id
 
-		var panel := VBoxContainer.new()
-		panel.add_theme_constant_override(&"separation", 4)
-		base_chain_hbox.add_child(panel)
+		var shell := _make_array_slot_shell(selected)
+		base_chain_hbox.add_child(shell)
+
+		var panel := shell.get_node("ContentPanel") as PanelContainer
+
+		var stack := VBoxContainer.new()
+		stack.add_theme_constant_override(&"separation", 5)
+		panel.add_child(stack)
 
 		var name_label := Label.new()
-		name_label.text = "#%s" % str(sd.id).replace("base_", "")
+		name_label.text = "阵位 %s" % str(sd.id).replace("base_", "")
 		name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		name_label.add_theme_color_override(&"font_color", PAPER_MUTED_TEXT_COLOR)
-		name_label.add_theme_font_size_override(&"font_size", 16)
-		panel.add_child(name_label)
+		name_label.add_theme_color_override(&"font_color", Color(0.22, 0.15, 0.08, 0.95))
+		name_label.add_theme_font_size_override(&"font_size", 14)
+		stack.add_child(name_label)
 
 		var view := CARD_VIEW_SCENE.instantiate() as CardView
-		panel.add_child(view)
+		stack.add_child(view)
 		view.setup_build_chain_slot(card)
 		view.set_meta(&"base_id", sd.id)
 		view.set_meta(&"slot_index", i)
 		view.set_meta(&"on_drop", Callable(self, "_on_chain_slot_drop"))
 		view.pressed.connect(_on_base_slot_pressed.bind(sd.id, view))
 
-		if _gem_target_base_id == sd.id:
+		if selected:
 			view.set_selected(true)
 
 		var gem_label := Label.new()
 		if gems.size() > 0 and gems[0] != null:
 			var gd := gem_data_from_entry(gems[0])
-			gem_label.text = "[ %s ]" % tr(gd.get_name_key()) if gd != null else tr("build.gem.empty")
+			gem_label.text = "◆ %s" % tr(gd.get_name_key()) if gd != null else "◇ 空"
 		else:
-			gem_label.text = tr("build.gem.empty")
+			gem_label.text = "◇ 空"
 		gem_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		gem_label.add_theme_font_size_override(&"font_size", 12)
-		gem_label.add_theme_color_override(&"font_color", PAPER_MUTED_TEXT_COLOR)
-		panel.add_child(gem_label)
+		gem_label.add_theme_color_override(&"font_color", JADE_ACCENT if gems.size() > 0 else Color(0.50, 0.42, 0.28, 0.70))
+		stack.add_child(gem_label)
 
 		if i < run.bases.size() - 1:
 			base_chain_hbox.add_child(_make_chain_arrow())
+
+func _make_array_slot_shell(selected: bool) -> Control:
+	var shell := Control.new()
+	shell.custom_minimum_size = Vector2(190, 342)
+	shell.size_flags_vertical = SIZE_SHRINK_CENTER
+
+	var base_art := TextureRect.new()
+	base_art.texture = _get_array_slot_texture()
+	base_art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	base_art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	base_art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	base_art.modulate = Color(1.0, 0.98, 0.88, 1.0) if selected else Color(1.0, 1.0, 1.0, 0.92)
+	base_art.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	shell.add_child(base_art)
+
+	var panel := PanelContainer.new()
+	panel.name = "ContentPanel"
+	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_theme_stylebox_override(&"panel", _make_array_slot_style(selected))
+	panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	panel.offset_left = 12
+	panel.offset_top = 12
+	panel.offset_right = -12
+	panel.offset_bottom = -10
+	shell.add_child(panel)
+
+	return shell
+
+func _get_array_slot_texture() -> Texture2D:
+	if _array_slot_texture != null:
+		return _array_slot_texture
+	var image := Image.load_from_file(ARRAY_SLOT_TEXTURE_PATH)
+	if image == null or image.is_empty():
+		return null
+	_array_slot_texture = ImageTexture.create_from_image(image)
+	return _array_slot_texture
 
 func _make_chain_arrow() -> Control:
 	var arrow_wrap := CenterContainer.new()
@@ -124,10 +218,30 @@ func _make_chain_arrow() -> Control:
 	arrow.text = ">"
 	arrow.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	arrow.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	arrow.add_theme_font_size_override(&"font_size", 20)
-	arrow.add_theme_color_override(&"font_color", Color(0.58, 0.45, 0.22, 1.0))
+	arrow.add_theme_font_size_override(&"font_size", 22)
+	arrow.add_theme_color_override(&"font_color", Color(0.55, 0.42, 0.22, 0.78))
 	arrow_wrap.add_child(arrow)
 	return arrow_wrap
+
+func _make_array_slot_style(selected: bool) -> StyleBoxFlat:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color(0.98, 0.88, 0.56, 0.14) if selected else Color(0.88, 0.78, 0.58, 0.06)
+	sb.border_color = Color(0.95, 0.72, 0.30, 0.64) if selected else Color(0.44, 0.31, 0.17, 0.16)
+	sb.border_width_left = 2
+	sb.border_width_top = 2
+	sb.border_width_right = 2
+	sb.border_width_bottom = 2
+	sb.corner_radius_top_left = 5
+	sb.corner_radius_top_right = 5
+	sb.corner_radius_bottom_left = 5
+	sb.corner_radius_bottom_right = 5
+	sb.shadow_size = 5 if selected else 0
+	sb.shadow_color = Color(0.35, 0.24, 0.08, 0.24 if selected else 0.0)
+	sb.content_margin_left = 6
+	sb.content_margin_top = 6
+	sb.content_margin_right = 6
+	sb.content_margin_bottom = 6
+	return sb
 
 func _on_base_slot_pressed(button_index: int, base_id: StringName, _view: CardView) -> void:
 	var run := GameState.current_run
@@ -250,10 +364,10 @@ func _rebuild_gem_panel() -> void:
 		return
 
 	if _gem_target_base_id == &"":
-		gem_target_label.text = tr("build.gem.no_target")
+		gem_target_label.text = "点选阵位后镶嵌灵玉"
 		return
 
-	gem_target_label.text = tr("build.gem.target") % str(_gem_target_base_id).replace("base_", "#")
+	gem_target_label.text = "当前阵位：%s" % str(_gem_target_base_id).replace("base_", "#")
 
 	var current_gems: Array = run.base_gems.get(_gem_target_base_id, [])
 	var current_gem = null
@@ -262,7 +376,8 @@ func _rebuild_gem_panel() -> void:
 
 	if current_gem != null:
 		var clear_btn := Button.new()
-		clear_btn.text = tr("build.gem.clear")
+		clear_btn.text = "卸下灵玉"
+		_style_gem_button(clear_btn, false, Color(0.50, 0.34, 0.22, 1.0))
 		clear_btn.pressed.connect(_on_gem_clear_pressed)
 		gem_list_vbox.add_child(clear_btn)
 
@@ -271,16 +386,18 @@ func _rebuild_gem_panel() -> void:
 		if gd == null:
 			continue
 		var is_selected: bool = current_gem != null and current_gem == g
-		var btn := _make_gem_button(gd, is_selected)
+		var installed_at := _find_gem_install_base(run, g)
+		var btn := _make_gem_button(gd, is_selected, installed_at)
 		btn.pressed.connect(_on_gem_pick_pressed.bind(g))
 		gem_list_vbox.add_child(btn)
 
-func _make_gem_button(gd: GemData, is_selected: bool) -> Button:
+func _make_gem_button(gd: GemData, is_selected: bool, installed_at: StringName = &"") -> Button:
 	var btn := Button.new()
 	btn.text = ""
 	btn.tooltip_text = tr(gd.get_desc_key())
 	btn.custom_minimum_size = Vector2(0, GEM_BUTTON_EXPANDED_HEIGHT if is_selected else GEM_BUTTON_COLLAPSED_HEIGHT)
 	btn.size_flags_horizontal = SIZE_EXPAND_FILL
+	_style_gem_button(btn, is_selected, _gem_color(gd))
 
 	var margin := MarginContainer.new()
 	margin.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -291,18 +408,38 @@ func _make_gem_button(gd: GemData, is_selected: bool) -> Button:
 	margin.add_theme_constant_override(&"margin_bottom", 6)
 	btn.add_child(margin)
 
-	var content := VBoxContainer.new()
+	var content := HBoxContainer.new()
 	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	content.add_theme_constant_override(&"separation", 4)
+	content.add_theme_constant_override(&"separation", 8)
 	margin.add_child(content)
+
+	var seal := Panel.new()
+	seal.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	seal.custom_minimum_size = Vector2(28, 28)
+	seal.add_theme_stylebox_override(&"panel", _make_gem_seal_style(_gem_color(gd), is_selected))
+	content.add_child(seal)
+
+	var text_box := VBoxContainer.new()
+	text_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	text_box.size_flags_horizontal = SIZE_EXPAND_FILL
+	text_box.add_theme_constant_override(&"separation", 3)
+	content.add_child(text_box)
 
 	var name_label := Label.new()
 	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	name_label.text = ("%s %s" % ["●", tr(gd.get_name_key())]) if is_selected else tr(gd.get_name_key())
+	name_label.text = tr(gd.get_name_key())
 	name_label.add_theme_font_size_override(&"font_size", 16)
-	name_label.add_theme_color_override(&"font_color", GEM_BUTTON_SELECTED_TEXT_COLOR if is_selected else GEM_BUTTON_TEXT_COLOR)
+	name_label.add_theme_color_override(&"font_color", Color(1.0, 0.92, 0.70, 1.0) if is_selected else Color(0.92, 0.86, 0.70, 1.0))
 	name_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	content.add_child(name_label)
+	text_box.add_child(name_label)
+
+	if installed_at != &"":
+		var place_label := Label.new()
+		place_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		place_label.text = "已镶：%s" % str(installed_at).replace("base_", "#")
+		place_label.add_theme_font_size_override(&"font_size", 12)
+		place_label.add_theme_color_override(&"font_color", Color(0.62, 0.84, 0.72, 1.0))
+		text_box.add_child(place_label)
 
 	if is_selected:
 		var desc_label := Label.new()
@@ -313,9 +450,57 @@ func _make_gem_button(gd: GemData, is_selected: bool) -> Button:
 		desc_label.add_theme_color_override(&"font_color", GEM_BUTTON_DESC_TEXT_COLOR)
 		desc_label.size_flags_horizontal = SIZE_EXPAND_FILL
 		desc_label.size_flags_vertical = SIZE_EXPAND_FILL
-		content.add_child(desc_label)
+		text_box.add_child(desc_label)
 
 	return btn
+
+func _style_gem_button(btn: Button, selected: bool, accent: Color) -> void:
+	var bg := Color(0.13, 0.11, 0.085, 0.86)
+	if selected:
+		bg = Color(0.20, 0.15, 0.09, 0.94)
+	var border := accent.lightened(0.15) if selected else Color(0.56, 0.46, 0.30, 0.72)
+	btn.add_theme_stylebox_override(&"normal", _make_panel_style(bg, border, 6, 0))
+	btn.add_theme_stylebox_override(&"hover", _make_panel_style(bg.lightened(0.08), accent.lightened(0.25), 6, 0))
+	btn.add_theme_stylebox_override(&"pressed", _make_panel_style(bg.darkened(0.08), accent, 6, 0))
+
+func _make_gem_seal_style(color: Color, selected: bool) -> StyleBoxFlat:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = color
+	sb.border_color = Color(1.0, 0.88, 0.56, 1.0) if selected else Color(0.12, 0.08, 0.04, 0.70)
+	sb.border_width_left = 2
+	sb.border_width_top = 2
+	sb.border_width_right = 2
+	sb.border_width_bottom = 2
+	sb.corner_radius_top_left = 14
+	sb.corner_radius_top_right = 14
+	sb.corner_radius_bottom_left = 14
+	sb.corner_radius_bottom_right = 14
+	sb.shadow_size = 3
+	sb.shadow_color = Color(0, 0, 0, 0.28)
+	return sb
+
+func _gem_color(gd: GemData) -> Color:
+	match gd.id:
+		&"ruby":
+			return Color(0.78, 0.18, 0.16, 1.0)
+		&"sapphire":
+			return Color(0.22, 0.42, 0.78, 1.0)
+		&"amber":
+			return Color(0.84, 0.56, 0.16, 1.0)
+		&"jade":
+			return Color(0.30, 0.62, 0.48, 1.0)
+		_:
+			return Color(0.70, 0.65, 0.50, 1.0)
+
+func _find_gem_install_base(run: RunState, gem) -> StringName:
+	if run == null:
+		return &""
+	for base_id in run.base_gems:
+		var arr: Array = run.base_gems[base_id]
+		for item in arr:
+			if item == gem:
+				return base_id
+	return &""
 
 func _on_gem_pick_pressed(gem) -> void:
 	var run := GameState.current_run
@@ -362,6 +547,7 @@ func _rebuild_deck_list() -> void:
 	_update_deck_columns()
 
 	var remaining_used := _used_counts_by_card(run)
+	var visible_cards := 0
 	for i in range(run.deck.size()):
 		var c: CardData = run.deck[i]
 		if c == null:
@@ -376,6 +562,48 @@ func _rebuild_deck_list() -> void:
 		view.set_meta(&"deck_index", i)
 		view.set_meta(&"on_drop", Callable(self, "_on_deck_area_drop"))
 		view.pressed.connect(_on_deck_card_pressed.bind(c, view, 1))
+		visible_cards += 1
+	if visible_cards == 0:
+		deck_grid.add_child(_make_deck_empty_state())
+
+func _make_deck_empty_state() -> Control:
+	var box := PanelContainer.new()
+	box.custom_minimum_size = Vector2(560, 206)
+	box.size_flags_horizontal = SIZE_EXPAND_FILL
+	box.size_flags_vertical = SIZE_EXPAND_FILL
+	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	box.add_theme_stylebox_override(&"panel", _make_repository_drop_style())
+	var center := CenterContainer.new()
+	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	box.add_child(center)
+	var label := Label.new()
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.text = "拖回此处，收入卡牌仓库"
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override(&"font_size", 20)
+	label.add_theme_color_override(&"font_color", Color(0.45, 0.36, 0.24, 0.72))
+	center.add_child(label)
+	return box
+
+func _make_repository_drop_style() -> StyleBoxFlat:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = REPOSITORY_WASH
+	sb.border_color = Color(0.46, 0.34, 0.18, 0.42)
+	sb.border_width_left = 2
+	sb.border_width_top = 2
+	sb.border_width_right = 2
+	sb.border_width_bottom = 2
+	sb.border_blend = true
+	sb.corner_radius_top_left = 4
+	sb.corner_radius_top_right = 4
+	sb.corner_radius_bottom_left = 4
+	sb.corner_radius_bottom_right = 4
+	sb.content_margin_left = 16
+	sb.content_margin_top = 12
+	sb.content_margin_right = 16
+	sb.content_margin_bottom = 12
+	return sb
 
 static func _used_counts_by_card(run: RunState) -> Dictionary:
 	var used_counts: Dictionary = {}

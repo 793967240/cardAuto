@@ -1,6 +1,6 @@
 [gd_resource type="Theme" load_steps=10 format=3 uid="uid://main_theme"]
 
-[ext_resource type="FontFile" path="res://assets/fonts/source_han_serif_cn_regular.otf" id="1_cn_regular"]
+[ext_resource type="FontFile" path="res://assets/fonts/source_han_serif_cn_medium.otf" id="1_cn_regular"]
 [ext_resource type="FontFile" path="res://assets/fonts/source_han_serif_cn_bold.otf" id="2_cn_bold"]
 [ext_resource type="FontFile" path="res://assets/fonts/cormorant_garamond_regular.ttf" id="3_en_regular"]
 [ext_resource type="StyleBoxFlat" path="res://assets/ui/styles/btn_normal.tres" id="4_btn_normal"]
