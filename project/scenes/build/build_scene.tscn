@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://build_scene"]
+[gd_scene load_steps=5 format=3 uid="uid://build_scene"]
 
 [ext_resource type="Script" path="res://src/ui/build/build_scene.gd" id="1_script"]
 [ext_resource type="Script" path="res://src/ui/build/deck_drop_area.gd" id="2_deck_drop"]
 [ext_resource type="Texture2D" path="res://assets/ui/build/ink_build_bg.png" id="3_ink_bg"]
+[ext_resource type="Script" path="res://src/ui/components/relic_bar.gd" id="4_relic_bar"]
 
 [node name="BuildScene" type="Control"]
 layout_mode = 3
@@ -202,3 +203,12 @@ size_flags_vertical = 3
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 4
+
+[node name="RelicSpacer" type="Control" parent="VBox/Body/GemPanel/GemMargin/GemVBox"]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+
+[node name="RelicBar" type="PanelContainer" parent="VBox/Body/GemPanel/GemMargin/GemVBox"]
+layout_mode = 2
+script = ExtResource("4_relic_bar")
+show_title = true

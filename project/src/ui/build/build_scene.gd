@@ -36,6 +36,7 @@ const REPOSITORY_WASH := Color(0.86, 0.78, 0.58, 0.30)
 @onready var base_panel: PanelContainer = $VBox/Body/MainArea/BasePanel
 @onready var deck_panel: PanelContainer = $VBox/Body/MainArea/DeckPanel
 @onready var gem_panel: PanelContainer = $VBox/Body/GemPanel
+@onready var relic_bar: RelicBar = $VBox/Body/GemPanel/GemMargin/GemVBox/RelicBar
 
 var _selected_card: CardData = null
 var _selected_card_view: CardView = null
@@ -114,6 +115,7 @@ static func _make_panel_style(bg: Color, border: Color, radius: int, shadow: int
 	return sb
 
 func _refresh_all() -> void:
+	relic_bar.refresh()
 	_rebuild_bases()
 	_rebuild_gem_panel()
 	_rebuild_deck_list()

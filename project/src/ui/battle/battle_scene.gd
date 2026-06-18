@@ -3,6 +3,7 @@ class_name BattleScene extends Control
 @onready var battle_controller: BattleController = $BattleController
 @onready var player_hp_label: Label = $VBox/TopBarPanel/TopBarMargin/TopBar/PlayerHpLabel
 @onready var player_hp_bar: ProgressBar = $VBox/TopBarPanel/TopBarMargin/TopBar/HpBar
+@onready var relic_bar: RelicBar = $VBox/TopBarPanel/TopBarMargin/TopBar/RelicBar
 @onready var build_btn: Button = $VBox/TopBarPanel/TopBarMargin/TopBar/BuildBtn
 @onready var start_battle_btn: Button = $VBox/TopBarPanel/TopBarMargin/TopBar/StartBattleBtn
 @onready var speed_1x_btn: Button = $VBox/TopBarPanel/TopBarMargin/TopBar/Speed1xBtn
@@ -58,6 +59,7 @@ func _init_battle() -> void:
 	var run := GameState.current_run
 	if run:
 		_player_max_hp = run.max_hp
+	relic_bar.refresh()
 
 	var player := Combatant.new(&"player", tr("player.name"), _player_max_hp)
 	if run:

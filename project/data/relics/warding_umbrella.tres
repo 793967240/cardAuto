@@ -5,9 +5,9 @@
 
 [resource]
 script = ExtResource("1_data")
-id = &"ancient_coin"
-display_name_key = "relic.ancient_coin.name"
-desc_key = "relic.ancient_coin.desc"
-rarity = 0
-description_template = "战斗胜利后额外获得 8 金币。"
+id = &"warding_umbrella"
+display_name_key = "relic.warding_umbrella.name"
+desc_key = "relic.warding_umbrella.desc"
+rarity = 1
+description_template = "每场战斗第一次进入修整阶段时，获得 12 护盾。"
 icon = ExtResource("2_icon")

@@ -5,9 +5,9 @@
 
 [resource]
 script = ExtResource("1_data")
-id = &"ancient_coin"
-display_name_key = "relic.ancient_coin.name"
-desc_key = "relic.ancient_coin.desc"
-rarity = 0
-description_template = "战斗胜利后额外获得 8 金币。"
+id = &"exquisite_pagoda"
+display_name_key = "relic.exquisite_pagoda.name"
+desc_key = "relic.exquisite_pagoda.desc"
+rarity = 2
+description_template = "所有宝石效果 +50%，向下取整。"
 icon = ExtResource("2_icon")

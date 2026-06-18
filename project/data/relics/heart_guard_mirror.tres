@@ -5,9 +5,9 @@
 
 [resource]
 script = ExtResource("1_data")
-id = &"ancient_coin"
-display_name_key = "relic.ancient_coin.name"
-desc_key = "relic.ancient_coin.desc"
-rarity = 0
-description_template = "战斗胜利后额外获得 8 金币。"
+id = &"heart_guard_mirror"
+display_name_key = "relic.heart_guard_mirror.name"
+desc_key = "relic.heart_guard_mirror.desc"
+rarity = 1
+description_template = "若本周天获得过护盾，周天结束时保留 30% 护盾。"
 icon = ExtResource("2_icon")

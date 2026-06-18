@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://src/ui/battle/battle_scene.gd" id="1_script"]
 [ext_resource type="Script" path="res://src/core/battle_controller.gd" id="2_script"]
 [ext_resource type="PackedScene" path="res://scenes/battle/timeline_scroll_view.tscn" id="3_timeline"]
 [ext_resource type="StyleBoxFlat" path="res://assets/ui/styles/panel_dark.tres" id="4_topbar"]
+[ext_resource type="Script" path="res://src/ui/components/relic_bar.gd" id="5_relic_bar"]
 
 [node name="BattleScene" type="Control"]
 layout_mode = 3
@@ -75,6 +76,14 @@ size_flags_vertical = 4
 max_value = 80.0
 value = 80.0
 show_percentage = false
+
+[node name="RelicBar" type="PanelContainer" parent="VBox/TopBarPanel/TopBarMargin/TopBar"]
+custom_minimum_size = Vector2(210, 0)
+layout_mode = 2
+size_flags_vertical = 4
+script = ExtResource("5_relic_bar")
+compact = true
+show_title = false
 
 [node name="Spacer" type="Control" parent="VBox/TopBarPanel/TopBarMargin/TopBar"]
 layout_mode = 2
