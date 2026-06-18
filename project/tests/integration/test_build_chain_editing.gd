@@ -104,6 +104,16 @@ func test_empty_deck_grid_keeps_drop_target_size() -> void:
 
 	scene.queue_free()
 
+func test_default_strike_view_uses_chain_card_size() -> void:
+	var view := load("res://scenes/components/card_view.tscn").instantiate() as CardView
+	add_child(view)
+	view.setup_build_chain_slot(null)
+
+	assert_eq(view.custom_minimum_size, Vector2(CardView.BUILD_CHAIN_SLOT_WIDTH, CardView.BUILD_CHAIN_SLOT_HEIGHT),
+		"Default Strike should use the same visual card size as occupied chain cards")
+
+	view.queue_free()
+
 func test_available_count_tracks_individual_duplicate_cards() -> void:
 	GameState.start_run(&"sword")
 	GameState.apply_starter_deck(0)

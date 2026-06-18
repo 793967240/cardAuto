@@ -3,28 +3,28 @@ class_name CardView extends Control
 ## 通用卡牌组件。支持三种显示模式：
 ##   - BATTLE：战斗时间线（按 cost 拉宽，显示进度条 / 高光 / 划线 / 恢复遮罩）
 ##   - BUILD_SLOT：构筑界面链条槽位
-##       * 空槽/非空：150×250，显示默认打击或杀戮尖塔风格大卡
+##       * 空底座默认打击/非空：170×280，显示默认打击或杀戮尖塔风格大卡
 ##         上=名称，中=卡面图（ArtRect/ArtTexture），下=类型横条+效果描述
 ##         边框颜色随 rarity 变化
-##   - BUILD_DECK_ITEM：构筑界面卡牌仓库卡（固定 160×240，右下角库存角标 ×N/M）
+##   - BUILD_DECK_ITEM：构筑界面卡牌仓库卡（固定 184×276，右下角库存角标 ×N/M）
 ##
 ## 拖拽：BUILD_SLOT(非空) / BUILD_DECK_ITEM 模式参与拖拽；BATTLE 不参与。
-## 拖拽预览：与拖拽源同尺寸同布局（卡牌仓库 → 160×240，链上 → 150×250）
+## 拖拽预览：与拖拽源同尺寸同布局（卡牌仓库 → 184×276，链上 → 170×280）
 
 enum Mode { BATTLE, BUILD_SLOT, BUILD_DECK_ITEM }
 
 const BASE_WIDTH := 80
 const BASE_HEIGHT := 120
-const BUILD_DECK_WIDTH := 160
-const BUILD_DECK_HEIGHT := 240
-const BUILD_SLOT_WIDTH := 140
-const BUILD_SLOT_HEIGHT := 240
-const BUILD_SLOT_EMPTY_W := 120
-const BUILD_SLOT_EMPTY_H := 180
-const BUILD_CHAIN_SLOT_WIDTH := 150
-const BUILD_CHAIN_SLOT_HEIGHT := 250
-const BUILD_CHAIN_SLOT_EMPTY_W := 150
-const BUILD_CHAIN_SLOT_EMPTY_H := 250
+const BUILD_DECK_WIDTH := 184
+const BUILD_DECK_HEIGHT := 276
+const BUILD_SLOT_WIDTH := 162
+const BUILD_SLOT_HEIGHT := 276
+const BUILD_SLOT_EMPTY_W := BUILD_SLOT_WIDTH
+const BUILD_SLOT_EMPTY_H := BUILD_SLOT_HEIGHT
+const BUILD_CHAIN_SLOT_WIDTH := 170
+const BUILD_CHAIN_SLOT_HEIGHT := 280
+const BUILD_CHAIN_SLOT_EMPTY_W := BUILD_CHAIN_SLOT_WIDTH
+const BUILD_CHAIN_SLOT_EMPTY_H := BUILD_CHAIN_SLOT_HEIGHT
 
 ## 类型 → 卡面占位色（无 icon 时）
 const TYPE_COLORS: Dictionary = {
@@ -397,43 +397,43 @@ func _apply_card_art(card: CardData) -> void:
 
 func _apply_build_geometry() -> void:
 	if mode == Mode.BUILD_DECK_ITEM:
-		build_name_label.offset_left = 26.0
-		build_name_label.offset_top = 7.0
-		build_name_label.offset_right = -26.0
-		build_name_label.offset_bottom = 42.0
-		art_rect.offset_left = 8.0
-		art_rect.offset_top = 48.0
-		art_rect.offset_right = -8.0
-		art_rect.offset_bottom = 142.0
+		build_name_label.offset_left = 28.0
+		build_name_label.offset_top = 8.0
+		build_name_label.offset_right = -28.0
+		build_name_label.offset_bottom = 46.0
+		art_rect.offset_left = 10.0
+		art_rect.offset_top = 52.0
+		art_rect.offset_right = -10.0
+		art_rect.offset_bottom = 126.0
 		type_bar.offset_left = 6.0
-		type_bar.offset_top = 146.0
+		type_bar.offset_top = 132.0
 		type_bar.offset_right = -6.0
-		type_bar.offset_bottom = 164.0
-		desc_label.offset_left = 8.0
-		desc_label.offset_top = -82.0
-		desc_label.offset_right = -8.0
-		desc_label.offset_bottom = -8.0
+		type_bar.offset_bottom = 152.0
+		desc_label.offset_left = 10.0
+		desc_label.offset_top = -116.0
+		desc_label.offset_right = -10.0
+		desc_label.offset_bottom = -10.0
 		margin.add_theme_constant_override(&"margin_left", 8)
 		margin.add_theme_constant_override(&"margin_top", 8)
 		margin.add_theme_constant_override(&"margin_right", 8)
 		margin.add_theme_constant_override(&"margin_bottom", BUILD_DECK_HEIGHT - 38)
 	elif mode == Mode.BUILD_SLOT:
-		build_name_label.offset_left = 26.0
-		build_name_label.offset_top = 7.0
-		build_name_label.offset_right = -26.0
-		build_name_label.offset_bottom = 42.0
-		art_rect.offset_left = 7.0
-		art_rect.offset_top = 46.0
-		art_rect.offset_right = -7.0
-		art_rect.offset_bottom = 150.0
+		build_name_label.offset_left = 28.0
+		build_name_label.offset_top = 8.0
+		build_name_label.offset_right = -28.0
+		build_name_label.offset_bottom = 46.0
+		art_rect.offset_left = 8.0
+		art_rect.offset_top = 52.0
+		art_rect.offset_right = -8.0
+		art_rect.offset_bottom = 126.0
 		type_bar.offset_left = 6.0
-		type_bar.offset_top = 154.0
+		type_bar.offset_top = 132.0
 		type_bar.offset_right = -6.0
-		type_bar.offset_bottom = 172.0
-		desc_label.offset_left = 8.0
-		desc_label.offset_top = -84.0
-		desc_label.offset_right = -8.0
-		desc_label.offset_bottom = -8.0
+		type_bar.offset_bottom = 152.0
+		desc_label.offset_left = 10.0
+		desc_label.offset_top = -116.0
+		desc_label.offset_right = -10.0
+		desc_label.offset_bottom = -10.0
 		margin.add_theme_constant_override(&"margin_left", 7)
 		margin.add_theme_constant_override(&"margin_top", 8)
 		margin.add_theme_constant_override(&"margin_right", 7)
