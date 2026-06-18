@@ -55,6 +55,7 @@ func _ready() -> void:
 	forge_panel.hide()
 	_ensure_backdrop_layer()
 	_ensure_route_line_layer()
+	_connect_route_line_redraw()
 
 	# 注：节点推进由战斗后流程负责（正式胜利→RewardScene._finalize；模拟/失败→BattleScene.resolve_post_battle）
 	_refresh_ui()
@@ -84,6 +85,15 @@ func _ensure_route_line_layer() -> void:
 	_route_lines.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(_route_lines)
 	move_child(_route_lines, 2) # Above backdrop, below Margin/UI.
+
+func _connect_route_line_redraw() -> void:
+	var vbar := scroll.get_v_scroll_bar()
+	if vbar != null and not vbar.value_changed.is_connected(_on_map_scroll_changed):
+		vbar.value_changed.connect(_on_map_scroll_changed)
+
+func _on_map_scroll_changed(_value: float) -> void:
+	if is_instance_valid(_route_lines):
+		_route_lines.queue_redraw()
 
 func _update_texts() -> void:
 	title_label.text = tr("map.title")
@@ -126,7 +136,13 @@ func _rebuild_nodes() -> void:
 		row.z_index = 1
 		nodes_container.add_child(row)
 
-		for node_data in by_floor[floor]:
+		var nodes_by_lane := _nodes_by_lane(by_floor[floor])
+		for lane in range(MapGenerator.LANES):
+			if not nodes_by_lane.has(lane):
+				row.add_child(_make_lane_spacer())
+				continue
+
+			var node_data: Dictionary = nodes_by_lane[lane]
 			var idx: int = node_data.get("node_index", floor)
 			var node_type: int = node_data["node_type"]
 			var enemy_id: String = node_data.get("enemy_id", "")
@@ -151,6 +167,19 @@ func _rebuild_nodes() -> void:
 	_update_route_lines_deferred(run.map_nodes, run.current_node_id)
 	_update_scroll_position_deferred(current_idx)
 
+func _nodes_by_lane(nodes: Array) -> Dictionary:
+	var out: Dictionary = {}
+	for node in nodes:
+		out[int(node.get("lane", 0))] = node
+	return out
+
+func _make_lane_spacer() -> Control:
+	var spacer := Control.new()
+	spacer.custom_minimum_size = MapNodeButton.NODE_SLOT_SIZE
+	spacer.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return spacer
+
 func _update_route_lines_deferred(nodes: Array, current_node_id: String) -> void:
 	await get_tree().process_frame
 	if not is_instance_valid(_route_lines):
@@ -163,6 +192,9 @@ func _update_scroll_position_deferred(current_idx: int) -> void:
 		return
 	var floors_remaining: int = maxi(MapGenerator.FLOOR_COUNT - current_idx - 2, 0)
 	scroll.scroll_vertical = int(floors_remaining * 116)
+	await get_tree().process_frame
+	if is_instance_valid(_route_lines):
+		_route_lines.queue_redraw()
 
 func _group_nodes_by_floor(nodes: Array) -> Dictionary:
 	var by_floor: Dictionary = {}
@@ -447,7 +479,9 @@ class MapRouteLineLayer extends Control:
 					draw_circle(mid, 4.0, Color(1.0, 0.88, 0.48, 0.9))
 
 	func _center_in_layer(control: Control) -> Vector2:
-		return control.global_position - global_position + Vector2(control.size.x * 0.5, 39.0)
+		var control_origin := control.get_global_transform_with_canvas().origin
+		var layer_origin := get_global_transform_with_canvas().origin
+		return control_origin - layer_origin + Vector2(control.size.x * 0.5, 39.0)
 
 class MapBackdropLayer extends Control:
 	func _draw() -> void:
@@ -478,13 +512,14 @@ class MapBackdropLayer extends Control:
 
 class MapNodeButton extends Button:
 	enum VisualState { LOCKED, AVAILABLE, COMPLETED }
+	const NODE_SLOT_SIZE := Vector2(96, 104)
 
 	var node_type: int = 0
 	var caption: String = ""
 	var visual_state: VisualState = VisualState.LOCKED
 
 	func _init() -> void:
-		custom_minimum_size = Vector2(96, 104)
+		custom_minimum_size = NODE_SLOT_SIZE
 		size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 		mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		text = ""

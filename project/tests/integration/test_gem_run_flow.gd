@@ -71,6 +71,16 @@ func test_apply_starter_deck_fills_three_cards_and_bases() -> void:
 	assert_eq(run.base_cards[run.bases[1].id].id, run.deck[1].id, "Second base should receive second starter card")
 	assert_eq(run.base_cards[run.bases[2].id].id, run.deck[2].id, "Third base should receive third starter card")
 
+func test_guard_counter_starter_uses_shield_payoff_card() -> void:
+	GameState.start_run(&"sword")
+	GameState.apply_starter_deck(2)
+	var run := GameState.current_run
+
+	assert_eq(run.deck[2].id, &"fan_shou",
+		"Guard-counter starter should include Riposte as the shield payoff")
+	assert_eq(run.base_cards[run.bases[2].id].id, &"fan_shou",
+		"Riposte should begin on the chain")
+
 func test_run_gem_assignment_composes_into_battle_layout() -> void:
 	GameState.start_run(&"sword")
 	GameState.apply_starter_deck(0)
@@ -127,6 +137,9 @@ func test_loaded_sapphire_layout_reduces_second_card_fire_timing() -> void:
 	GameState.start_run(&"sword")
 	GameState.apply_starter_deck(0)
 	var run := GameState.current_run
+	var quick_attack := load("res://data/cards/sword/qing_feng_zhan.tres") as CardData
+	run.deck.append(quick_attack)
+	run.base_cards[run.bases[1].id] = quick_attack
 	var sapphire := GemInstance.new(_load_gem("sapphire"))
 	run.base_gems[run.bases[1].id] = [sapphire]
 

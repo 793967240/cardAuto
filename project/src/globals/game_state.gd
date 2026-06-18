@@ -60,7 +60,7 @@ const SWORD_STARTER_DECKS: Array[Dictionary] = [
 		"cards": [
 			"res://data/cards/sword/yun_ti.tres",
 			"res://data/cards/sword/yu_jian_dun.tres",
-			"res://data/cards/sword/ci_jian.tres",
+			"res://data/cards/sword/fan_shou.tres",
 		],
 	},
 ]
