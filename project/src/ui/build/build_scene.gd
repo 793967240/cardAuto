@@ -203,10 +203,7 @@ func _make_array_slot_shell(selected: bool) -> Control:
 func _get_array_slot_texture() -> Texture2D:
 	if _array_slot_texture != null:
 		return _array_slot_texture
-	var image := Image.load_from_file(ARRAY_SLOT_TEXTURE_PATH)
-	if image == null or image.is_empty():
-		return null
-	_array_slot_texture = ImageTexture.create_from_image(image)
+	_array_slot_texture = load(ARRAY_SLOT_TEXTURE_PATH) as Texture2D
 	return _array_slot_texture
 
 func _make_chain_arrow() -> Control:
