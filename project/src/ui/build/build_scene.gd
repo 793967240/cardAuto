@@ -2,6 +2,7 @@ class_name BuildScene extends Control
 
 const TICK_DURATION: float = 0.5
 const CARD_VIEW_SCENE = preload("res://scenes/components/card_view.tscn")
+const ARRAY_SLOT_TEXTURE_PATH := "res://assets/ui/build/array_slot_base.png"
 const PAPER_TEXT_COLOR := Color(0.24, 0.18, 0.12, 1.0)
 const PAPER_MUTED_TEXT_COLOR := Color(0.42, 0.34, 0.24, 1.0)
 const GOLD_TEXT_COLOR := Color(0.92, 0.82, 0.50, 1.0)
@@ -42,6 +43,7 @@ var _selected_card_view: CardView = null
 var _gem_target_base_id: StringName = &""
 var _tip_label: Label = null
 var _tip_tween: Tween = null
+var _array_slot_texture: Texture2D = null
 
 
 func _ready() -> void:
@@ -128,11 +130,12 @@ func _rebuild_bases() -> void:
 		var sd: SlotData = s
 		var card: CardData = run.base_cards.get(sd.id, null)
 		var gems: Array = run.base_gems.get(sd.id, [])
+		var selected := _gem_target_base_id == sd.id
 
-		var panel := PanelContainer.new()
-		panel.custom_minimum_size = Vector2(CardView.BUILD_CHAIN_SLOT_WIDTH + 22, 0)
-		panel.add_theme_stylebox_override(&"panel", _make_array_slot_style(_gem_target_base_id == sd.id))
-		base_chain_hbox.add_child(panel)
+		var shell := _make_array_slot_shell(selected)
+		base_chain_hbox.add_child(shell)
+
+		var panel := shell.get_node("ContentPanel") as PanelContainer
 
 		var stack := VBoxContainer.new()
 		stack.add_theme_constant_override(&"separation", 5)
@@ -153,7 +156,7 @@ func _rebuild_bases() -> void:
 		view.set_meta(&"on_drop", Callable(self, "_on_chain_slot_drop"))
 		view.pressed.connect(_on_base_slot_pressed.bind(sd.id, view))
 
-		if _gem_target_base_id == sd.id:
+		if selected:
 			view.set_selected(true)
 
 		var gem_label := Label.new()
@@ -169,6 +172,42 @@ func _rebuild_bases() -> void:
 
 		if i < run.bases.size() - 1:
 			base_chain_hbox.add_child(_make_chain_arrow())
+
+func _make_array_slot_shell(selected: bool) -> Control:
+	var shell := Control.new()
+	shell.custom_minimum_size = Vector2(190, 342)
+	shell.size_flags_vertical = SIZE_SHRINK_CENTER
+
+	var base_art := TextureRect.new()
+	base_art.texture = _get_array_slot_texture()
+	base_art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	base_art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	base_art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	base_art.modulate = Color(1.0, 0.98, 0.88, 1.0) if selected else Color(1.0, 1.0, 1.0, 0.92)
+	base_art.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	shell.add_child(base_art)
+
+	var panel := PanelContainer.new()
+	panel.name = "ContentPanel"
+	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_theme_stylebox_override(&"panel", _make_array_slot_style(selected))
+	panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	panel.offset_left = 12
+	panel.offset_top = 12
+	panel.offset_right = -12
+	panel.offset_bottom = -10
+	shell.add_child(panel)
+
+	return shell
+
+func _get_array_slot_texture() -> Texture2D:
+	if _array_slot_texture != null:
+		return _array_slot_texture
+	var image := Image.load_from_file(ARRAY_SLOT_TEXTURE_PATH)
+	if image == null or image.is_empty():
+		return null
+	_array_slot_texture = ImageTexture.create_from_image(image)
+	return _array_slot_texture
 
 func _make_chain_arrow() -> Control:
 	var arrow_wrap := CenterContainer.new()
@@ -186,8 +225,8 @@ func _make_chain_arrow() -> Control:
 
 func _make_array_slot_style(selected: bool) -> StyleBoxFlat:
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.98, 0.90, 0.70, 0.28) if selected else ARRAY_SLOT_BG
-	sb.border_color = INK_GOLD if selected else ARRAY_SLOT_BORDER
+	sb.bg_color = Color(0.98, 0.88, 0.56, 0.14) if selected else Color(0.88, 0.78, 0.58, 0.06)
+	sb.border_color = Color(0.95, 0.72, 0.30, 0.64) if selected else Color(0.44, 0.31, 0.17, 0.16)
 	sb.border_width_left = 2
 	sb.border_width_top = 2
 	sb.border_width_right = 2
@@ -196,8 +235,8 @@ func _make_array_slot_style(selected: bool) -> StyleBoxFlat:
 	sb.corner_radius_top_right = 5
 	sb.corner_radius_bottom_left = 5
 	sb.corner_radius_bottom_right = 5
-	sb.shadow_size = 5 if selected else 2
-	sb.shadow_color = Color(0.35, 0.24, 0.08, 0.25 if selected else 0.12)
+	sb.shadow_size = 5 if selected else 0
+	sb.shadow_color = Color(0.35, 0.24, 0.08, 0.24 if selected else 0.0)
 	sb.content_margin_left = 6
 	sb.content_margin_top = 6
 	sb.content_margin_right = 6
