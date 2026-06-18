@@ -59,9 +59,9 @@ layout_mode = 2
 [node name="TitleLabel" type="Label" parent="VBox/Header"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
-theme_override_colors/font_color = Color(0.96, 0.88, 0.62, 1)
-theme_override_colors/font_outline_color = Color(0.08, 0.06, 0.04, 0.95)
-theme_override_constants/outline_size = 3
+theme_override_colors/font_color = Color(0.16, 0.1, 0.06, 1)
+theme_override_colors/font_outline_color = Color(0.98, 0.92, 0.74, 0.78)
+theme_override_constants/outline_size = 5
 text = "构筑"
 
 [node name="HeaderSpacer" type="Control" parent="VBox/Header"]
@@ -71,9 +71,9 @@ size_flags_horizontal = 3
 [node name="TotalDurationLabel" type="Label" parent="VBox/Header"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 17
-theme_override_colors/font_color = Color(0.90, 0.84, 0.68, 1)
-theme_override_colors/font_outline_color = Color(0.08, 0.06, 0.04, 0.95)
-theme_override_constants/outline_size = 2
+theme_override_colors/font_color = Color(0.12, 0.08, 0.045, 1)
+theme_override_colors/font_outline_color = Color(0.98, 0.91, 0.70, 0.86)
+theme_override_constants/outline_size = 5
 text = "总时长: 0 tick"
 
 [node name="BackBtn" type="Button" parent="VBox/Header"]
