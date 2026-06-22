@@ -1,25 +1,23 @@
-[gd_scene load_steps=11 format=3 uid="uid://card_view"]
+[gd_scene load_steps=9 format=3 uid="uid://card_view"]
 
 [ext_resource type="Script" path="res://src/ui/components/card_view.gd" id="1_script"]
-[ext_resource type="StyleBoxFlat" path="res://assets/ui/styles/card_bg.tres" id="2_card_bg"]
+[ext_resource type="StyleBoxTexture" path="res://assets/ui/styles/battle_card_bg_xianxia.tres" id="2_card_bg"]
 [ext_resource type="StyleBoxFlat" path="res://assets/ui/styles/card_active_glow.tres" id="3_active"]
 [ext_resource type="Texture2D" path="res://assets/ui/cards/card_frame_common.png" id="4_frame_common"]
-[ext_resource type="Texture2D" path="res://assets/ui/cards/card_frame_uncommon.png" id="5_frame_uncommon"]
-[ext_resource type="Texture2D" path="res://assets/ui/cards/card_frame_rare.png" id="6_frame_rare"]
 [ext_resource type="Script" path="res://src/ui/components/card_frame_skin.gd" id="7_frame_skin"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cost_badge"]
-bg_color = Color(0.78, 0.6, 0.18, 1)
+bg_color = Color(0.82, 0.95, 0.88, 0.96)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(1, 0.92, 0.55, 1)
+border_color = Color(0.74, 0.60, 0.28, 0.9)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
-shadow_color = Color(0, 0, 0, 0.5)
+shadow_color = Color(0.16, 0.38, 0.34, 0.24)
 shadow_size = 2
 shadow_offset = Vector2(0, 1)
 
@@ -66,6 +64,7 @@ theme_override_styles/panel = ExtResource("2_card_bg")
 
 [node name="FrameTexture" type="TextureRect" parent="."]
 visible = false
+z_index = 5
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -80,6 +79,7 @@ script = ExtResource("7_frame_skin")
 
 [node name="ArtRect" type="ColorRect" parent="."]
 visible = false
+z_index = 1
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -111,8 +111,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_colors/font_color = Color(1, 1, 1, 0.65)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 0.6)
+theme_override_colors/font_color = Color(0.03, 0.035, 0.032, 0.85)
+theme_override_colors/font_outline_color = Color(0.96, 0.98, 0.94, 0.72)
 theme_override_constants/outline_size = 2
 theme_override_font_sizes/font_size = 32
 text = "?"
@@ -121,6 +121,7 @@ vertical_alignment = 1
 
 [node name="BuildNameLabel" type="Label" parent="."]
 visible = false
+z_index = 8
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -130,8 +131,8 @@ offset_right = -28.0
 offset_bottom = 42.0
 grow_horizontal = 2
 mouse_filter = 2
-theme_override_colors/font_color = Color(1, 0.96, 0.84, 1)
-theme_override_colors/font_outline_color = Color(0.03, 0.02, 0.015, 0.95)
+theme_override_colors/font_color = Color(0.03, 0.035, 0.032, 1)
+theme_override_colors/font_outline_color = Color(0.96, 1, 0.96, 0.84)
 theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 18
 text = "卡名"
@@ -143,6 +144,7 @@ text_overrun_behavior = 3
 
 [node name="TypeBar" type="Panel" parent="."]
 visible = false
+z_index = 8
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -161,8 +163,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_colors/font_color = Color(0.98, 0.94, 0.82, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 0.85)
+theme_override_colors/font_color = Color(0.03, 0.035, 0.032, 1)
+theme_override_colors/font_outline_color = Color(0.96, 0.98, 0.94, 0.72)
 theme_override_constants/outline_size = 2
 theme_override_font_sizes/font_size = 11
 text = "ATTACK"
@@ -171,6 +173,7 @@ vertical_alignment = 1
 
 [node name="DescLabel" type="Label" parent="."]
 visible = false
+z_index = 8
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
@@ -183,8 +186,8 @@ offset_bottom = -8.0
 grow_horizontal = 2
 grow_vertical = 0
 mouse_filter = 2
-theme_override_colors/font_color = Color(0.95, 0.92, 0.82, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 0.85)
+theme_override_colors/font_color = Color(0.03, 0.035, 0.032, 1)
+theme_override_colors/font_outline_color = Color(0.96, 0.98, 0.94, 0.72)
 theme_override_constants/outline_size = 2
 theme_override_font_sizes/font_size = 12
 text = "效果描述"
@@ -216,8 +219,8 @@ alignment = 1
 layout_mode = 2
 mouse_filter = 2
 size_flags_vertical = 3
-theme_override_colors/font_color = Color(0.98, 0.94, 0.82, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 0.9)
+theme_override_colors/font_color = Color(0.03, 0.035, 0.032, 1)
+theme_override_colors/font_outline_color = Color(0.96, 0.98, 0.94, 0.72)
 theme_override_constants/outline_size = 3
 theme_override_font_sizes/font_size = 16
 text = "卡名"
@@ -234,6 +237,7 @@ step = 1.0
 show_percentage = false
 
 [node name="CostBadge" type="Panel" parent="."]
+z_index = 8
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -254,7 +258,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_colors/font_color = Color(0.12, 0.08, 0.04, 1)
+theme_override_colors/font_color = Color(0.03, 0.035, 0.032, 1)
 theme_override_font_sizes/font_size = 16
 text = "1"
 horizontal_alignment = 1
@@ -300,8 +304,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_colors/font_color = Color(0.55, 0.5, 0.4, 0.9)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 0.6)
+theme_override_colors/font_color = Color(0.03, 0.035, 0.032, 0.9)
+theme_override_colors/font_outline_color = Color(0.96, 0.98, 0.94, 0.72)
 theme_override_constants/outline_size = 2
 theme_override_font_sizes/font_size = 28
 text = "+"
@@ -310,6 +314,7 @@ vertical_alignment = 1
 
 [node name="OverlayRect" type="ColorRect" parent="."]
 visible = false
+z_index = 11
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -321,6 +326,7 @@ color = Color(0.08, 0.06, 0.05, 0.55)
 
 [node name="HighlightRect" type="Panel" parent="."]
 visible = false
+z_index = 10
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -343,6 +349,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_rarity_frame")
 
 [node name="StrikeRect" type="ColorRect" parent="."]
 visible = false
+z_index = 12
 layout_mode = 1
 anchors_preset = 4
 anchor_top = 0.5

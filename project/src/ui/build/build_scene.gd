@@ -191,7 +191,7 @@ func _rebuild_bases() -> void:
 		var panel := shell.get_node("ContentPanel") as PanelContainer
 
 		var stack := VBoxContainer.new()
-		stack.add_theme_constant_override(&"separation", 5)
+		stack.add_theme_constant_override(&"separation", 6)
 		panel.add_child(stack)
 
 		var name_label := Label.new()
@@ -228,17 +228,8 @@ func _rebuild_bases() -> void:
 
 func _make_array_slot_shell(selected: bool) -> Control:
 	var shell := Control.new()
-	shell.custom_minimum_size = Vector2(190, 342)
+	shell.custom_minimum_size = Vector2(240, 426)
 	shell.size_flags_vertical = SIZE_SHRINK_CENTER
-
-	var base_art := TextureRect.new()
-	base_art.texture = _get_array_slot_texture()
-	base_art.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	base_art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	base_art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	base_art.modulate = Color(0.94, 1.0, 0.96, 0.95) if selected else Color(1.0, 1.0, 1.0, 0.82)
-	base_art.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	shell.add_child(base_art)
 
 	var panel := PanelContainer.new()
 	panel.name = "ContentPanel"
@@ -261,7 +252,7 @@ func _get_array_slot_texture() -> Texture2D:
 
 func _make_chain_arrow() -> Control:
 	var arrow_wrap := CenterContainer.new()
-	arrow_wrap.custom_minimum_size = Vector2(16, CardView.BUILD_CHAIN_SLOT_HEIGHT)
+	arrow_wrap.custom_minimum_size = Vector2(14, CardView.BUILD_CHAIN_SLOT_HEIGHT)
 	arrow_wrap.size_flags_vertical = SIZE_SHRINK_CENTER
 
 	var arrow := Label.new()
@@ -275,18 +266,18 @@ func _make_chain_arrow() -> Control:
 
 func _make_array_slot_style(selected: bool) -> StyleBoxFlat:
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.84, 0.96, 0.92, 0.13) if selected else Color(0.88, 0.96, 0.94, 0.04)
-	sb.border_color = Color(0.42, 0.62, 0.56, 0.42) if selected else Color(0.38, 0.56, 0.52, 0.14)
-	sb.border_width_left = 2
-	sb.border_width_top = 2
-	sb.border_width_right = 2
-	sb.border_width_bottom = 2
+	sb.bg_color = Color(0.84, 0.96, 0.92, 0.06) if selected else Color(1, 1, 1, 0)
+	sb.border_color = Color(0.42, 0.72, 0.64, 0.48) if selected else Color(1, 1, 1, 0)
+	sb.border_width_left = 2 if selected else 0
+	sb.border_width_top = 2 if selected else 0
+	sb.border_width_right = 2 if selected else 0
+	sb.border_width_bottom = 2 if selected else 0
 	sb.corner_radius_top_left = 5
 	sb.corner_radius_top_right = 5
 	sb.corner_radius_bottom_left = 5
 	sb.corner_radius_bottom_right = 5
-	sb.shadow_size = 5 if selected else 0
-	sb.shadow_color = Color(0.08, 0.20, 0.18, 0.10 if selected else 0.0)
+	sb.shadow_size = 4 if selected else 0
+	sb.shadow_color = Color(0.08, 0.20, 0.18, 0.08 if selected else 0.0)
 	sb.content_margin_left = 6
 	sb.content_margin_top = 6
 	sb.content_margin_right = 6

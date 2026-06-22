@@ -2,7 +2,7 @@ class_name TimelineScrollView extends ScrollContainer
 
 const CARD_VIEW_SCENE = preload("res://scenes/components/card_view.tscn")
 const TICK_WIDTH := 80
-const TIMELINE_BG_PATH := "res://assets/style_anchors/xianxia_anchor_08_timeline.jpg"
+const TIMELINE_BG_PATH := "res://assets/ui/themes/xianxia/bars/timeline_bar_xianxia.png"
 
 @onready var timeline_container: Control = $TimelineContainer
 @onready var cards_hbox: HBoxContainer = $TimelineContainer/CardsHBox
@@ -129,13 +129,13 @@ func _on_timeline_container_draw() -> void:
 	var c_size := timeline_container.size
 	var rect := Rect2(0, 0, c_size.x, c_size.y)
 
-	timeline_container.draw_rect(rect, Color(0.88, 0.82, 0.7, 1.0))
+	timeline_container.draw_rect(rect, Color(0.82, 0.94, 0.90, 1.0))
 
 	if _bg_texture:
-		timeline_container.draw_texture_rect(_bg_texture, rect, true, Color(1, 0.95, 0.85, 0.35))
+		timeline_container.draw_texture_rect(_bg_texture, rect, true, Color(1, 1, 1, 0.84))
 
-	timeline_container.draw_line(Vector2(0, 0), Vector2(c_size.x, 0), Color(0.32, 0.24, 0.18, 0.85), 2.0)
-	timeline_container.draw_line(Vector2(0, c_size.y - 1), Vector2(c_size.x, c_size.y - 1), Color(0.32, 0.24, 0.18, 0.65), 1.5)
+	timeline_container.draw_line(Vector2(0, 0), Vector2(c_size.x, 0), Color(0.58, 0.78, 0.68, 0.88), 2.0)
+	timeline_container.draw_line(Vector2(0, c_size.y - 1), Vector2(c_size.x, c_size.y - 1), Color(0.70, 0.58, 0.28, 0.58), 1.5)
 
 	const CARDS_PADDING_LEFT := 12.0
 	var max_ticks: int = int((c_size.x - CARDS_PADDING_LEFT) / TICK_WIDTH) + 1
@@ -143,14 +143,14 @@ func _on_timeline_container_draw() -> void:
 		var x: float = CARDS_PADDING_LEFT + i * TICK_WIDTH
 		if x > c_size.x: break
 		var is_major: bool = (i % 5 == 0)
-		var line_color := Color(0.32, 0.24, 0.18, 0.6 if is_major else 0.3)
+		var line_color := Color(0.25, 0.48, 0.45, 0.58 if is_major else 0.26)
 		var line_len: float = 12.0 if is_major else 6.0
 		timeline_container.draw_line(Vector2(x, 0), Vector2(x, line_len), line_color, 1.5)
 		timeline_container.draw_line(Vector2(x, c_size.y - line_len), Vector2(x, c_size.y), line_color, 1.5)
 
 		if is_major and _tick_font and i > 0:
 			var label: String = str(i)
-			var text_color := Color(0.28, 0.18, 0.12, 0.95)
+			var text_color := Color(0.12, 0.34, 0.34, 0.95)
 			timeline_container.draw_string(_tick_font, Vector2(x + 4, c_size.y - line_len - 4), label, HORIZONTAL_ALIGNMENT_LEFT, -1, 16, text_color)
 
 func _show_tooltip(card: CardRuntime, view: CardView) -> void:

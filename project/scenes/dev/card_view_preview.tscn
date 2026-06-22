@@ -1,6 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://card_view_preview"]
+[gd_scene format=3 uid="uid://bmj5syrrkgh5m"]
 
-[ext_resource type="Script" path="res://src/ui/dev/card_view_preview.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://bpjciln3no27k" path="res://src/ui/dev/card_view_preview.gd" id="1_script"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bg"]
 bg_color = Color(0.07, 0.06, 0.045, 1)
@@ -17,14 +17,7 @@ corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_title"]
-bg_color = Color(0.18, 0.135, 0.075, 0.95)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-
-[node name="CardViewPreview" type="Control"]
+[node name="CardViewPreview" type="Control" unique_id=182492964]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -33,7 +26,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_script")
 
-[node name="Background" type="Panel" parent="."]
+[node name="Background" type="Panel" parent="." unique_id=1838935060]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -42,7 +35,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_bg")
 
-[node name="Root" type="MarginContainer" parent="."]
+[node name="Root" type="MarginContainer" parent="." unique_id=1011917004]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -54,14 +47,14 @@ theme_override_constants/margin_top = 28
 theme_override_constants/margin_right = 36
 theme_override_constants/margin_bottom = 28
 
-[node name="Content" type="VBoxContainer" parent="Root"]
+[node name="Content" type="VBoxContainer" parent="Root" unique_id=546969585]
 layout_mode = 2
 theme_override_constants/separation = 18
 
-[node name="Header" type="HBoxContainer" parent="Root/Content"]
+[node name="Header" type="HBoxContainer" parent="Root/Content" unique_id=2147166366]
 layout_mode = 2
 
-[node name="Title" type="Label" parent="Root/Content/Header"]
+[node name="Title" type="Label" parent="Root/Content/Header" unique_id=775290653]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.98, 0.91, 0.7, 1)
@@ -70,88 +63,88 @@ theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 28
 text = "CardView Preview"
 
-[node name="Hint" type="Label" parent="Root/Content/Header"]
+[node name="Hint" type="Label" parent="Root/Content/Header" unique_id=1175762915]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.78, 0.68, 0.48, 1)
 theme_override_font_sizes/font_size = 14
 text = "Esc quits"
 vertical_alignment = 1
 
-[node name="BattlePanel" type="PanelContainer" parent="Root/Content"]
+[node name="BattlePanel" type="PanelContainer" parent="Root/Content" unique_id=956055240]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
-[node name="Margin" type="MarginContainer" parent="Root/Content/BattlePanel"]
+[node name="Margin" type="MarginContainer" parent="Root/Content/BattlePanel" unique_id=1623078907]
 layout_mode = 2
 theme_override_constants/margin_left = 18
 theme_override_constants/margin_top = 14
 theme_override_constants/margin_right = 18
 theme_override_constants/margin_bottom = 16
 
-[node name="Rows" type="VBoxContainer" parent="Root/Content/BattlePanel/Margin"]
+[node name="Rows" type="VBoxContainer" parent="Root/Content/BattlePanel/Margin" unique_id=1986705585]
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="Title" type="Label" parent="Root/Content/BattlePanel/Margin/Rows"]
+[node name="Title" type="Label" parent="Root/Content/BattlePanel/Margin/Rows" unique_id=1944251145]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.98, 0.86, 0.56, 1)
 theme_override_font_sizes/font_size = 18
 text = "Battle timeline mode"
 
-[node name="BattleRow" type="HBoxContainer" parent="Root/Content/BattlePanel/Margin/Rows"]
+[node name="BattleRow" type="HBoxContainer" parent="Root/Content/BattlePanel/Margin/Rows" unique_id=864039669]
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="BuildPanel" type="PanelContainer" parent="Root/Content"]
+[node name="BuildPanel" type="PanelContainer" parent="Root/Content" unique_id=914692938]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
-[node name="Margin" type="MarginContainer" parent="Root/Content/BuildPanel"]
+[node name="Margin" type="MarginContainer" parent="Root/Content/BuildPanel" unique_id=1533307324]
 layout_mode = 2
 theme_override_constants/margin_left = 18
 theme_override_constants/margin_top = 14
 theme_override_constants/margin_right = 18
 theme_override_constants/margin_bottom = 16
 
-[node name="Rows" type="VBoxContainer" parent="Root/Content/BuildPanel/Margin"]
+[node name="Rows" type="VBoxContainer" parent="Root/Content/BuildPanel/Margin" unique_id=1693406253]
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="Title" type="Label" parent="Root/Content/BuildPanel/Margin/Rows"]
+[node name="Title" type="Label" parent="Root/Content/BuildPanel/Margin/Rows" unique_id=479857622]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.98, 0.86, 0.56, 1)
 theme_override_font_sizes/font_size = 18
 text = "Build chain slot mode"
 
-[node name="BuildRow" type="HBoxContainer" parent="Root/Content/BuildPanel/Margin/Rows"]
+[node name="BuildRow" type="HBoxContainer" parent="Root/Content/BuildPanel/Margin/Rows" unique_id=99687197]
 layout_mode = 2
 theme_override_constants/separation = 14
 alignment = 1
 
-[node name="DeckPanel" type="PanelContainer" parent="Root/Content"]
+[node name="DeckPanel" type="PanelContainer" parent="Root/Content" unique_id=1102864524]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
-[node name="Margin" type="MarginContainer" parent="Root/Content/DeckPanel"]
+[node name="Margin" type="MarginContainer" parent="Root/Content/DeckPanel" unique_id=506061908]
 layout_mode = 2
 theme_override_constants/margin_left = 18
 theme_override_constants/margin_top = 14
 theme_override_constants/margin_right = 18
 theme_override_constants/margin_bottom = 16
 
-[node name="Rows" type="VBoxContainer" parent="Root/Content/DeckPanel/Margin"]
+[node name="Rows" type="VBoxContainer" parent="Root/Content/DeckPanel/Margin" unique_id=113159557]
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="Title" type="Label" parent="Root/Content/DeckPanel/Margin/Rows"]
+[node name="Title" type="Label" parent="Root/Content/DeckPanel/Margin/Rows" unique_id=1617805481]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.98, 0.86, 0.56, 1)
 theme_override_font_sizes/font_size = 18
 text = "Deck item mode"
 
-[node name="DeckRow" type="HBoxContainer" parent="Root/Content/DeckPanel/Margin/Rows"]
+[node name="DeckRow" type="HBoxContainer" parent="Root/Content/DeckPanel/Margin/Rows" unique_id=1375690495]
 layout_mode = 2
 theme_override_constants/separation = 14
 alignment = 1

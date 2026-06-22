@@ -2,6 +2,7 @@ class_name StarterDeckScene extends Control
 
 const CARD_VIEW_SCENE = preload("res://scenes/components/card_view.tscn")
 const MAP_SCENE := "res://scenes/map/map_scene.tscn"
+const PREVIEW_CARD_SCALE := 0.64
 
 @onready var title_label: Label = $Margin/VBox/TitleLabel
 @onready var subtitle_label: Label = $Margin/VBox/SubtitleLabel
@@ -44,7 +45,7 @@ func _make_deck_panel(deck_index: int, deck_def: Dictionary) -> PanelContainer:
 	panel.add_child(margin)
 
 	var box := VBoxContainer.new()
-	box.add_theme_constant_override(&"separation", 8)
+	box.add_theme_constant_override(&"separation", 6)
 	margin.add_child(box)
 
 	var name_label := Label.new()
@@ -65,7 +66,7 @@ func _make_deck_panel(deck_index: int, deck_def: Dictionary) -> PanelContainer:
 	cards_column.alignment = BoxContainer.ALIGNMENT_CENTER
 	cards_column.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	cards_column.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	cards_column.add_theme_constant_override(&"separation", 6)
+	cards_column.add_theme_constant_override(&"separation", -78)
 	box.add_child(cards_column)
 
 	var paths: Array = deck_def.get("cards", [])
@@ -74,9 +75,18 @@ func _make_deck_panel(deck_index: int, deck_def: Dictionary) -> PanelContainer:
 		if card == null:
 			continue
 		var view := CARD_VIEW_SCENE.instantiate() as CardView
-		cards_column.add_child(view)
 		view.setup_deck_item(card, 1, 1)
 		view.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		view.scale = Vector2(PREVIEW_CARD_SCALE, PREVIEW_CARD_SCALE)
+
+		var preview_slot := Control.new()
+		preview_slot.custom_minimum_size = Vector2(
+			CardView.BUILD_DECK_WIDTH * PREVIEW_CARD_SCALE,
+			CardView.BUILD_DECK_HEIGHT * PREVIEW_CARD_SCALE
+		)
+		preview_slot.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		preview_slot.add_child(view)
+		cards_column.add_child(preview_slot)
 
 	var pick_btn := Button.new()
 	pick_btn.text = tr("ui.button.confirm")

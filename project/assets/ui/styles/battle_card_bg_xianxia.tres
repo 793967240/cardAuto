@@ -1,0 +1,15 @@
+[gd_resource type="StyleBoxTexture" load_steps=2 format=3 uid="uid://battle_card_bg_xianxia"]
+
+[ext_resource type="Texture2D" path="res://assets/ui/cards/battle_card_bg_xianxia.png" id="1_texture"]
+
+[resource]
+content_margin_left = 7.0
+content_margin_top = 8.0
+content_margin_right = 7.0
+content_margin_bottom = 7.0
+texture = ExtResource("1_texture")
+texture_margin_left = 28.0
+texture_margin_top = 32.0
+texture_margin_right = 28.0
+texture_margin_bottom = 32.0
+modulate_color = Color(1, 1, 1, 0.96)

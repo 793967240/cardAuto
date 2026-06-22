@@ -549,12 +549,8 @@ class MapNodeButton extends Button:
 		var hover_scale := 1.08 if is_hovered() and not disabled else 1.0
 		radius *= hover_scale
 
-		draw_circle(center + Vector2(0, 5), radius + 5.0, Color(0.10, 0.30, 0.28, 0.22 * alpha))
 		if visual_state == VisualState.AVAILABLE:
-			draw_circle(center, radius + 9.0, Color(0.44, 0.82, 0.72, 0.24))
-			draw_arc(center, radius + 8.0, -PI * 0.15, PI * 1.35, 48, Color(0.76, 0.96, 0.82, 0.95), 3.0, true)
-		draw_circle(center, radius + 3.0, palette["rim"].darkened(0.18))
-		draw_circle(center, radius, palette["rim"])
+			draw_arc(center, radius + 9.0, -PI * 0.15, PI * 1.35, 48, Color(0.76, 0.96, 0.82, 0.95), 3.0, true)
 
 		var icon_color: Color = palette["icon"]
 		var icon := _node_texture()

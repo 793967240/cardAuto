@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://src/ui/components/enemy_view.gd" id="1_script"]
-[ext_resource type="StyleBoxTexture" path="res://assets/ui/styles/panel_enemy_bg.tres" id="2_panel"]
 [ext_resource type="StyleBoxTexture" path="res://assets/ui/themes/xianxia/panels/fresh_panel.tres" id="3_intent"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_root"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hp_fill"]
 bg_color = Color(0.74, 0.22, 0.22, 1)
@@ -28,11 +29,15 @@ custom_minimum_size = Vector2(260, 380)
 offset_right = 260.0
 offset_bottom = 380.0
 mouse_filter = 1
-theme_override_styles/panel = ExtResource("2_panel")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_root")
 script = ExtResource("1_script")
 
 [node name="VBox" type="VBoxContainer" parent="."]
 layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 8
 theme_override_constants/separation = 8
 
 [node name="NameLabel" type="Label" parent="VBox"]

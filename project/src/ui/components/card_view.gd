@@ -9,22 +9,30 @@ class_name CardView extends Control
 ##   - BUILD_DECK_ITEM：构筑界面卡牌仓库卡（固定 184×276，右下角库存角标 ×N/M）
 ##
 ## 拖拽：BUILD_SLOT(非空) / BUILD_DECK_ITEM 模式参与拖拽；BATTLE 不参与。
-## 拖拽预览：与拖拽源同尺寸同布局（卡牌仓库 → 184×276，链上 → 170×280）
+## 拖拽预览：与拖拽源同尺寸同布局（卡牌仓库 → 220×330，链上 → 220×364）
 
 enum Mode { BATTLE, BUILD_SLOT, BUILD_DECK_ITEM }
 
 const BASE_WIDTH := 80
 const BASE_HEIGHT := 120
-const BUILD_DECK_WIDTH := 184
-const BUILD_DECK_HEIGHT := 276
-const BUILD_SLOT_WIDTH := 162
-const BUILD_SLOT_HEIGHT := 276
+const BUILD_DECK_WIDTH := 220
+const BUILD_DECK_HEIGHT := 330
+const BUILD_SLOT_WIDTH := 206
+const BUILD_SLOT_HEIGHT := 350
 const BUILD_SLOT_EMPTY_W := BUILD_SLOT_WIDTH
 const BUILD_SLOT_EMPTY_H := BUILD_SLOT_HEIGHT
-const BUILD_CHAIN_SLOT_WIDTH := 170
-const BUILD_CHAIN_SLOT_HEIGHT := 280
+const BUILD_CHAIN_SLOT_WIDTH := 220
+const BUILD_CHAIN_SLOT_HEIGHT := 364
 const BUILD_CHAIN_SLOT_EMPTY_W := BUILD_CHAIN_SLOT_WIDTH
 const BUILD_CHAIN_SLOT_EMPTY_H := BUILD_CHAIN_SLOT_HEIGHT
+const DEFAULT_TYPE_ART: Dictionary = {
+	0: preload("res://assets/ui/cards/type_art/card_type_attack.png"),
+	1: preload("res://assets/ui/cards/type_art/card_type_defense.png"),
+	2: preload("res://assets/ui/cards/type_art/card_type_buff.png"),
+	3: preload("res://assets/ui/cards/type_art/card_type_control.png"),
+	4: preload("res://assets/ui/cards/type_art/card_type_summon.png"),
+	5: preload("res://assets/ui/cards/type_art/card_type_special.png"),
+}
 
 ## 类型 → 卡面占位色（无 icon 时）
 const TYPE_COLORS: Dictionary = {
@@ -56,17 +64,9 @@ const TYPE_BAR_COLORS: Dictionary = {
 	5: Color(0.20, 0.19, 0.17, 0.95),
 }
 
-## 稀有度 → 边框颜色（普通=灰、罕见=蓝、稀有=金）
-const RARITY_BORDER_COLORS: Dictionary = {
-	0: Color(0.55, 0.55, 0.55, 1.00),
-	1: Color(0.32, 0.62, 0.92, 1.00),
-	2: Color(1.00, 0.78, 0.32, 1.00),
-	3: Color(0.78, 0.42, 0.92, 1.00),
-}
-
-const BUILD_TEXT_COLOR := Color(0.97, 0.91, 0.74, 1.0)
-const BUILD_TEXT_OUTLINE := Color(0.04, 0.025, 0.015, 0.95)
-const DISABLED_TEXT_COLOR := Color(0.88, 0.82, 0.64, 1.0)
+const BUILD_TEXT_COLOR := Color(0.03, 0.035, 0.032, 1.0)
+const BUILD_TEXT_OUTLINE := Color(0.96, 0.98, 0.94, 0.72)
+const DISABLED_TEXT_COLOR := Color(0.23, 0.24, 0.22, 1.0)
 const BUILD_TYPE_COLORS := {
 	0: Color(0.58, 0.34, 0.30, 1.0),
 	1: Color(0.34, 0.48, 0.58, 1.0),
@@ -75,8 +75,8 @@ const BUILD_TYPE_COLORS := {
 	4: Color(0.58, 0.50, 0.34, 1.0),
 	5: Color(0.50, 0.52, 0.46, 1.0),
 }
-const BUILD_TEXT_COLOR_SOFT := Color(0.24, 0.36, 0.34, 1.0)
-const BUILD_TEXT_OUTLINE_SOFT := Color(0.94, 0.99, 0.95, 0.72)
+const BUILD_TEXT_COLOR_SOFT := BUILD_TEXT_COLOR
+const BUILD_TEXT_OUTLINE_SOFT := BUILD_TEXT_OUTLINE
 const DRAG_START_DISTANCE := 8.0
 
 @onready var bg_panel: Panel = $BgPanel
@@ -126,6 +126,7 @@ func _ready() -> void:
 
 func _bind_nodes() -> void:
 	if bg_panel != null:
+		_apply_layer_order()
 		return
 	bg_panel = $BgPanel
 	frame_texture = $FrameTexture
@@ -149,6 +150,18 @@ func _bind_nodes() -> void:
 	type_label = $TypeBar/TypeLabel
 	desc_label = $DescLabel
 	rarity_frame = $RarityFrame
+	_apply_layer_order()
+
+func _apply_layer_order() -> void:
+	art_rect.z_index = 1
+	frame_texture.z_index = 5
+	build_name_label.z_index = 8
+	type_bar.z_index = 8
+	desc_label.z_index = 8
+	cost_badge.z_index = 8
+	highlight_rect.z_index = 10
+	overlay_rect.z_index = 11
+	strike_rect.z_index = 12
 
 # ─── BATTLE 模式 ─────────────────────────────────────────────────
 
@@ -413,66 +426,94 @@ func _apply_card_art(card: CardData) -> void:
 		art_placeholder.hide()
 		art_rect.color = Color(0, 0, 0, 0)  # 让贴图裸露
 	else:
-		art_texture.hide()
-		art_placeholder.show()
 		var t: int = int(card.card_type)
-		if mode == Mode.BUILD_SLOT or mode == Mode.BUILD_DECK_ITEM:
-			art_rect.color = BUILD_TYPE_COLORS.get(t, Color(0.50, 0.52, 0.46, 1.0))
+		var default_art := DEFAULT_TYPE_ART.get(t) as Texture2D
+		if default_art != null:
+			art_texture.texture = default_art
+			art_texture.show()
+			art_placeholder.hide()
+			art_rect.color = Color(0, 0, 0, 0)
 		else:
-			art_rect.color = TYPE_COLORS.get(t, Color(0.30, 0.25, 0.20, 1))
+			art_texture.hide()
+			art_placeholder.show()
+			if mode == Mode.BUILD_SLOT or mode == Mode.BUILD_DECK_ITEM:
+				art_rect.color = BUILD_TYPE_COLORS.get(t, Color(0.50, 0.52, 0.46, 1.0))
+			else:
+				art_rect.color = TYPE_COLORS.get(t, Color(0.30, 0.25, 0.20, 1))
 
 func _apply_card_frame(card: CardData) -> void:
-	var rarity := 0
-	if card != null:
-		rarity = int(card.rarity)
 	if frame_texture.has_method("setup_for_rarity"):
-		frame_texture.call("setup_for_rarity", rarity)
+		frame_texture.call("setup_for_rarity", 0)
 
 func _apply_cost_badge_chrome(build_mode: bool) -> void:
 	if build_mode:
 		cost_badge.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
+		cost_badge.anchor_left = 1.0
+		cost_badge.anchor_right = 1.0
+		cost_badge.anchor_top = 0.0
+		cost_badge.anchor_bottom = 0.0
+		cost_badge.offset_left = -90.0
+		cost_badge.offset_top = 45.0
+		cost_badge.offset_right = -5.0
+		cost_badge.offset_bottom = 71.0
+		cost_label.add_theme_font_size_override("font_size", 15)
+		cost_label.add_theme_color_override(&"font_color", BUILD_TEXT_COLOR)
+		cost_label.add_theme_color_override(&"font_outline_color", BUILD_TEXT_OUTLINE)
+		cost_label.add_theme_constant_override(&"outline_size", 2)
 	else:
 		cost_badge.remove_theme_stylebox_override("panel")
+		cost_badge.anchor_left = 1.0
+		cost_badge.anchor_right = 1.0
+		cost_badge.anchor_top = 0.0
+		cost_badge.anchor_bottom = 0.0
+		cost_badge.offset_left = -22.0
+		cost_badge.offset_top = -2.0
+		cost_badge.offset_right = 2.0
+		cost_badge.offset_bottom = 22.0
+		cost_label.add_theme_font_size_override("font_size", 16)
+		cost_label.add_theme_color_override(&"font_color", Color(0.12, 0.08, 0.04, 1.0))
+		cost_label.remove_theme_color_override(&"font_outline_color")
+		cost_label.remove_theme_constant_override(&"outline_size")
 
 func _apply_build_geometry() -> void:
 	if mode == Mode.BUILD_DECK_ITEM:
-		build_name_label.offset_left = 28.0
-		build_name_label.offset_top = 10.0
-		build_name_label.offset_right = -28.0
-		build_name_label.offset_bottom = 48.0
-		art_rect.offset_left = 14.0
-		art_rect.offset_top = 50.0
-		art_rect.offset_right = -14.0
-		art_rect.offset_bottom = 166.0
-		type_bar.offset_left = 48.0
-		type_bar.offset_top = 156.0
-		type_bar.offset_right = -48.0
-		type_bar.offset_bottom = 182.0
-		desc_label.offset_left = 16.0
-		desc_label.offset_top = -95.0
-		desc_label.offset_right = -16.0
-		desc_label.offset_bottom = -18.0
+		build_name_label.offset_left = 60.0
+		build_name_label.offset_top = 29.0
+		build_name_label.offset_right = -62.0
+		build_name_label.offset_bottom = 84.0
+		art_rect.offset_left = 34.0
+		art_rect.offset_top = 58.0
+		art_rect.offset_right = -34.0
+		art_rect.offset_bottom = 190.0
+		type_bar.offset_left = 62.0
+		type_bar.offset_top = 181.0
+		type_bar.offset_right = -62.0
+		type_bar.offset_bottom = 209.0
+		desc_label.offset_left = 29.0
+		desc_label.offset_top = -126.0
+		desc_label.offset_right = -29.0
+		desc_label.offset_bottom = -28.0
 		margin.add_theme_constant_override(&"margin_left", 8)
 		margin.add_theme_constant_override(&"margin_top", 8)
 		margin.add_theme_constant_override(&"margin_right", 8)
 		margin.add_theme_constant_override(&"margin_bottom", BUILD_DECK_HEIGHT - 38)
 	elif mode == Mode.BUILD_SLOT:
-		build_name_label.offset_left = 28.0
-		build_name_label.offset_top = 10.0
-		build_name_label.offset_right = -28.0
-		build_name_label.offset_bottom = 48.0
-		art_rect.offset_left = 13.0
-		art_rect.offset_top = 50.0
-		art_rect.offset_right = -13.0
-		art_rect.offset_bottom = 168.0
-		type_bar.offset_left = 43.0
-		type_bar.offset_top = 157.0
-		type_bar.offset_right = -43.0
-		type_bar.offset_bottom = 183.0
-		desc_label.offset_left = 15.0
-		desc_label.offset_top = -98.0
-		desc_label.offset_right = -15.0
-		desc_label.offset_bottom = -18.0
+		build_name_label.offset_left = 60.0
+		build_name_label.offset_top = 43.0
+		build_name_label.offset_right = -61.0
+		build_name_label.offset_bottom = 92.0
+		art_rect.offset_left = 31.0
+		art_rect.offset_top = 64.0
+		art_rect.offset_right = -31.0
+		art_rect.offset_bottom = 208.0
+		type_bar.offset_left = 60.0
+		type_bar.offset_top = 198.0
+		type_bar.offset_right = -60.0
+		type_bar.offset_bottom = 229.0
+		desc_label.offset_left = 29.0
+		desc_label.offset_top = -138.0
+		desc_label.offset_right = -29.0
+		desc_label.offset_bottom = -31.0
 		margin.add_theme_constant_override(&"margin_left", 7)
 		margin.add_theme_constant_override(&"margin_top", 8)
 		margin.add_theme_constant_override(&"margin_right", 7)
@@ -487,22 +528,7 @@ func _apply_type_bar(card: CardData) -> void:
 	type_label.text = tr(TYPE_LABEL_KEYS.get(t, "card.type.special"))
 
 func _apply_rarity_frame(card: CardData) -> void:
-	if frame_texture.visible:
-		rarity_frame.hide()
-		return
-	var r: int = int(card.rarity)
-	var color: Color = RARITY_BORDER_COLORS.get(r, Color(0, 0, 0, 0))
-	if color.a <= 0.0:
-		rarity_frame.hide()
-		return
-	rarity_frame.show()
-	# 复制基础 stylebox 后修改边框色，避免污染共享资源
-	var src := rarity_frame.get_theme_stylebox("panel") as StyleBoxFlat
-	if src == null:
-		return
-	var sb: StyleBoxFlat = src.duplicate() as StyleBoxFlat
-	sb.border_color = color
-	rarity_frame.add_theme_stylebox_override("panel", sb)
+	rarity_frame.hide()
 
 func _apply_desc_font(_text: String) -> void:
 	var fsize := 12
