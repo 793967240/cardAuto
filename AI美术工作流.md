@@ -4,7 +4,7 @@
 >
 > 主力模型通道：**animal-mediakit**（Seedream / Gemini / Imagen / Nano Banana 等）
 >
-> 美术风格：**国风唯美仙侠**（GDD §8）
+> 美术风格：**清透新国风仙侠**（GDD §8）
 >
 > 范围：从 Prompt 到 Godot 资源入库的完整流水线，**含 Steam 商店页素材**
 
@@ -14,7 +14,7 @@
 
 ## 一、为什么不能只靠"想生啥生啥"
 
-国风唯美仙侠 + 卡牌 Roguelike 的素材量级：
+清透新国风仙侠 + 卡牌 Roguelike 的素材量级：
 
 | 资产类型 | MVP 数量 | 完整版数量 |
 |---------|---------|----------|
@@ -65,20 +65,20 @@
 固定写入所有 Prompt 的"风格头部"：
 
 ```
-国风唯美仙侠风格，精致游戏卡牌插画风格，
-色彩绚丽，仙气十足，灵气光效，云雾缭绕，
-参考原神璃月美学，飘逸仙衣，仙山背景，
-金色灵气光芒，精致细腻，高品质商业插画
+清透新国风仙侠风格，淡彩数字厚涂，精致游戏概念图质感，
+柔和云海，远山仙宫，清透空气感，浅青灰与暖白色调，
+梦幻灵气光带，少量东方笔意，细腻商业插画，
+干净画面，高级感，柔光，高品质游戏美术
 ```
 
 英文版（部分模型英文效果更稳定）：
 
 ```
-Chinese xianxia fantasy art, beautiful immortal cultivation aesthetic,
-vibrant colors, ethereal spiritual energy aura, misty mountain peaks,
-golden qi light effects, flowing immortal robes, jade and gold palette,
-detailed game card illustration style, Genshin Impact Liyue inspired,
-high quality commercial illustration, vertical composition
+ethereal Chinese xianxia fantasy art, soft pastel digital painting,
+misty mountains, sea of clouds, celestial palace, luminous spiritual light trails,
+airy atmosphere, clean high-end game concept art, soft lighting,
+delicate commercial illustration, subtle oriental brush aesthetics,
+light cyan gray and warm white palette, elegant vertical composition
 ```
 
 每张图根据用途追加"主题"和"约束"。
@@ -86,16 +86,20 @@ high quality commercial illustration, vertical composition
 ### 3.3 反向 Prompt（Negative）
 
 ```
-低质量，模糊，水墨风格，简笔画，文字，水印，西方风格，
-赛博朋克，霓虹灯，现代服装，3D渲染，照片写实
+低质量，模糊，水墨画，羊皮纸，卷轴纸纹，泛黄纸张，
+粗糙笔触，黑白墨迹，旧地图，脏污背景，简笔画，
+文字，水印，西方风格，赛博朋克，霓虹灯，现代服装，
+3D渲染，照片写实，厚重描边，低饱和灰暗
 ```
 
 英文版：
 
 ```
-low quality, blurry, ink wash style, sketch, text, watermark,
-Western fantasy, cyberpunk, neon, modern clothing, 3D render,
-photorealistic, signature, multiple panels
+low quality, blurry, ink wash painting, parchment, scroll paper texture,
+yellowed paper, rough brush strokes, black-and-white ink, old map,
+dirty background, sketch, text, watermark, Western fantasy, cyberpunk,
+neon, modern clothing, 3D render, photorealistic, heavy outline,
+desaturated gloomy palette, signature, multiple panels
 ```
 
 ---
@@ -109,9 +113,9 @@ photorealistic, signature, multiple panels
 
 Subject: {CARD_NAME_EN} - {CARD_DESCRIPTION_EN}
 Visual: centered composition, single focal element, vertical card frame,
-subtle ink splatter background, {ELEMENT_COLOR_ACCENT} highlights
+clean misty background, soft spiritual light, {ELEMENT_COLOR_ACCENT} highlights
 Camera: medium shot, eye-level, symmetric
-Lighting: soft diffuse, slight ink glow on focal element
+Lighting: soft diffuse, gentle celestial glow on focal element
 
 {NEGATIVE_HEADER}
 
@@ -122,10 +126,10 @@ Output: 1024x1536 portrait, transparent background preferred
 
 ```
 Subject: Sword Strike (斩) - a single decisive sword slash cleaving through air
-Visual: centered composition, single sword arc, subtle ink splatter background,
+Visual: centered composition, single sword arc, clean misty background,
 silver-grey highlights with one drop of red blood on tip
 Camera: medium shot, eye-level, symmetric
-Lighting: soft diffuse, slight ink glow on focal element
+Lighting: soft diffuse, gentle celestial glow on focal element
 ```
 
 ### 4.2 敌人立绘
@@ -136,7 +140,7 @@ Lighting: soft diffuse, slight ink glow on focal element
 Subject: {ENEMY_NAME_EN} - {ENEMY_LORE_EN}
 Visual: full-body or 3/4 view, malevolent presence,
 {ELEMENT_HINT} aura swirling around figure,
-ink splatter feet to ground transition
+mist and spiritual light wrapping the feet
 Pose: {POSE_DESCRIPTION}
 Lighting: dramatic, low-key, single rim light from upper-left
 
@@ -170,7 +174,7 @@ Output: 2048x3072 portrait
 
 Subject: {UI_ELEMENT_NAME} - {FUNCTIONAL_DESCRIPTION}
 Visual: tileable / nine-patch friendly,
-parchment texture base, ink-drawn ornamental border,
+translucent jade, pale silk, or polished bronze base, delicate ornamental border,
 no figurative content, pure decorative pattern
 Style: minimalist, functional, low visual noise
 
@@ -188,7 +192,7 @@ Subject: mystical formation array (阵法), {SHAPE} pattern with {N} slots,
 glowing nodes at slot positions, subtle qi flow lines connecting nodes,
 ancient Chinese calligraphy / runes around perimeter
 Top-down view, perfectly symmetric
-Background: parchment texture, subtle gradient
+Background: transparent or clean misty gradient, no paper texture
 
 {NEGATIVE_HEADER}
 
@@ -409,7 +413,7 @@ data/cards/sword/sword_zhan.tres
 
 ## 十、与 GDD 的衔接
 
-GDD §8 定义的视觉语言映射表（卷轴/六芒阵/水墨晕染等）→ 直接作为本工作流 Prompt 库的"主题语义槽"。
+GDD §8 定义的视觉语言映射表（云海、灵气光带、仙宫、阵盘等）→ 直接作为本工作流 Prompt 库的"主题语义槽"。
 
 新增视觉概念时，工作流：
 
@@ -433,7 +437,7 @@ GDD §8 表格新增一行 → AI 美术工作流 prompt 模板新增对应 yaml
 | **Capsule (Small)** | 231×87 | 推荐位列表 | LOGO 为主，简洁 |
 | **Capsule (Main)** | 616×353 | 商店首页大图 | 含游戏氛围与角色 |
 | **Capsule (Vertical)** | 374×448 | 移动端商店 | 竖版构图 |
-| **Library Hero** | 1920×620 | 玩家库背景 | 全宽水墨场景 + 角色 |
+| **Library Hero** | 1920×620 | 玩家库背景 | 全宽云海仙侠场景 + 角色 |
 | **Library Capsule** | 600×900 | 玩家库竖图 | 竖版主视觉 |
 | **Library Logo** | 1280×720 透明 | 玩家库 LOGO 叠加 | 仅 LOGO，透明背景 |
 | **截图 5-10 张** | 1920×1080 | 商店截图轮播 | 真实游戏画面（PrtSc 截取） |
@@ -446,13 +450,13 @@ GDD §8 表格新增一行 → AI 美术工作流 prompt 模板新增对应 yaml
 {STYLE_HEADER}
 
 Subject: TimeChain video game cover art -
-sword cultivator hero in heroic pose, ink wash mountains background,
+sword cultivator hero in heroic pose, misty mountain sea of clouds background,
 floating cards / talismans circling around with qi energy,
 glowing timeline scroll horizontally cutting through composition,
 dramatic mist and floating petals, cinematic lighting
 
 Composition: rule of thirds, hero on left third, title space on right
-Color: muted ink palette with strategic vermillion accents and gold timeline glow
+Color: light cyan gray and warm white palette with strategic vermillion accents and gold timeline glow
 Style: AAA game cover art quality, painterly, professional
 
 {NEGATIVE_HEADER} + photorealistic faces, text, logos, frames, borders
@@ -475,13 +479,13 @@ LOGO **不能完全靠 AI 生**（字形可控性差）。建议：
 按以下顺序排列商店截图（玩家从左往右浏览）：
 
 1. **战斗主视觉**：时间轴满速 + 协同高亮（最具识别度）
-2. **构筑界面**：拖拽过程中 + 协同水墨连线
+2. **构筑界面**：拖拽过程中 + 协同灵气光带连线
 3. **甘特图对比**：玩家 vs Boss 的链条对比
 4. **协同爆发**：火系共鸣的视觉爆发瞬间
-5. **爬塔地图**：水墨风地图全景
+5. **爬塔地图**：云海仙山地图全景
 6. **多角色**：4 角色合影（待阶段 4）
 7. **遗物 / 词条系统**：信息丰富的构筑界面
-8. **Boss 战**：水墨晕染下的紧张感
+8. **Boss 战**：云雾与灵气压迫下的紧张感
 
 ### 11.5 预告片结构（30-60 秒）
 

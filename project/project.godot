@@ -42,7 +42,7 @@ enabled=PackedStringArray("res://addons/gut/plugin.cfg")
 
 [gui]
 
-theme/custom="res://assets/ui/main.tres"
+theme/custom="res://assets/ui/themes/xianxia/xianxia_theme.tres"
 
 [input]
 

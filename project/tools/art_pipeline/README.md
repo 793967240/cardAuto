@@ -1,6 +1,6 @@
 # 美术 Pipeline
 
-通过 `animal-mediakit` skill CLI 生成水墨修仙风格美术资产。
+通过 `animal-mediakit` skill CLI 生成清透新国风仙侠风格美术资产。
 
 ## 前置条件
 
@@ -40,10 +40,10 @@ python3 tools/art_pipeline/ingest.py --file assets/_pending/xxx.png --dest cards
 SKILL=~/.config/opencode/skills/animal-mediakit
 
 uv run $SKILL/scripts/cli.py generate image \
-  "水墨修仙风格，剑修挥剑，剑气横斩" \
+  "清透新国风仙侠风格，淡彩数字厚涂，剑修挥剑，剑气横斩，柔和云海，梦幻灵气光带" \
   --model doubao-seedream-5-0-260128 \
   --size 1024x1536 \
-  --negative-prompt "低质量，模糊，3D渲染，文字" \
+  --negative-prompt "低质量，模糊，水墨画，羊皮纸，卷轴纸纹，泛黄纸张，3D渲染，文字，水印" \
   -o /Users/happyelements/Documents/卡牌/project/assets/_pending/test.png
 ```
 
@@ -53,5 +53,5 @@ uv run $SKILL/scripts/cli.py generate image \
 |------|-----|
 | 模型 | `doubao-seedream-5-0-260128` |
 | 尺寸 | `1024x1536`（卡牌竖版） |
-| 风格关键词 | 水墨修仙、留白、笔触质感、墨色晕染、卷轴纸纹 |
-| 负面提示词 | 低质量、3D渲染、照片写实、西方奇幻、文字水印 |
+| 风格关键词 | 清透新国风仙侠、淡彩数字厚涂、柔和云海、远山仙宫、灵气光带、清透空气感、高级游戏概念图 |
+| 负面提示词 | 低质量、水墨画、羊皮纸、卷轴纸纹、泛黄纸张、3D渲染、照片写实、西方奇幻、文字水印 |

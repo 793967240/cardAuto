@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://src/ui/components/timeline_scroll_view.gd" id="1_script"]
-[ext_resource type="StyleBoxFlat" path="res://assets/ui/styles/panel_dark.tres" id="2_tooltip"]
+[ext_resource type="StyleBoxTexture" path="res://assets/ui/themes/xianxia/tooltips/tooltip_frame_xianxia.tres" id="2_tooltip"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cursor_glow"]
 bg_color = Color(0.95, 0.78, 0.32, 0.95)
@@ -66,14 +66,16 @@ theme_override_styles/panel = ExtResource("2_tooltip")
 [node name="Margin" type="MarginContainer" parent="TooltipPanel"]
 layout_mode = 2
 theme_override_constants/margin_left = 12
-theme_override_constants/margin_top = 10
+theme_override_constants/margin_top = 12
 theme_override_constants/margin_right = 12
-theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_bottom = 12
 
 [node name="Label" type="Label" parent="TooltipPanel/Margin"]
 custom_minimum_size = Vector2(280, 0)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.96, 0.92, 0.78, 1)
+theme_override_colors/font_color = Color(0.24, 0.18, 0.1, 1)
+theme_override_colors/font_outline_color = Color(1, 0.96, 0.82, 0.45)
+theme_override_constants/outline_size = 1
 theme_override_font_sizes/font_size = 14
 text = "Card Name
 Cost: 1

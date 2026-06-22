@@ -1,0 +1,38 @@
+[gd_resource type="Theme" load_steps=9 format=3]
+
+[ext_resource type="StyleBoxTexture" path="res://assets/ui/themes/xianxia/buttons/btn_jade_normal.tres" id="1_btn_normal"]
+[ext_resource type="StyleBoxTexture" path="res://assets/ui/themes/xianxia/buttons/btn_jade_hover.tres" id="2_btn_hover"]
+[ext_resource type="StyleBoxTexture" path="res://assets/ui/themes/xianxia/buttons/btn_jade_pressed.tres" id="3_btn_pressed"]
+[ext_resource type="StyleBoxFlat" path="res://assets/ui/themes/xianxia/panels/panel_build_deck.tres" id="4_panel"]
+[ext_resource type="StyleBoxTexture" path="res://assets/ui/themes/xianxia/tooltips/tooltip_frame_xianxia.tres" id="5_tooltip"]
+[ext_resource type="StyleBoxFlat" path="res://assets/ui/themes/xianxia/panels/starter_deck_button_normal.tres" id="6_starter_normal"]
+[ext_resource type="StyleBoxFlat" path="res://assets/ui/themes/xianxia/panels/starter_deck_button_hover.tres" id="7_starter_hover"]
+[ext_resource type="StyleBoxFlat" path="res://assets/ui/themes/xianxia/panels/starter_deck_button_pressed.tres" id="8_starter_pressed"]
+
+[resource]
+default_font_size = 18
+Button/colors/font_color = Color(1, 0.90, 0.66, 1)
+Button/colors/font_hover_color = Color(1, 0.98, 0.78, 1)
+Button/colors/font_pressed_color = Color(0.90, 0.76, 0.50, 1)
+Button/colors/font_outline_color = Color(0.12, 0.055, 0.020, 0.96)
+Button/constants/outline_size = 3
+Button/font_sizes/font_size = 18
+Button/styles/normal = ExtResource("1_btn_normal")
+Button/styles/hover = ExtResource("2_btn_hover")
+Button/styles/pressed = ExtResource("3_btn_pressed")
+Button/styles/focus = ExtResource("2_btn_hover")
+Label/colors/font_color = Color(0.17, 0.12, 0.08, 1)
+Label/colors/font_outline_color = Color(0.16, 0.08, 0.02, 0.92)
+Label/constants/outline_size = 0
+Label/font_sizes/font_size = 18
+PanelContainer/styles/panel = ExtResource("4_panel")
+StarterDeckButton/styles/normal = ExtResource("6_starter_normal")
+StarterDeckButton/styles/hover = ExtResource("7_starter_hover")
+StarterDeckButton/styles/pressed = ExtResource("8_starter_pressed")
+StarterDeckButton/styles/focus = ExtResource("7_starter_hover")
+StarterDeckButton/styles/panel = ExtResource("6_starter_normal")
+TooltipLabel/colors/font_color = Color(0.24, 0.18, 0.10, 1)
+TooltipLabel/colors/font_outline_color = Color(1, 0.96, 0.82, 0.45)
+TooltipLabel/constants/outline_size = 1
+TooltipLabel/font_sizes/font_size = 16
+TooltipPanel/styles/panel = ExtResource("5_tooltip")

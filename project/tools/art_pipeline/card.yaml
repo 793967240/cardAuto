@@ -3,7 +3,7 @@
 
 id: sword_zhan
 name: 斩
-prompt: "剑修挥剑，剑气横斩，蓝白剑气轨迹，墨色背景，竖版构图，细节精致，近景"
+prompt: "剑修挥剑，剑气横斩，蓝白剑气轨迹，柔和云海背景，清透空气感，竖版构图，细节精致，近景"
 
 style_override: null  # null = 使用全局 STYLE_HEADER
 

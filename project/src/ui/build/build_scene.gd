@@ -2,7 +2,14 @@ class_name BuildScene extends Control
 
 const TICK_DURATION: float = 0.5
 const CARD_VIEW_SCENE = preload("res://scenes/components/card_view.tscn")
-const ARRAY_SLOT_TEXTURE_PATH := "res://assets/ui/build/array_slot_base.png"
+const BUILD_BG_PATH := "res://assets/ui/themes/xianxia/backgrounds/build_bg_xianxia.png"
+const ARRAY_SLOT_TEXTURE_PATH := "res://assets/ui/themes/xianxia/plaques/array_slot_base.png"
+const TOPBAR_WOOD_PATH := "res://assets/ui/themes/xianxia/bars/build_topbar_wood.png"
+const BTN_BRONZE_PATH := "res://assets/ui/themes/xianxia/buttons/btn_bronze.png"
+const BTN_JADE_PATH := "res://assets/ui/themes/xianxia/buttons/btn_jade.png"
+const PANEL_BASE_STYLE_PATH := "res://assets/ui/themes/xianxia/panels/panel_build_base.tres"
+const PANEL_DECK_STYLE_PATH := "res://assets/ui/themes/xianxia/panels/panel_build_deck.tres"
+const PANEL_SIDE_STYLE_PATH := "res://assets/ui/themes/xianxia/panels/panel_build_side.tres"
 const PAPER_TEXT_COLOR := Color(0.24, 0.18, 0.12, 1.0)
 const PAPER_MUTED_TEXT_COLOR := Color(0.42, 0.34, 0.24, 1.0)
 const GOLD_TEXT_COLOR := Color(0.92, 0.82, 0.50, 1.0)
@@ -16,13 +23,15 @@ const INK_TEXT := Color(0.17, 0.12, 0.08, 1.0)
 const INK_MUTED := Color(0.45, 0.36, 0.24, 1.0)
 const INK_GOLD := Color(0.78, 0.58, 0.22, 1.0)
 const JADE_ACCENT := Color(0.28, 0.56, 0.48, 1.0)
-const PANEL_INK := Color(0.96, 0.91, 0.78, 0.82)
+const PANEL_INK := Color(0.90, 0.98, 0.96, 0.60)
 const PANEL_DARK_INK := Color(0.14, 0.11, 0.08, 0.78)
-const ARRAY_SLOT_BG := Color(0.84, 0.76, 0.58, 0.42)
-const ARRAY_SLOT_BORDER := Color(0.44, 0.31, 0.17, 0.70)
-const REPOSITORY_WASH := Color(0.86, 0.78, 0.58, 0.30)
+const ARRAY_SLOT_BG := Color(0.86, 0.96, 0.94, 0.30)
+const ARRAY_SLOT_BORDER := Color(0.34, 0.58, 0.56, 0.48)
+const REPOSITORY_WASH := Color(0.86, 0.96, 0.94, 0.24)
 
 @onready var base_chain_hbox: HBoxContainer = $VBox/Body/MainArea/BasePanel/BaseMargin/BaseScroll/BaseChainHBox
+@onready var background: TextureRect = $Background
+@onready var topbar_wood: TextureRect = $TopBarWood
 @onready var gem_title: Label = $VBox/Body/GemPanel/GemMargin/GemVBox/GemTitle
 @onready var gem_target_label: Label = $VBox/Body/GemPanel/GemMargin/GemVBox/GemTargetLabel
 @onready var gem_list_vbox: VBoxContainer = $VBox/Body/GemPanel/GemMargin/GemVBox/GemScroll/GemListVBox
@@ -45,9 +54,12 @@ var _gem_target_base_id: StringName = &""
 var _tip_label: Label = null
 var _tip_tween: Tween = null
 var _array_slot_texture: Texture2D = null
+var _button_texture_cache: Dictionary = {}
 
 
 func _ready() -> void:
+	_load_png_texture(background, BUILD_BG_PATH)
+	_load_topbar_wood_texture()
 	_apply_ink_theme()
 	_apply_static_text_contrast()
 	deck_grid.set_meta(&"on_drop", Callable(self, "_on_deck_area_drop"))
@@ -63,6 +75,16 @@ func _ready() -> void:
 	_setup_tip_label()
 	_refresh_all()
 
+func _load_topbar_wood_texture() -> void:
+	_load_png_texture(topbar_wood, TOPBAR_WOOD_PATH)
+	topbar_wood.modulate = Color(1.0, 1.0, 1.0, 0.86)
+
+func _load_png_texture(target: TextureRect, path: String) -> void:
+	var image := Image.load_from_file(ProjectSettings.globalize_path(path))
+	if image == null:
+		return
+	target.texture = ImageTexture.create_from_image(image)
+
 func _update_texts() -> void:
 	title_label.text = tr("build.title")
 	deck_label.text = tr("build.label.deck")
@@ -72,26 +94,62 @@ func _update_texts() -> void:
 	back_btn.text = tr("ui.button.back")
 
 func _apply_static_text_contrast() -> void:
-	title_label.add_theme_color_override(&"font_color", Color(0.11, 0.07, 0.04, 1.0))
-	title_label.add_theme_color_override(&"font_outline_color", Color(0.98, 0.92, 0.72, 0.80))
-	title_label.add_theme_constant_override(&"outline_size", 5)
+	title_label.add_theme_color_override(&"font_color", Color(1.0, 0.86, 0.48, 1.0))
+	title_label.add_theme_color_override(&"font_outline_color", Color(0.16, 0.08, 0.02, 0.92))
+	title_label.add_theme_constant_override(&"outline_size", 6)
 	deck_label.add_theme_color_override(&"font_color", INK_TEXT)
 	gem_title.add_theme_color_override(&"font_color", INK_TEXT)
 	gem_target_label.add_theme_color_override(&"font_color", INK_MUTED)
-	total_duration_label.add_theme_color_override(&"font_color", Color(0.10, 0.065, 0.035, 1.0))
-	total_duration_label.add_theme_color_override(&"font_outline_color", Color(0.98, 0.91, 0.70, 0.88))
-	total_duration_label.add_theme_constant_override(&"outline_size", 5)
+	total_duration_label.add_theme_color_override(&"font_color", Color(0.92, 0.80, 0.54, 1.0))
+	total_duration_label.add_theme_color_override(&"font_outline_color", Color(0.12, 0.06, 0.02, 0.92))
+	total_duration_label.add_theme_constant_override(&"outline_size", 4)
 
 func _apply_ink_theme() -> void:
-	base_panel.add_theme_stylebox_override(&"panel", _make_panel_style(Color(0.94, 0.87, 0.68, 0.80), Color(0.28, 0.20, 0.12, 0.90), 6, 12))
-	deck_panel.add_theme_stylebox_override(&"panel", _make_panel_style(Color(0.93, 0.86, 0.67, 0.78), Color(0.28, 0.20, 0.12, 0.88), 6, 10))
-	gem_panel.add_theme_stylebox_override(&"panel", _make_panel_style(Color(0.91, 0.83, 0.63, 0.88), Color(0.24, 0.17, 0.10, 0.90), 6, 12))
-	for btn in [back_btn, simulate_btn, confirm_btn]:
-		btn.add_theme_stylebox_override(&"normal", _make_panel_style(PANEL_DARK_INK, Color(0.72, 0.56, 0.31, 0.72), 5, 0))
-		btn.add_theme_stylebox_override(&"hover", _make_panel_style(Color(0.21, 0.16, 0.10, 0.88), Color(0.95, 0.72, 0.33, 0.95), 5, 0))
-		btn.add_theme_stylebox_override(&"pressed", _make_panel_style(Color(0.09, 0.075, 0.055, 0.90), Color(0.95, 0.72, 0.33, 1.0), 5, 0))
-		btn.add_theme_color_override(&"font_color", Color(0.92, 0.84, 0.68, 1.0))
-		btn.add_theme_color_override(&"font_hover_color", Color(1.0, 0.90, 0.62, 1.0))
+	base_panel.add_theme_stylebox_override(&"panel", _load_stylebox(PANEL_BASE_STYLE_PATH, _make_panel_style(Color(0.88, 0.97, 0.95, 0.46), Color(0.28, 0.52, 0.50, 0.62), 6, 8)))
+	deck_panel.add_theme_stylebox_override(&"panel", _load_stylebox(PANEL_DECK_STYLE_PATH, _make_panel_style(Color(0.88, 0.97, 0.95, 0.40), Color(0.28, 0.52, 0.50, 0.56), 6, 6)))
+	gem_panel.add_theme_stylebox_override(&"panel", _load_stylebox(PANEL_SIDE_STYLE_PATH, _make_panel_style(Color(0.90, 0.98, 0.96, 0.50), Color(0.28, 0.52, 0.50, 0.64), 6, 8)))
+	_style_art_button(back_btn, BTN_BRONZE_PATH)
+	_style_art_button(simulate_btn, BTN_JADE_PATH)
+	_style_art_button(confirm_btn, BTN_JADE_PATH)
+
+func _style_art_button(btn: Button, texture_path: String) -> void:
+	var texture := _load_texture(texture_path)
+	if texture == null:
+		return
+	btn.add_theme_stylebox_override(&"normal", _make_texture_button_style(texture, Color.WHITE))
+	btn.add_theme_stylebox_override(&"hover", _make_texture_button_style(texture, Color(1.10, 1.06, 0.92, 1.0)))
+	btn.add_theme_stylebox_override(&"pressed", _make_texture_button_style(texture, Color(0.82, 0.78, 0.68, 1.0)))
+	btn.add_theme_color_override(&"font_color", Color(1.0, 0.90, 0.66, 1.0))
+	btn.add_theme_color_override(&"font_hover_color", Color(1.0, 0.98, 0.78, 1.0))
+	btn.add_theme_color_override(&"font_pressed_color", Color(0.90, 0.76, 0.50, 1.0))
+	btn.add_theme_color_override(&"font_outline_color", Color(0.12, 0.055, 0.020, 0.96))
+	btn.add_theme_constant_override(&"outline_size", 3)
+
+func _make_texture_button_style(texture: Texture2D, modulate: Color) -> StyleBoxTexture:
+	var sb := StyleBoxTexture.new()
+	sb.texture = texture
+	sb.modulate_color = modulate
+	sb.axis_stretch_horizontal = StyleBoxTexture.AXIS_STRETCH_MODE_STRETCH
+	sb.axis_stretch_vertical = StyleBoxTexture.AXIS_STRETCH_MODE_STRETCH
+	sb.content_margin_left = 18
+	sb.content_margin_top = 8
+	sb.content_margin_right = 18
+	sb.content_margin_bottom = 8
+	return sb
+
+func _load_texture(path: String) -> Texture2D:
+	if _button_texture_cache.has(path):
+		return _button_texture_cache[path]
+	var image := Image.load_from_file(ProjectSettings.globalize_path(path))
+	if image == null:
+		return null
+	var texture := ImageTexture.create_from_image(image)
+	_button_texture_cache[path] = texture
+	return texture
+
+func _load_stylebox(path: String, fallback: StyleBox) -> StyleBox:
+	var style := load(path) as StyleBox
+	return style if style != null else fallback
 
 static func _make_panel_style(bg: Color, border: Color, radius: int, shadow: int) -> StyleBoxFlat:
 	var sb := StyleBoxFlat.new()
@@ -106,7 +164,7 @@ static func _make_panel_style(bg: Color, border: Color, radius: int, shadow: int
 	sb.corner_radius_bottom_left = radius
 	sb.corner_radius_bottom_right = radius
 	sb.shadow_size = shadow
-	sb.shadow_color = Color(0.05, 0.035, 0.02, 0.30)
+	sb.shadow_color = Color(0.05, 0.12, 0.12, 0.18)
 	sb.shadow_offset = Vector2(0, 3)
 	sb.content_margin_left = 14
 	sb.content_margin_top = 10
@@ -205,7 +263,7 @@ func _make_array_slot_shell(selected: bool) -> Control:
 func _get_array_slot_texture() -> Texture2D:
 	if _array_slot_texture != null:
 		return _array_slot_texture
-	_array_slot_texture = load(ARRAY_SLOT_TEXTURE_PATH) as Texture2D
+	_array_slot_texture = _load_texture(ARRAY_SLOT_TEXTURE_PATH)
 	return _array_slot_texture
 
 func _make_chain_arrow() -> Control:
@@ -224,8 +282,8 @@ func _make_chain_arrow() -> Control:
 
 func _make_array_slot_style(selected: bool) -> StyleBoxFlat:
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.98, 0.88, 0.56, 0.14) if selected else Color(0.88, 0.78, 0.58, 0.06)
-	sb.border_color = Color(0.95, 0.72, 0.30, 0.64) if selected else Color(0.44, 0.31, 0.17, 0.16)
+	sb.bg_color = Color(0.76, 0.96, 0.92, 0.18) if selected else Color(0.86, 0.96, 0.94, 0.06)
+	sb.border_color = Color(0.42, 0.74, 0.66, 0.62) if selected else Color(0.34, 0.58, 0.56, 0.18)
 	sb.border_width_left = 2
 	sb.border_width_top = 2
 	sb.border_width_right = 2
@@ -235,7 +293,7 @@ func _make_array_slot_style(selected: bool) -> StyleBoxFlat:
 	sb.corner_radius_bottom_left = 5
 	sb.corner_radius_bottom_right = 5
 	sb.shadow_size = 5 if selected else 0
-	sb.shadow_color = Color(0.35, 0.24, 0.08, 0.24 if selected else 0.0)
+	sb.shadow_color = Color(0.08, 0.20, 0.18, 0.18 if selected else 0.0)
 	sb.content_margin_left = 6
 	sb.content_margin_top = 6
 	sb.content_margin_right = 6
@@ -588,7 +646,7 @@ func _make_deck_empty_state() -> Control:
 func _make_repository_drop_style() -> StyleBoxFlat:
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = REPOSITORY_WASH
-	sb.border_color = Color(0.46, 0.34, 0.18, 0.42)
+	sb.border_color = Color(0.34, 0.58, 0.56, 0.36)
 	sb.border_width_left = 2
 	sb.border_width_top = 2
 	sb.border_width_right = 2

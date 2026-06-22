@@ -1,6 +1,7 @@
 class_name RelicBar extends PanelContainer
 
 const PLACEHOLDER_ICON := preload("res://assets/ui/relics/relic_placeholder.png")
+const TOOLTIP_STYLE_PATH := "res://assets/ui/themes/xianxia/tooltips/tooltip_frame_xianxia.tres"
 
 @export var compact: bool = false
 @export var show_title: bool = true
@@ -125,14 +126,14 @@ func _make_custom_tooltip(for_text: String) -> Object:
 	var name_label := Label.new()
 	name_label.text = parts[0] if parts.size() > 0 else ""
 	name_label.add_theme_font_size_override(&"font_size", 17)
-	name_label.add_theme_color_override(&"font_color", Color(1.0, 0.86, 0.48, 1.0))
+	name_label.add_theme_color_override(&"font_color", Color(0.24, 0.36, 0.28, 1.0))
 	box.add_child(name_label)
 
 	var desc_label := Label.new()
 	desc_label.text = parts[1] if parts.size() > 1 else ""
 	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	desc_label.add_theme_font_size_override(&"font_size", 14)
-	desc_label.add_theme_color_override(&"font_color", Color(0.92, 0.86, 0.72, 1.0))
+	desc_label.add_theme_color_override(&"font_color", Color(0.28, 0.20, 0.12, 1.0))
 	box.add_child(desc_label)
 
 	return panel
@@ -176,7 +177,10 @@ static func _make_icon_style(bg: Color, border: Color) -> StyleBoxFlat:
 	return sb
 
 
-static func _make_tooltip_style() -> StyleBoxFlat:
+static func _make_tooltip_style() -> StyleBox:
+	var theme_style := load(TOOLTIP_STYLE_PATH) as StyleBox
+	if theme_style != null:
+		return theme_style
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = Color(0.10, 0.075, 0.045, 0.98)
 	sb.border_color = Color(0.92, 0.68, 0.28, 0.95)

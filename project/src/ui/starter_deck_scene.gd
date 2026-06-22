@@ -11,12 +11,16 @@ func _ready() -> void:
 	if GameState.current_run == null:
 		GameState.start_run(&"sword")
 	_update_texts()
-	EventBus.language_changed.connect(func(_l): _update_texts())
+	EventBus.language_changed.connect(func(_l): _on_language_changed())
 	_render_decks()
 
 func _update_texts() -> void:
 	title_label.text = tr("starter_deck.title")
 	subtitle_label.text = tr("starter_deck.subtitle")
+
+func _on_language_changed() -> void:
+	_update_texts()
+	_render_decks()
 
 func _render_decks() -> void:
 	for child in decks_row.get_children():
@@ -25,21 +29,19 @@ func _render_decks() -> void:
 	for i in range(GameState.SWORD_STARTER_DECKS.size()):
 		decks_row.add_child(_make_deck_panel(i, GameState.SWORD_STARTER_DECKS[i]))
 
-func _make_deck_panel(deck_index: int, deck_def: Dictionary) -> Button:
-	var btn := Button.new()
-	btn.custom_minimum_size = Vector2(280, 780)
-	btn.focus_mode = Control.FOCUS_NONE
-	btn.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	btn.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	btn.pressed.connect(_on_deck_pressed.bind(deck_index))
+func _make_deck_panel(deck_index: int, deck_def: Dictionary) -> PanelContainer:
+	var panel := PanelContainer.new()
+	panel.theme_type_variation = &"StarterDeckButton"
+	panel.custom_minimum_size = Vector2(360, 780)
+	panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
 
 	var margin := MarginContainer.new()
-	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	margin.add_theme_constant_override(&"margin_left", 14)
 	margin.add_theme_constant_override(&"margin_top", 14)
 	margin.add_theme_constant_override(&"margin_right", 14)
 	margin.add_theme_constant_override(&"margin_bottom", 14)
-	btn.add_child(margin)
+	panel.add_child(margin)
 
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override(&"separation", 8)
@@ -55,7 +57,8 @@ func _make_deck_panel(deck_index: int, deck_def: Dictionary) -> Button:
 	desc_label.text = tr(deck_def.get("desc_key", ""))
 	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	desc_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	desc_label.custom_minimum_size = Vector2(0, 32)
+	desc_label.custom_minimum_size = Vector2(0, 54)
+	desc_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	box.add_child(desc_label)
 
 	var cards_column := VBoxContainer.new()
@@ -75,7 +78,14 @@ func _make_deck_panel(deck_index: int, deck_def: Dictionary) -> Button:
 		view.setup_deck_item(card, 1, 1)
 		view.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
-	return btn
+	var pick_btn := Button.new()
+	pick_btn.text = tr("ui.button.confirm")
+	pick_btn.custom_minimum_size = Vector2(0, 56)
+	pick_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	pick_btn.pressed.connect(_on_deck_pressed.bind(deck_index))
+	box.add_child(pick_btn)
+
+	return panel
 
 func _on_deck_pressed(deck_index: int) -> void:
 	GameState.apply_starter_deck(deck_index)

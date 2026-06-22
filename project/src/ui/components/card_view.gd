@@ -70,6 +70,7 @@ const DISABLED_TEXT_COLOR := Color(0.88, 0.82, 0.64, 1.0)
 const DRAG_START_DISTANCE := 8.0
 
 @onready var bg_panel: Panel = $BgPanel
+@onready var frame_texture: TextureRect = $FrameTexture
 @onready var margin: MarginContainer = $Margin
 @onready var vbox: VBoxContainer = $Margin/VBox
 @onready var name_label: Label = $Margin/VBox/NameLabel
@@ -117,6 +118,7 @@ func _bind_nodes() -> void:
 	if bg_panel != null:
 		return
 	bg_panel = $BgPanel
+	frame_texture = $FrameTexture
 	margin = $Margin
 	vbox = $Margin/VBox
 	name_label = $Margin/VBox/NameLabel
@@ -172,6 +174,7 @@ func setup(card: CardRuntime, cost: int) -> void:
 
 	# 关闭所有构筑专用元素
 	build_name_label.hide()
+	frame_texture.hide()
 	art_rect.hide()
 	type_bar.hide()
 	desc_label.hide()
@@ -184,6 +187,7 @@ func setup(card: CardRuntime, cost: int) -> void:
 	progress_bar.value = 0
 
 	cost_badge.show()
+	_apply_cost_badge_chrome(false)
 	bg_panel.show()
 	bg_panel.modulate = Color.WHITE
 	strike_rect.hide()
@@ -233,10 +237,12 @@ func _setup_build_slot(card: CardData, compact: bool) -> void:
 	strike_rect.hide()
 	highlight_rect.hide()
 	overlay_rect.hide()
+	_apply_cost_badge_chrome(true)
 
 	if is_empty_slot:
 		bg_panel.show()
-		bg_panel.modulate = Color.WHITE
+		frame_texture.show()
+		bg_panel.modulate = Color(1, 1, 1, 0)
 		cost_badge.show()
 		empty_label.hide()
 		var fallback := ChainComposer.get_default_strike_card()
@@ -246,6 +252,7 @@ func _setup_build_slot(card: CardData, compact: bool) -> void:
 		cost_label.text = str(fallback.cost)
 		_apply_name_font_for_build()
 		build_name_label.show()
+		_apply_card_frame(fallback)
 		art_rect.show()
 		_apply_card_art(fallback)
 		type_bar.show()
@@ -257,7 +264,8 @@ func _setup_build_slot(card: CardData, compact: bool) -> void:
 		vbox.alignment = BoxContainer.ALIGNMENT_BEGIN
 	else:
 		bg_panel.show()
-		bg_panel.modulate = Color.WHITE
+		frame_texture.show()
+		bg_panel.modulate = Color(1, 1, 1, 0)
 		cost_badge.show()
 		empty_label.hide()
 
@@ -270,6 +278,7 @@ func _setup_build_slot(card: CardData, compact: bool) -> void:
 		cost_label.text = str(card.cost)
 		_apply_name_font_for_build()
 		build_name_label.show()
+		_apply_card_frame(card)
 
 		# 卡面图区
 		art_rect.show()
@@ -308,8 +317,10 @@ func setup_deck_item(card: CardData, available: int, total: int) -> void:
 	custom_minimum_size = Vector2(BUILD_DECK_WIDTH, BUILD_DECK_HEIGHT)
 
 	bg_panel.show()
-	bg_panel.modulate = Color.WHITE
+	frame_texture.show()
+	bg_panel.modulate = Color(1, 1, 1, 0)
 	cost_badge.show()
+	_apply_cost_badge_chrome(true)
 	empty_label.hide()
 	progress_bar.hide()
 	strike_rect.hide()
@@ -333,6 +344,7 @@ func setup_deck_item(card: CardData, available: int, total: int) -> void:
 	cost_label.text = str(card.cost)
 	_apply_name_font_for_build()
 	build_name_label.show()
+	_apply_card_frame(card)
 
 	stock_badge.hide()
 	stock_label.text = ""
@@ -340,11 +352,12 @@ func setup_deck_item(card: CardData, available: int, total: int) -> void:
 	# 库存耗尽：整体变暗 + 不可拖
 	var disabled := (available <= 0)
 	if disabled:
-		bg_panel.modulate = Color(0.42, 0.40, 0.36, 1)
+		frame_texture.modulate = Color(0.42, 0.40, 0.36, 1)
 		name_label.add_theme_color_override(&"font_color", DISABLED_TEXT_COLOR)
 		build_name_label.add_theme_color_override(&"font_color", DISABLED_TEXT_COLOR)
 		overlay_rect.hide()
 	else:
+		frame_texture.modulate = Color.WHITE
 		name_label.add_theme_color_override(&"font_color", BUILD_TEXT_COLOR)
 		build_name_label.add_theme_color_override(&"font_color", BUILD_TEXT_COLOR)
 		overlay_rect.hide()
@@ -395,45 +408,58 @@ func _apply_card_art(card: CardData) -> void:
 		var t: int = int(card.card_type)
 		art_rect.color = TYPE_COLORS.get(t, Color(0.30, 0.25, 0.20, 1))
 
+func _apply_card_frame(card: CardData) -> void:
+	var rarity := 0
+	if card != null:
+		rarity = int(card.rarity)
+	if frame_texture.has_method("setup_for_rarity"):
+		frame_texture.call("setup_for_rarity", rarity)
+
+func _apply_cost_badge_chrome(build_mode: bool) -> void:
+	if build_mode:
+		cost_badge.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
+	else:
+		cost_badge.remove_theme_stylebox_override("panel")
+
 func _apply_build_geometry() -> void:
 	if mode == Mode.BUILD_DECK_ITEM:
 		build_name_label.offset_left = 28.0
-		build_name_label.offset_top = 8.0
+		build_name_label.offset_top = 10.0
 		build_name_label.offset_right = -28.0
-		build_name_label.offset_bottom = 46.0
-		art_rect.offset_left = 10.0
-		art_rect.offset_top = 52.0
-		art_rect.offset_right = -10.0
-		art_rect.offset_bottom = 126.0
-		type_bar.offset_left = 6.0
-		type_bar.offset_top = 132.0
-		type_bar.offset_right = -6.0
-		type_bar.offset_bottom = 152.0
-		desc_label.offset_left = 10.0
-		desc_label.offset_top = -116.0
-		desc_label.offset_right = -10.0
-		desc_label.offset_bottom = -10.0
+		build_name_label.offset_bottom = 48.0
+		art_rect.offset_left = 14.0
+		art_rect.offset_top = 50.0
+		art_rect.offset_right = -14.0
+		art_rect.offset_bottom = 166.0
+		type_bar.offset_left = 48.0
+		type_bar.offset_top = 156.0
+		type_bar.offset_right = -48.0
+		type_bar.offset_bottom = 182.0
+		desc_label.offset_left = 16.0
+		desc_label.offset_top = -95.0
+		desc_label.offset_right = -16.0
+		desc_label.offset_bottom = -18.0
 		margin.add_theme_constant_override(&"margin_left", 8)
 		margin.add_theme_constant_override(&"margin_top", 8)
 		margin.add_theme_constant_override(&"margin_right", 8)
 		margin.add_theme_constant_override(&"margin_bottom", BUILD_DECK_HEIGHT - 38)
 	elif mode == Mode.BUILD_SLOT:
 		build_name_label.offset_left = 28.0
-		build_name_label.offset_top = 8.0
+		build_name_label.offset_top = 10.0
 		build_name_label.offset_right = -28.0
-		build_name_label.offset_bottom = 46.0
-		art_rect.offset_left = 8.0
-		art_rect.offset_top = 52.0
-		art_rect.offset_right = -8.0
-		art_rect.offset_bottom = 126.0
-		type_bar.offset_left = 6.0
-		type_bar.offset_top = 132.0
-		type_bar.offset_right = -6.0
-		type_bar.offset_bottom = 152.0
-		desc_label.offset_left = 10.0
-		desc_label.offset_top = -116.0
-		desc_label.offset_right = -10.0
-		desc_label.offset_bottom = -10.0
+		build_name_label.offset_bottom = 48.0
+		art_rect.offset_left = 13.0
+		art_rect.offset_top = 50.0
+		art_rect.offset_right = -13.0
+		art_rect.offset_bottom = 168.0
+		type_bar.offset_left = 43.0
+		type_bar.offset_top = 157.0
+		type_bar.offset_right = -43.0
+		type_bar.offset_bottom = 183.0
+		desc_label.offset_left = 15.0
+		desc_label.offset_top = -98.0
+		desc_label.offset_right = -15.0
+		desc_label.offset_bottom = -18.0
 		margin.add_theme_constant_override(&"margin_left", 7)
 		margin.add_theme_constant_override(&"margin_top", 8)
 		margin.add_theme_constant_override(&"margin_right", 7)
@@ -442,19 +468,15 @@ func _apply_build_geometry() -> void:
 
 func _apply_type_bar(card: CardData) -> void:
 	var t: int = int(card.card_type)
-	# 给 TypeBar 一个 stylebox 并按 type 上色（避免污染共享资源）
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = TYPE_BAR_COLORS.get(t, Color(0.25, 0.25, 0.30, 0.9))
-	sb.corner_radius_top_left = 2
-	sb.corner_radius_top_right = 2
-	sb.corner_radius_bottom_left = 2
-	sb.corner_radius_bottom_right = 2
-	type_bar.add_theme_stylebox_override("panel", sb)
+	type_bar.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
 	type_bar.modulate = Color.WHITE
 
 	type_label.text = tr(TYPE_LABEL_KEYS.get(t, "card.type.special"))
 
 func _apply_rarity_frame(card: CardData) -> void:
+	if frame_texture.visible:
+		rarity_frame.hide()
+		return
 	var r: int = int(card.rarity)
 	var color: Color = RARITY_BORDER_COLORS.get(r, Color(0, 0, 0, 0))
 	if color.a <= 0.0:
@@ -470,9 +492,9 @@ func _apply_rarity_frame(card: CardData) -> void:
 	rarity_frame.add_theme_stylebox_override("panel", sb)
 
 func _apply_desc_font(_text: String) -> void:
-	var fsize := 14
+	var fsize := 12
 	if mode == Mode.BUILD_SLOT and not is_compact_build_slot:
-		fsize = 13
+		fsize = 11
 	desc_label.add_theme_font_size_override("font_size", fsize)
 
 # ─── 通用名称字号 ───────────────────────────────────────────────
@@ -484,24 +506,24 @@ func _apply_name_font_for_build() -> void:
 		# 链上大卡名字可以稍大
 		if is_compact_build_slot:
 			if name_chars <= 4:
-				fsize = 15
-			elif name_chars <= 6:
 				fsize = 13
-			else:
+			elif name_chars <= 6:
 				fsize = 12
+			else:
+				fsize = 11
 		elif name_chars <= 4:
-			fsize = 18
+			fsize = 15
 		elif name_chars <= 6:
-			fsize = 16
-		else:
 			fsize = 14
+		else:
+			fsize = 12
 	else:
 		# 卡牌仓库卡更大，名字也相应放大。
-		fsize = 20
+		fsize = 16
 		if name_chars > 6:
-			fsize = 16
+			fsize = 13
 		elif name_chars > 4:
-			fsize = 18
+			fsize = 15
 	name_label.add_theme_font_size_override("font_size", fsize)
 	build_name_label.add_theme_font_size_override("font_size", fsize)
 
@@ -515,15 +537,16 @@ func _on_mouse_entered() -> void:
 		# 构筑模式：库存耗尽不响应 hover 高亮
 		var disabled := (mode == Mode.BUILD_DECK_ITEM and stock_available <= 0)
 		if not disabled and not highlight_rect.visible:
-			bg_panel.modulate = Color(1.15, 1.12, 1.05, 1)
+			frame_texture.modulate = Color(1.08, 1.06, 1.02, 1)
 
 func _on_mouse_exited() -> void:
 	if mode == Mode.BUILD_DECK_ITEM and stock_available <= 0:
-		bg_panel.modulate = Color(0.42, 0.40, 0.36, 1)
+		frame_texture.modulate = Color(0.42, 0.40, 0.36, 1)
 	elif mode == Mode.BUILD_SLOT and is_empty_slot:
-		bg_panel.modulate = Color.WHITE
+		frame_texture.modulate = Color.WHITE
 	else:
-		bg_panel.modulate = Color.WHITE
+		bg_panel.modulate = Color.WHITE if mode == Mode.BATTLE else Color(1, 1, 1, 0)
+		frame_texture.modulate = Color.WHITE
 
 func _apply_build_text_contrast() -> void:
 	for label in [name_label, build_name_label, desc_label, type_label, art_placeholder, stock_label]:

@@ -2,7 +2,7 @@
 
 ## 目标
 
-为路线选择界面制作一套可替换当前程序绘制图标的独立节点素材。风格参考《杀戮尖塔》的爬塔地图可读性，但主题要贴合本项目的东方玄幻、纸卷地图、铜金法器质感。
+为路线选择界面制作一套可替换当前程序绘制图标的独立节点素材。风格参考《杀戮尖塔》的爬塔地图可读性，但主题要贴合本项目的清透新国风仙侠、云海仙山、玉石与铜金法器质感。
 
 ## 通用规格
 
@@ -81,7 +81,7 @@ transparent background, game map boss node icon, demonic crown with sharp horns,
 底座提示词：
 
 ```text
-transparent background, circular game map node frame, ancient bronze and gold, xianxia parchment map style, thick rim, subtle engraved talisman pattern, centered empty space for icon, no text, no background, 512x512
+transparent background, circular game map node frame, translucent jade and ancient bronze gold, ethereal xianxia cloud sea style, thick rim, subtle engraved talisman pattern, soft celestial glow, centered empty space for icon, no text, no background, no parchment, 512x512
 ```
 
 ## 交付命名
