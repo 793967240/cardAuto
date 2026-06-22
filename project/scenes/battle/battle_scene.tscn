@@ -1,10 +1,12 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://src/ui/battle/battle_scene.gd" id="1_script"]
 [ext_resource type="Script" path="res://src/core/battle_controller.gd" id="2_script"]
 [ext_resource type="PackedScene" path="res://scenes/battle/timeline_scroll_view.tscn" id="3_timeline"]
-[ext_resource type="StyleBoxFlat" path="res://assets/ui/styles/panel_dark.tres" id="4_topbar"]
+[ext_resource type="StyleBoxTexture" path="res://assets/ui/themes/xianxia/bars/fresh_topbar.tres" id="4_topbar"]
 [ext_resource type="Script" path="res://src/ui/components/relic_bar.gd" id="5_relic_bar"]
+[ext_resource type="Texture2D" path="res://assets/ui/themes/xianxia/backgrounds/fresh_mountain_battle.png" id="6_bg"]
+[ext_resource type="StyleBoxTexture" path="res://assets/ui/themes/xianxia/panels/fresh_panel_large.tres" id="7_panel_large"]
 
 [node name="BattleScene" type="Control"]
 layout_mode = 3
@@ -18,7 +20,7 @@ script = ExtResource("1_script")
 [node name="BattleController" type="Node" parent="."]
 script = ExtResource("2_script")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="TextureRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -26,7 +28,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-color = Color(0.07, 0.06, 0.08, 1)
+texture = ExtResource("6_bg")
+expand_mode = 1
+stretch_mode = 6
 
 [node name="VBox" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -57,14 +61,14 @@ alignment = 1
 
 [node name="HpIcon" type="Label" parent="VBox/TopBarPanel/TopBarMargin/TopBar"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.95, 0.32, 0.32, 1)
+theme_override_colors/font_color = Color(0.78, 0.26, 0.24, 1)
 theme_override_font_sizes/font_size = 26
 text = "♥"
 vertical_alignment = 1
 
 [node name="PlayerHpLabel" type="Label" parent="VBox/TopBarPanel/TopBarMargin/TopBar"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.96, 0.92, 0.78, 1)
+theme_override_colors/font_color = Color(0.10, 0.30, 0.30, 1)
 theme_override_font_sizes/font_size = 24
 text = "80 / 80"
 vertical_alignment = 1
@@ -105,7 +109,7 @@ size_flags_horizontal = 3
 
 [node name="SpeedLabel" type="Label" parent="VBox/TopBarPanel/TopBarMargin/TopBar"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.78, 0.72, 0.6, 1)
+theme_override_colors/font_color = Color(0.24, 0.45, 0.43, 1)
 theme_override_font_sizes/font_size = 16
 text = "速度"
 vertical_alignment = 1
@@ -176,7 +180,7 @@ alignment = 1
 custom_minimum_size = Vector2(280, 0)
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_styles/panel = ExtResource("4_topbar")
+theme_override_styles/panel = ExtResource("7_panel_large")
 
 [node name="BattleInfoMargin" type="MarginContainer" parent="VBox/Center/BattleInfoPanel"]
 layout_mode = 2
@@ -191,13 +195,13 @@ theme_override_constants/separation = 8
 
 [node name="BattleInfoTitle" type="Label" parent="VBox/Center/BattleInfoPanel/BattleInfoMargin/BattleInfoVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.92, 0.82, 0.5, 1)
+theme_override_colors/font_color = Color(0.10, 0.36, 0.36, 1)
 theme_override_font_sizes/font_size = 20
 text = "战斗信息"
 
 [node name="BattleInfoSummary" type="Label" parent="VBox/Center/BattleInfoPanel/BattleInfoMargin/BattleInfoVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.82, 0.78, 0.68, 1)
+theme_override_colors/font_color = Color(0.28, 0.48, 0.45, 1)
 theme_override_font_sizes/font_size = 14
 text = "伤害 0  治疗 0"
 

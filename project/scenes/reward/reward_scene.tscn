@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://reward_scene"]
+[gd_scene load_steps=3 format=3 uid="uid://reward_scene"]
 
 [ext_resource type="Script" path="res://src/ui/reward/reward_scene.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/ui/themes/xianxia/backgrounds/fresh_mountain_battle.png" id="2_bg"]
 
 [node name="RewardScene" type="Control"]
 layout_mode = 3
@@ -11,14 +12,16 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_script")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="TextureRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.06, 0.06, 0.1, 1)
+texture = ExtResource("2_bg")
+expand_mode = 1
+stretch_mode = 6
 
 [node name="Margin" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -39,14 +42,16 @@ alignment = 1
 
 [node name="TitleLabel" type="Label" parent="Margin/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.95, 0.78, 0.4, 1)
+theme_override_colors/font_color = Color(0.08, 0.36, 0.36, 1)
+theme_override_colors/font_outline_color = Color(0.96, 1, 0.95, 0.80)
+theme_override_constants/outline_size = 3
 theme_override_font_sizes/font_size = 36
 text = "战斗胜利！"
 horizontal_alignment = 1
 
 [node name="SubtitleLabel" type="Label" parent="Margin/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.85, 0.78, 0.55, 1)
+theme_override_colors/font_color = Color(0.22, 0.45, 0.43, 1)
 theme_override_font_sizes/font_size = 18
 text = "选择一张卡牌加入卡牌仓库"
 horizontal_alignment = 1

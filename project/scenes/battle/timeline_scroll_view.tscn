@@ -4,7 +4,7 @@
 [ext_resource type="StyleBoxTexture" path="res://assets/ui/themes/xianxia/tooltips/tooltip_frame_xianxia.tres" id="2_tooltip"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cursor_glow"]
-bg_color = Color(0.95, 0.78, 0.32, 0.95)
+bg_color = Color(0.36, 0.74, 0.66, 0.92)
 border_width_left = 0
 border_width_top = 0
 border_width_right = 0
@@ -13,7 +13,7 @@ corner_radius_top_left = 2
 corner_radius_top_right = 2
 corner_radius_bottom_right = 2
 corner_radius_bottom_left = 2
-shadow_color = Color(1, 0.78, 0.32, 0.65)
+shadow_color = Color(0.36, 0.74, 0.66, 0.45)
 shadow_size = 14
 
 [node name="TimelineScrollView" type="ScrollContainer"]

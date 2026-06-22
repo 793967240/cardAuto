@@ -469,14 +469,14 @@ class MapRouteLineLayer extends Control:
 				var to_center := _center_in_layer(to_btn)
 				var active := _current_node_id == from_id or (_current_node_id == "" and _available_ids.has(from_id))
 				var reachable := _available_ids.has(to_id)
-				var path_color := Color(0.95, 0.72, 0.32, 0.95) if active or reachable else Color(0.47, 0.45, 0.52, 0.42)
+				var path_color := Color(0.31, 0.66, 0.60, 0.92) if active or reachable else Color(0.55, 0.68, 0.66, 0.34)
 				var path_width := 5.5 if active or reachable else 2.5
-				draw_line(from_center, to_center, Color(0.03, 0.025, 0.02, 0.78), path_width + 4.0, true)
-				draw_line(from_center, to_center, path_color.darkened(0.35), path_width + 1.8, true)
+				draw_line(from_center, to_center, Color(0.92, 1.0, 0.96, 0.68), path_width + 4.0, true)
+				draw_line(from_center, to_center, path_color.darkened(0.18), path_width + 1.8, true)
 				draw_line(from_center, to_center, path_color, path_width, true)
 				if active or reachable:
 					var mid := from_center.lerp(to_center, 0.5)
-					draw_circle(mid, 4.0, Color(1.0, 0.88, 0.48, 0.9))
+					draw_circle(mid, 4.0, Color(0.78, 0.96, 0.82, 0.9))
 
 	func _center_in_layer(control: Control) -> Vector2:
 		var control_origin := control.get_global_transform_with_canvas().origin
@@ -485,16 +485,15 @@ class MapRouteLineLayer extends Control:
 
 class MapBackdropLayer extends Control:
 	func _draw() -> void:
-		var top := Color(0.055, 0.055, 0.085, 1.0)
-		var bottom := Color(0.115, 0.08, 0.075, 1.0)
-		draw_rect(Rect2(Vector2.ZERO, size), top)
+		var top := Color(0.90, 0.98, 0.97, 0.28)
+		var bottom := Color(0.72, 0.88, 0.87, 0.18)
 		for i in range(16):
 			var t := float(i) / 15.0
 			var y := lerpf(0.0, size.y, t)
 			draw_rect(Rect2(0, y, size.x, max(size.y / 16.0 + 1.0, 1.0)), top.lerp(bottom, t))
 		for i in range(7):
 			var y := size.y * (0.18 + float(i) * 0.12)
-			var ridge_color := Color(0.22, 0.18, 0.16, 0.15 + float(i % 3) * 0.035)
+			var ridge_color := Color(0.24, 0.52, 0.50, 0.06 + float(i % 3) * 0.025)
 			var points := PackedVector2Array()
 			points.append(Vector2(-80, y + 34))
 			for x in range(-80, int(size.x) + 160, 180):
@@ -507,8 +506,8 @@ class MapBackdropLayer extends Control:
 		for i in range(36):
 			var x := fmod(float(i * 137), max(size.x, 1.0))
 			var y := fmod(float(i * 89), max(size.y, 1.0))
-			var alpha := 0.08 + float(i % 4) * 0.025
-			draw_circle(Vector2(x, y), 1.2 + float(i % 3), Color(0.95, 0.78, 0.42, alpha))
+			var alpha := 0.06 + float(i % 4) * 0.020
+			draw_circle(Vector2(x, y), 1.2 + float(i % 3), Color(0.42, 0.78, 0.70, alpha))
 
 class MapNodeButton extends Button:
 	enum VisualState { LOCKED, AVAILABLE, COMPLETED }
@@ -550,11 +549,11 @@ class MapNodeButton extends Button:
 		var hover_scale := 1.08 if is_hovered() and not disabled else 1.0
 		radius *= hover_scale
 
-		draw_circle(center + Vector2(0, 5), radius + 5.0, Color(0.015, 0.012, 0.01, 0.64 * alpha))
+		draw_circle(center + Vector2(0, 5), radius + 5.0, Color(0.10, 0.30, 0.28, 0.22 * alpha))
 		if visual_state == VisualState.AVAILABLE:
-			draw_circle(center, radius + 9.0, Color(1.0, 0.76, 0.28, 0.26))
-			draw_arc(center, radius + 8.0, -PI * 0.15, PI * 1.35, 48, Color(1.0, 0.88, 0.48, 0.95), 3.0, true)
-		draw_circle(center, radius + 3.0, palette["rim"].darkened(0.34))
+			draw_circle(center, radius + 9.0, Color(0.44, 0.82, 0.72, 0.24))
+			draw_arc(center, radius + 8.0, -PI * 0.15, PI * 1.35, 48, Color(0.76, 0.96, 0.82, 0.95), 3.0, true)
+		draw_circle(center, radius + 3.0, palette["rim"].darkened(0.18))
 		draw_circle(center, radius, palette["rim"])
 
 		var icon_color: Color = palette["icon"]
@@ -582,30 +581,30 @@ class MapNodeButton extends Button:
 		_draw_caption()
 
 	func _palette() -> Dictionary:
-		var fill := Color(0.22, 0.19, 0.17, 1)
-		var rim := Color(0.72, 0.57, 0.34, 1)
-		var icon := Color(0.98, 0.9, 0.66, 1)
+		var fill := Color(0.82, 0.94, 0.90, 1)
+		var rim := Color(0.42, 0.72, 0.66, 1)
+		var icon := Color(0.12, 0.36, 0.34, 1)
 		match node_type:
 			int(MapGenerator.NodeType.BATTLE):
-				fill = Color(0.32, 0.12, 0.11, 1)
-				rim = Color(0.76, 0.38, 0.27, 1)
+				fill = Color(0.92, 0.86, 0.82, 1)
+				rim = Color(0.68, 0.38, 0.34, 1)
 			int(MapGenerator.NodeType.CAMPFIRE):
-				fill = Color(0.19, 0.24, 0.18, 1)
-				rim = Color(0.57, 0.78, 0.44, 1)
+				fill = Color(0.82, 0.94, 0.84, 1)
+				rim = Color(0.48, 0.74, 0.52, 1)
 			int(MapGenerator.NodeType.BOSS):
-				fill = Color(0.28, 0.09, 0.16, 1)
-				rim = Color(0.93, 0.62, 0.22, 1)
+				fill = Color(0.88, 0.84, 0.92, 1)
+				rim = Color(0.50, 0.42, 0.72, 1)
 			int(MapGenerator.NodeType.CHEST):
-				fill = Color(0.21, 0.16, 0.08, 1)
-				rim = Color(0.93, 0.76, 0.36, 1)
+				fill = Color(0.94, 0.93, 0.80, 1)
+				rim = Color(0.74, 0.68, 0.36, 1)
 		if visual_state == VisualState.LOCKED:
-			fill = fill.darkened(0.45)
-			rim = Color(0.42, 0.41, 0.48, 1)
-			icon = Color(0.62, 0.61, 0.68, 1)
+			fill = fill.darkened(0.14)
+			rim = Color(0.58, 0.68, 0.66, 1)
+			icon = Color(0.46, 0.58, 0.56, 1)
 		elif visual_state == VisualState.COMPLETED:
-			fill = Color(0.12, 0.14, 0.15, 1)
-			rim = Color(0.42, 0.57, 0.54, 1)
-			icon = Color(0.68, 0.82, 0.76, 1)
+			fill = Color(0.78, 0.90, 0.88, 1)
+			rim = Color(0.42, 0.62, 0.58, 1)
+			icon = Color(0.20, 0.48, 0.44, 1)
 		return {"fill": fill, "rim": rim, "icon": icon}
 
 	func _draw_battle_icon(center: Vector2, color: Color) -> void:

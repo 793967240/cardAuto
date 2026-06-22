@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://compendium_scene"]
+[gd_scene load_steps=3 format=3 uid="uid://compendium_scene"]
 
 [ext_resource type="Script" path="res://src/ui/compendium_scene.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/ui/themes/xianxia/backgrounds/fresh_mountain_menu.png" id="2_bg"]
 
 [node name="CompendiumScene" type="Control"]
 layout_mode = 3
@@ -9,12 +10,14 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource("1_script")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="TextureRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color(0.055, 0.042, 0.032, 1)
+texture = ExtResource("2_bg")
+expand_mode = 1
+stretch_mode = 6
 
 [node name="Margin" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -39,6 +42,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "图鉴"
 theme_override_font_sizes/font_size = 34
+theme_override_colors/font_color = Color(0.08, 0.34, 0.34, 1)
 
 [node name="BackButton" type="Button" parent="Margin/VBox/Header"]
 custom_minimum_size = Vector2(120, 44)

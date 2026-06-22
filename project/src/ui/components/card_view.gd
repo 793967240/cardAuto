@@ -67,6 +67,16 @@ const RARITY_BORDER_COLORS: Dictionary = {
 const BUILD_TEXT_COLOR := Color(0.97, 0.91, 0.74, 1.0)
 const BUILD_TEXT_OUTLINE := Color(0.04, 0.025, 0.015, 0.95)
 const DISABLED_TEXT_COLOR := Color(0.88, 0.82, 0.64, 1.0)
+const BUILD_TYPE_COLORS := {
+	0: Color(0.58, 0.34, 0.30, 1.0),
+	1: Color(0.34, 0.48, 0.58, 1.0),
+	2: Color(0.36, 0.58, 0.50, 1.0),
+	3: Color(0.46, 0.40, 0.56, 1.0),
+	4: Color(0.58, 0.50, 0.34, 1.0),
+	5: Color(0.50, 0.52, 0.46, 1.0),
+}
+const BUILD_TEXT_COLOR_SOFT := Color(0.24, 0.36, 0.34, 1.0)
+const BUILD_TEXT_OUTLINE_SOFT := Color(0.94, 0.99, 0.95, 0.72)
 const DRAG_START_DISTANCE := 8.0
 
 @onready var bg_panel: Panel = $BgPanel
@@ -406,7 +416,10 @@ func _apply_card_art(card: CardData) -> void:
 		art_texture.hide()
 		art_placeholder.show()
 		var t: int = int(card.card_type)
-		art_rect.color = TYPE_COLORS.get(t, Color(0.30, 0.25, 0.20, 1))
+		if mode == Mode.BUILD_SLOT or mode == Mode.BUILD_DECK_ITEM:
+			art_rect.color = BUILD_TYPE_COLORS.get(t, Color(0.50, 0.52, 0.46, 1.0))
+		else:
+			art_rect.color = TYPE_COLORS.get(t, Color(0.30, 0.25, 0.20, 1))
 
 func _apply_card_frame(card: CardData) -> void:
 	var rarity := 0
@@ -550,9 +563,14 @@ func _on_mouse_exited() -> void:
 
 func _apply_build_text_contrast() -> void:
 	for label in [name_label, build_name_label, desc_label, type_label, art_placeholder, stock_label]:
-		label.add_theme_color_override(&"font_color", BUILD_TEXT_COLOR)
-		label.add_theme_color_override(&"font_outline_color", BUILD_TEXT_OUTLINE)
-		label.add_theme_constant_override(&"outline_size", 4)
+		if mode == Mode.BUILD_SLOT:
+			label.add_theme_color_override(&"font_color", BUILD_TEXT_COLOR_SOFT)
+			label.add_theme_color_override(&"font_outline_color", BUILD_TEXT_OUTLINE_SOFT)
+			label.add_theme_constant_override(&"outline_size", 2)
+		else:
+			label.add_theme_color_override(&"font_color", BUILD_TEXT_COLOR)
+			label.add_theme_color_override(&"font_outline_color", BUILD_TEXT_OUTLINE)
+			label.add_theme_constant_override(&"outline_size", 4)
 
 func _on_gui_input(event: InputEvent) -> void:
 	if mode == Mode.BATTLE:
