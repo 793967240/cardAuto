@@ -4,34 +4,32 @@ const TICK_DURATION: float = 0.5
 const CARD_VIEW_SCENE = preload("res://scenes/components/card_view.tscn")
 const BUILD_BG_PATH := "res://assets/ui/themes/xianxia/backgrounds/build_bg_xianxia.png"
 const ARRAY_SLOT_TEXTURE_PATH := "res://assets/ui/themes/xianxia/plaques/array_slot_base.png"
-const TOPBAR_WOOD_PATH := "res://assets/ui/themes/xianxia/bars/build_topbar_wood.png"
-const BTN_BRONZE_PATH := "res://assets/ui/themes/xianxia/buttons/btn_bronze.png"
-const BTN_JADE_PATH := "res://assets/ui/themes/xianxia/buttons/btn_jade.png"
+const BTN_BRONZE_PATH := "res://assets/ui/themes/xianxia/buttons/btn_fresh_jade.png"
+const BTN_JADE_PATH := "res://assets/ui/themes/xianxia/buttons/btn_fresh_jade.png"
 const PANEL_BASE_STYLE_PATH := "res://assets/ui/themes/xianxia/panels/panel_build_base.tres"
 const PANEL_DECK_STYLE_PATH := "res://assets/ui/themes/xianxia/panels/panel_build_deck.tres"
 const PANEL_SIDE_STYLE_PATH := "res://assets/ui/themes/xianxia/panels/panel_build_side.tres"
 const PAPER_TEXT_COLOR := Color(0.24, 0.18, 0.12, 1.0)
 const PAPER_MUTED_TEXT_COLOR := Color(0.42, 0.34, 0.24, 1.0)
-const GOLD_TEXT_COLOR := Color(0.92, 0.82, 0.50, 1.0)
-const GEM_BUTTON_TEXT_COLOR := Color(0.96, 0.94, 0.88, 1.0)
-const GEM_BUTTON_SELECTED_TEXT_COLOR := Color(1.0, 0.92, 0.62, 1.0)
-const GEM_BUTTON_DESC_TEXT_COLOR := Color(0.86, 0.84, 0.78, 1.0)
+const GOLD_TEXT_COLOR := Color(0.18, 0.38, 0.36, 1.0)
+const GEM_BUTTON_TEXT_COLOR := Color(0.18, 0.34, 0.32, 1.0)
+const GEM_BUTTON_SELECTED_TEXT_COLOR := Color(0.12, 0.42, 0.38, 1.0)
+const GEM_BUTTON_DESC_TEXT_COLOR := Color(0.28, 0.40, 0.36, 1.0)
 const GEM_BUTTON_COLLAPSED_HEIGHT := 44.0
 const GEM_BUTTON_EXPANDED_HEIGHT := 126.0
 const MAX_CONSUMABLE_CARDS_PER_CHAIN := 2
 const INK_TEXT := Color(0.17, 0.12, 0.08, 1.0)
 const INK_MUTED := Color(0.45, 0.36, 0.24, 1.0)
-const INK_GOLD := Color(0.78, 0.58, 0.22, 1.0)
-const JADE_ACCENT := Color(0.28, 0.56, 0.48, 1.0)
-const PANEL_INK := Color(0.90, 0.98, 0.96, 0.60)
-const PANEL_DARK_INK := Color(0.14, 0.11, 0.08, 0.78)
-const ARRAY_SLOT_BG := Color(0.86, 0.96, 0.94, 0.30)
-const ARRAY_SLOT_BORDER := Color(0.34, 0.58, 0.56, 0.48)
-const REPOSITORY_WASH := Color(0.86, 0.96, 0.94, 0.24)
+const INK_GOLD := Color(0.28, 0.44, 0.36, 1.0)
+const JADE_ACCENT := Color(0.34, 0.52, 0.46, 1.0)
+const PANEL_INK := Color(0.90, 0.98, 0.96, 0.54)
+const PANEL_DARK_INK := Color(0.82, 0.92, 0.88, 0.76)
+const ARRAY_SLOT_BG := Color(0.88, 0.96, 0.93, 0.22)
+const ARRAY_SLOT_BORDER := Color(0.38, 0.56, 0.50, 0.38)
+const REPOSITORY_WASH := Color(0.88, 0.96, 0.93, 0.20)
 
 @onready var base_chain_hbox: HBoxContainer = $VBox/Body/MainArea/BasePanel/BaseMargin/BaseScroll/BaseChainHBox
 @onready var background: TextureRect = $Background
-@onready var topbar_wood: TextureRect = $TopBarWood
 @onready var gem_title: Label = $VBox/Body/GemPanel/GemMargin/GemVBox/GemTitle
 @onready var gem_target_label: Label = $VBox/Body/GemPanel/GemMargin/GemVBox/GemTargetLabel
 @onready var gem_list_vbox: VBoxContainer = $VBox/Body/GemPanel/GemMargin/GemVBox/GemScroll/GemListVBox
@@ -59,7 +57,6 @@ var _button_texture_cache: Dictionary = {}
 
 func _ready() -> void:
 	_load_png_texture(background, BUILD_BG_PATH)
-	_load_topbar_wood_texture()
 	_apply_ink_theme()
 	_apply_static_text_contrast()
 	deck_grid.set_meta(&"on_drop", Callable(self, "_on_deck_area_drop"))
@@ -74,10 +71,6 @@ func _ready() -> void:
 
 	_setup_tip_label()
 	_refresh_all()
-
-func _load_topbar_wood_texture() -> void:
-	_load_png_texture(topbar_wood, TOPBAR_WOOD_PATH)
-	topbar_wood.modulate = Color(1.0, 1.0, 1.0, 0.86)
 
 func _load_png_texture(target: TextureRect, path: String) -> void:
 	var image := Image.load_from_file(ProjectSettings.globalize_path(path))
@@ -94,15 +87,15 @@ func _update_texts() -> void:
 	back_btn.text = tr("ui.button.back")
 
 func _apply_static_text_contrast() -> void:
-	title_label.add_theme_color_override(&"font_color", Color(1.0, 0.86, 0.48, 1.0))
-	title_label.add_theme_color_override(&"font_outline_color", Color(0.16, 0.08, 0.02, 0.92))
-	title_label.add_theme_constant_override(&"outline_size", 6)
+	title_label.add_theme_color_override(&"font_color", Color(0.08, 0.34, 0.34, 1.0))
+	title_label.add_theme_color_override(&"font_outline_color", Color(0.96, 1.0, 0.95, 0.82))
+	title_label.add_theme_constant_override(&"outline_size", 4)
 	deck_label.add_theme_color_override(&"font_color", INK_TEXT)
 	gem_title.add_theme_color_override(&"font_color", INK_TEXT)
 	gem_target_label.add_theme_color_override(&"font_color", INK_MUTED)
-	total_duration_label.add_theme_color_override(&"font_color", Color(0.92, 0.80, 0.54, 1.0))
-	total_duration_label.add_theme_color_override(&"font_outline_color", Color(0.12, 0.06, 0.02, 0.92))
-	total_duration_label.add_theme_constant_override(&"outline_size", 4)
+	total_duration_label.add_theme_color_override(&"font_color", Color(0.14, 0.36, 0.34, 1.0))
+	total_duration_label.add_theme_color_override(&"font_outline_color", Color(0.96, 1.0, 0.95, 0.76))
+	total_duration_label.add_theme_constant_override(&"outline_size", 3)
 
 func _apply_ink_theme() -> void:
 	base_panel.add_theme_stylebox_override(&"panel", _load_stylebox(PANEL_BASE_STYLE_PATH, _make_panel_style(Color(0.88, 0.97, 0.95, 0.46), Color(0.28, 0.52, 0.50, 0.62), 6, 8)))
@@ -117,13 +110,13 @@ func _style_art_button(btn: Button, texture_path: String) -> void:
 	if texture == null:
 		return
 	btn.add_theme_stylebox_override(&"normal", _make_texture_button_style(texture, Color.WHITE))
-	btn.add_theme_stylebox_override(&"hover", _make_texture_button_style(texture, Color(1.10, 1.06, 0.92, 1.0)))
-	btn.add_theme_stylebox_override(&"pressed", _make_texture_button_style(texture, Color(0.82, 0.78, 0.68, 1.0)))
-	btn.add_theme_color_override(&"font_color", Color(1.0, 0.90, 0.66, 1.0))
-	btn.add_theme_color_override(&"font_hover_color", Color(1.0, 0.98, 0.78, 1.0))
-	btn.add_theme_color_override(&"font_pressed_color", Color(0.90, 0.76, 0.50, 1.0))
-	btn.add_theme_color_override(&"font_outline_color", Color(0.12, 0.055, 0.020, 0.96))
-	btn.add_theme_constant_override(&"outline_size", 3)
+	btn.add_theme_stylebox_override(&"hover", _make_texture_button_style(texture, Color(1.08, 1.08, 0.96, 1.0)))
+	btn.add_theme_stylebox_override(&"pressed", _make_texture_button_style(texture, Color(0.84, 0.94, 0.88, 1.0)))
+	btn.add_theme_color_override(&"font_color", Color(0.13, 0.29, 0.30, 1.0))
+	btn.add_theme_color_override(&"font_hover_color", Color(0.08, 0.43, 0.42, 1.0))
+	btn.add_theme_color_override(&"font_pressed_color", Color(0.08, 0.24, 0.24, 1.0))
+	btn.add_theme_color_override(&"font_outline_color", Color(0.96, 1.0, 0.95, 0.72))
+	btn.add_theme_constant_override(&"outline_size", 1)
 
 func _make_texture_button_style(texture: Texture2D, modulate: Color) -> StyleBoxTexture:
 	var sb := StyleBoxTexture.new()
@@ -204,7 +197,7 @@ func _rebuild_bases() -> void:
 		var name_label := Label.new()
 		name_label.text = "阵位 %s" % str(sd.id).replace("base_", "")
 		name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		name_label.add_theme_color_override(&"font_color", Color(0.22, 0.15, 0.08, 0.95))
+		name_label.add_theme_color_override(&"font_color", Color(0.22, 0.34, 0.31, 0.95))
 		name_label.add_theme_font_size_override(&"font_size", 14)
 		stack.add_child(name_label)
 
@@ -227,7 +220,7 @@ func _rebuild_bases() -> void:
 			gem_label.text = "◇ 空"
 		gem_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		gem_label.add_theme_font_size_override(&"font_size", 12)
-		gem_label.add_theme_color_override(&"font_color", JADE_ACCENT if gems.size() > 0 else Color(0.50, 0.42, 0.28, 0.70))
+		gem_label.add_theme_color_override(&"font_color", JADE_ACCENT if gems.size() > 0 else Color(0.42, 0.52, 0.46, 0.62))
 		stack.add_child(gem_label)
 
 		if i < run.bases.size() - 1:
@@ -243,7 +236,7 @@ func _make_array_slot_shell(selected: bool) -> Control:
 	base_art.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	base_art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	base_art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	base_art.modulate = Color(1.0, 0.98, 0.88, 1.0) if selected else Color(1.0, 1.0, 1.0, 0.92)
+	base_art.modulate = Color(0.94, 1.0, 0.96, 0.95) if selected else Color(1.0, 1.0, 1.0, 0.82)
 	base_art.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	shell.add_child(base_art)
 
@@ -276,14 +269,14 @@ func _make_chain_arrow() -> Control:
 	arrow.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	arrow.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	arrow.add_theme_font_size_override(&"font_size", 22)
-	arrow.add_theme_color_override(&"font_color", Color(0.55, 0.42, 0.22, 0.78))
+	arrow.add_theme_color_override(&"font_color", Color(0.34, 0.50, 0.45, 0.58))
 	arrow_wrap.add_child(arrow)
 	return arrow_wrap
 
 func _make_array_slot_style(selected: bool) -> StyleBoxFlat:
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.76, 0.96, 0.92, 0.18) if selected else Color(0.86, 0.96, 0.94, 0.06)
-	sb.border_color = Color(0.42, 0.74, 0.66, 0.62) if selected else Color(0.34, 0.58, 0.56, 0.18)
+	sb.bg_color = Color(0.84, 0.96, 0.92, 0.13) if selected else Color(0.88, 0.96, 0.94, 0.04)
+	sb.border_color = Color(0.42, 0.62, 0.56, 0.42) if selected else Color(0.38, 0.56, 0.52, 0.14)
 	sb.border_width_left = 2
 	sb.border_width_top = 2
 	sb.border_width_right = 2
@@ -293,7 +286,7 @@ func _make_array_slot_style(selected: bool) -> StyleBoxFlat:
 	sb.corner_radius_bottom_left = 5
 	sb.corner_radius_bottom_right = 5
 	sb.shadow_size = 5 if selected else 0
-	sb.shadow_color = Color(0.08, 0.20, 0.18, 0.18 if selected else 0.0)
+	sb.shadow_color = Color(0.08, 0.20, 0.18, 0.10 if selected else 0.0)
 	sb.content_margin_left = 6
 	sb.content_margin_top = 6
 	sb.content_margin_right = 6
@@ -434,7 +427,7 @@ func _rebuild_gem_panel() -> void:
 	if current_gem != null:
 		var clear_btn := Button.new()
 		clear_btn.text = "卸下灵玉"
-		_style_gem_button(clear_btn, false, Color(0.50, 0.34, 0.22, 1.0))
+		_style_gem_button(clear_btn, false, Color(0.42, 0.52, 0.46, 1.0))
 		clear_btn.pressed.connect(_on_gem_clear_pressed)
 		gem_list_vbox.add_child(clear_btn)
 
@@ -486,7 +479,7 @@ func _make_gem_button(gd: GemData, is_selected: bool, installed_at: StringName =
 	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	name_label.text = tr(gd.get_name_key())
 	name_label.add_theme_font_size_override(&"font_size", 16)
-	name_label.add_theme_color_override(&"font_color", Color(1.0, 0.92, 0.70, 1.0) if is_selected else Color(0.92, 0.86, 0.70, 1.0))
+	name_label.add_theme_color_override(&"font_color", GEM_BUTTON_SELECTED_TEXT_COLOR if is_selected else GEM_BUTTON_TEXT_COLOR)
 	name_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	text_box.add_child(name_label)
 
@@ -495,7 +488,7 @@ func _make_gem_button(gd: GemData, is_selected: bool, installed_at: StringName =
 		place_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		place_label.text = "已镶：%s" % str(installed_at).replace("base_", "#")
 		place_label.add_theme_font_size_override(&"font_size", 12)
-		place_label.add_theme_color_override(&"font_color", Color(0.62, 0.84, 0.72, 1.0))
+		place_label.add_theme_color_override(&"font_color", Color(0.36, 0.54, 0.48, 0.82))
 		text_box.add_child(place_label)
 
 	if is_selected:
@@ -512,18 +505,18 @@ func _make_gem_button(gd: GemData, is_selected: bool, installed_at: StringName =
 	return btn
 
 func _style_gem_button(btn: Button, selected: bool, accent: Color) -> void:
-	var bg := Color(0.13, 0.11, 0.085, 0.86)
+	var bg := Color(0.90, 0.96, 0.92, 0.60)
 	if selected:
-		bg = Color(0.20, 0.15, 0.09, 0.94)
-	var border := accent.lightened(0.15) if selected else Color(0.56, 0.46, 0.30, 0.72)
+		bg = Color(0.84, 0.94, 0.89, 0.78)
+	var border := Color(0.44, 0.62, 0.56, 0.50) if selected else Color(0.42, 0.58, 0.52, 0.36)
 	btn.add_theme_stylebox_override(&"normal", _make_panel_style(bg, border, 6, 0))
-	btn.add_theme_stylebox_override(&"hover", _make_panel_style(bg.lightened(0.08), accent.lightened(0.25), 6, 0))
-	btn.add_theme_stylebox_override(&"pressed", _make_panel_style(bg.darkened(0.08), accent, 6, 0))
+	btn.add_theme_stylebox_override(&"hover", _make_panel_style(bg.lightened(0.04), Color(0.46, 0.66, 0.60, 0.56), 6, 0))
+	btn.add_theme_stylebox_override(&"pressed", _make_panel_style(bg.darkened(0.04), Color(0.38, 0.54, 0.50, 0.58), 6, 0))
 
 func _make_gem_seal_style(color: Color, selected: bool) -> StyleBoxFlat:
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = color
-	sb.border_color = Color(1.0, 0.88, 0.56, 1.0) if selected else Color(0.12, 0.08, 0.04, 0.70)
+	sb.border_color = Color(0.72, 0.88, 0.78, 0.86) if selected else Color(0.42, 0.54, 0.50, 0.48)
 	sb.border_width_left = 2
 	sb.border_width_top = 2
 	sb.border_width_right = 2
@@ -533,21 +526,21 @@ func _make_gem_seal_style(color: Color, selected: bool) -> StyleBoxFlat:
 	sb.corner_radius_bottom_left = 14
 	sb.corner_radius_bottom_right = 14
 	sb.shadow_size = 3
-	sb.shadow_color = Color(0, 0, 0, 0.28)
+	sb.shadow_color = Color(0.06, 0.18, 0.16, 0.14)
 	return sb
 
 func _gem_color(gd: GemData) -> Color:
 	match gd.id:
 		&"ruby":
-			return Color(0.78, 0.18, 0.16, 1.0)
+			return Color(0.58, 0.34, 0.30, 1.0)
 		&"sapphire":
-			return Color(0.22, 0.42, 0.78, 1.0)
+			return Color(0.34, 0.48, 0.58, 1.0)
 		&"amber":
-			return Color(0.84, 0.56, 0.16, 1.0)
+			return Color(0.58, 0.50, 0.34, 1.0)
 		&"jade":
-			return Color(0.30, 0.62, 0.48, 1.0)
+			return Color(0.36, 0.58, 0.50, 1.0)
 		_:
-			return Color(0.70, 0.65, 0.50, 1.0)
+			return Color(0.54, 0.58, 0.50, 1.0)
 
 func _find_gem_install_base(run: RunState, gem) -> StringName:
 	if run == null:

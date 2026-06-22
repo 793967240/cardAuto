@@ -43,17 +43,17 @@ func _clear(node: Node) -> void:
 func _make_card_entry(card: CardData) -> Control:
 	var entry := _make_entry_shell()
 	var box := entry.get_node("Margin/Box") as VBoxContainer
-	_add_entry_label(box, tr(card.get_name_key()), 17, Color(1.0, 0.86, 0.50, 1.0))
-	_add_entry_label(box, "%s  cost %d" % [_card_type_label(card.card_type), card.cost], 12, Color(0.74, 0.66, 0.50, 0.90))
-	_add_entry_label(box, tr(card.get_desc_key()), 13, Color(0.92, 0.86, 0.72, 0.96), true)
+	_add_entry_label(box, tr(card.get_name_key()), 17, Color(0.10, 0.36, 0.35, 1.0))
+	_add_entry_label(box, "%s  cost %d" % [_card_type_label(card.card_type), card.cost], 12, Color(0.42, 0.58, 0.52, 0.95))
+	_add_entry_label(box, tr(card.get_desc_key()), 13, Color(0.20, 0.34, 0.32, 0.96), true)
 	return entry
 
 func _make_simple_entry(title: String, desc: String, meta: String) -> Control:
 	var entry := _make_entry_shell()
 	var box := entry.get_node("Margin/Box") as VBoxContainer
-	_add_entry_label(box, title, 17, Color(1.0, 0.86, 0.50, 1.0))
-	_add_entry_label(box, meta, 12, Color(0.74, 0.66, 0.50, 0.90))
-	_add_entry_label(box, desc, 13, Color(0.92, 0.86, 0.72, 0.96), true)
+	_add_entry_label(box, title, 17, Color(0.10, 0.36, 0.35, 1.0))
+	_add_entry_label(box, meta, 12, Color(0.42, 0.58, 0.52, 0.95))
+	_add_entry_label(box, desc, 13, Color(0.20, 0.34, 0.32, 0.96), true)
 	return entry
 
 func _make_entry_shell() -> PanelContainer:
@@ -136,8 +136,8 @@ func _rarity_label(rarity: int) -> String:
 
 func _entry_style() -> StyleBoxFlat:
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.12, 0.09, 0.06, 0.86)
-	sb.border_color = Color(0.62, 0.45, 0.22, 0.70)
+	sb.bg_color = Color(0.92, 0.99, 0.96, 0.58)
+	sb.border_color = Color(0.34, 0.58, 0.54, 0.58)
 	sb.border_width_left = 1
 	sb.border_width_top = 1
 	sb.border_width_right = 1

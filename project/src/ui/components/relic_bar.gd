@@ -142,11 +142,11 @@ func _make_custom_tooltip(for_text: String) -> Object:
 func _make_panel_style() -> StyleBoxFlat:
 	var sb := StyleBoxFlat.new()
 	if compact:
-		sb.bg_color = Color(0.12, 0.095, 0.07, 0.72)
-		sb.border_color = Color(0.62, 0.48, 0.26, 0.72)
+		sb.bg_color = Color(0.88, 0.97, 0.94, 0.52)
+		sb.border_color = Color(0.42, 0.64, 0.58, 0.62)
 	else:
-		sb.bg_color = Color(0.92, 0.82, 0.58, 0.24)
-		sb.border_color = Color(0.45, 0.32, 0.16, 0.42)
+		sb.bg_color = Color(0.90, 0.98, 0.95, 0.42)
+		sb.border_color = Color(0.34, 0.58, 0.54, 0.46)
 	sb.border_width_left = 1
 	sb.border_width_top = 1
 	sb.border_width_right = 1
@@ -182,8 +182,8 @@ static func _make_tooltip_style() -> StyleBox:
 	if theme_style != null:
 		return theme_style
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.10, 0.075, 0.045, 0.98)
-	sb.border_color = Color(0.92, 0.68, 0.28, 0.95)
+	sb.bg_color = Color(0.92, 0.99, 0.96, 0.96)
+	sb.border_color = Color(0.34, 0.62, 0.56, 0.88)
 	sb.border_width_left = 2
 	sb.border_width_top = 2
 	sb.border_width_right = 2
@@ -193,5 +193,5 @@ static func _make_tooltip_style() -> StyleBox:
 	sb.corner_radius_bottom_left = 6
 	sb.corner_radius_bottom_right = 6
 	sb.shadow_size = 8
-	sb.shadow_color = Color(0, 0, 0, 0.36)
+	sb.shadow_color = Color(0.04, 0.16, 0.15, 0.18)
 	return sb

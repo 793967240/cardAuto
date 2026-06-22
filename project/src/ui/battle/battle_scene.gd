@@ -309,5 +309,5 @@ func _format_source(source_label: String) -> String:
 
 func _color_for_battle_log_event(event_type: String) -> Color:
 	if event_type == "heal":
-		return Color(0.56, 0.95, 0.62, 1.0)
-	return Color(0.96, 0.66, 0.50, 1.0)
+		return Color(0.13, 0.50, 0.38, 1.0)
+	return Color(0.68, 0.24, 0.22, 1.0)

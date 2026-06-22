@@ -1,31 +1,58 @@
-[gd_resource type="Theme" load_steps=9 format=3]
+[gd_resource type="Theme" load_steps=14 format=3]
 
-[ext_resource type="StyleBoxTexture" path="res://assets/ui/themes/xianxia/buttons/btn_jade_normal.tres" id="1_btn_normal"]
-[ext_resource type="StyleBoxTexture" path="res://assets/ui/themes/xianxia/buttons/btn_jade_hover.tres" id="2_btn_hover"]
-[ext_resource type="StyleBoxTexture" path="res://assets/ui/themes/xianxia/buttons/btn_jade_pressed.tres" id="3_btn_pressed"]
-[ext_resource type="StyleBoxFlat" path="res://assets/ui/themes/xianxia/panels/panel_build_deck.tres" id="4_panel"]
+[ext_resource type="StyleBoxTexture" path="res://assets/ui/themes/xianxia/buttons/btn_fresh_normal.tres" id="1_btn_normal"]
+[ext_resource type="StyleBoxTexture" path="res://assets/ui/themes/xianxia/buttons/btn_fresh_hover.tres" id="2_btn_hover"]
+[ext_resource type="StyleBoxTexture" path="res://assets/ui/themes/xianxia/buttons/btn_fresh_pressed.tres" id="3_btn_pressed"]
+[ext_resource type="StyleBoxTexture" path="res://assets/ui/themes/xianxia/panels/fresh_panel.tres" id="4_panel"]
 [ext_resource type="StyleBoxTexture" path="res://assets/ui/themes/xianxia/tooltips/tooltip_frame_xianxia.tres" id="5_tooltip"]
 [ext_resource type="StyleBoxFlat" path="res://assets/ui/themes/xianxia/panels/starter_deck_button_normal.tres" id="6_starter_normal"]
 [ext_resource type="StyleBoxFlat" path="res://assets/ui/themes/xianxia/panels/starter_deck_button_hover.tres" id="7_starter_hover"]
 [ext_resource type="StyleBoxFlat" path="res://assets/ui/themes/xianxia/panels/starter_deck_button_pressed.tres" id="8_starter_pressed"]
+[ext_resource type="StyleBoxTexture" path="res://assets/ui/themes/xianxia/panels/fresh_panel_large.tres" id="9_large_panel"]
+[ext_resource type="StyleBoxFlat" path="res://assets/ui/themes/xianxia/buttons/btn_flat_normal.tres" id="10_flat_normal"]
+[ext_resource type="StyleBoxFlat" path="res://assets/ui/themes/xianxia/buttons/btn_flat_hover.tres" id="11_flat_hover"]
+[ext_resource type="StyleBoxFlat" path="res://assets/ui/themes/xianxia/buttons/btn_flat_pressed.tres" id="12_flat_pressed"]
+[ext_resource type="StyleBoxTexture" path="res://assets/ui/themes/xianxia/bars/fresh_topbar.tres" id="13_topbar"]
 
 [resource]
 default_font_size = 18
-Button/colors/font_color = Color(1, 0.90, 0.66, 1)
-Button/colors/font_hover_color = Color(1, 0.98, 0.78, 1)
-Button/colors/font_pressed_color = Color(0.90, 0.76, 0.50, 1)
-Button/colors/font_outline_color = Color(0.12, 0.055, 0.020, 0.96)
-Button/constants/outline_size = 3
+Button/colors/font_color = Color(0.13, 0.29, 0.30, 1)
+Button/colors/font_hover_color = Color(0.08, 0.43, 0.42, 1)
+Button/colors/font_pressed_color = Color(0.08, 0.24, 0.24, 1)
+Button/colors/font_disabled_color = Color(0.43, 0.56, 0.54, 0.62)
+Button/colors/font_outline_color = Color(0.96, 1, 0.95, 0.72)
+Button/constants/outline_size = 1
 Button/font_sizes/font_size = 18
 Button/styles/normal = ExtResource("1_btn_normal")
 Button/styles/hover = ExtResource("2_btn_hover")
 Button/styles/pressed = ExtResource("3_btn_pressed")
 Button/styles/focus = ExtResource("2_btn_hover")
-Label/colors/font_color = Color(0.17, 0.12, 0.08, 1)
-Label/colors/font_outline_color = Color(0.16, 0.08, 0.02, 0.92)
+Button/styles/disabled = ExtResource("10_flat_normal")
+CheckBox/colors/font_color = Color(0.16, 0.32, 0.31, 1)
+CheckBox/styles/normal = ExtResource("10_flat_normal")
+CheckBox/styles/hover = ExtResource("11_flat_hover")
+CheckBox/styles/pressed = ExtResource("12_flat_pressed")
+HSlider/styles/grabber_area = ExtResource("11_flat_hover")
+HSlider/styles/grabber_area_highlight = ExtResource("12_flat_pressed")
+Label/colors/font_color = Color(0.15, 0.29, 0.29, 1)
+Label/colors/font_outline_color = Color(0.96, 1, 0.94, 0.72)
 Label/constants/outline_size = 0
 Label/font_sizes/font_size = 18
+OptionButton/colors/font_color = Color(0.13, 0.29, 0.30, 1)
+OptionButton/styles/normal = ExtResource("1_btn_normal")
+OptionButton/styles/hover = ExtResource("2_btn_hover")
+OptionButton/styles/pressed = ExtResource("3_btn_pressed")
+OptionButton/styles/focus = ExtResource("2_btn_hover")
 PanelContainer/styles/panel = ExtResource("4_panel")
+PopupPanel/styles/panel = ExtResource("9_large_panel")
+ProgressBar/colors/font_color = Color(0.97, 1, 0.96, 1)
+ProgressBar/colors/font_outline_color = Color(0.10, 0.26, 0.25, 0.95)
+ProgressBar/constants/outline_size = 2
+ProgressBar/font_sizes/font_size = 14
+TabContainer/colors/font_selected_color = Color(0.10, 0.34, 0.34, 1)
+TabContainer/colors/font_unselected_color = Color(0.34, 0.49, 0.46, 1)
+TabContainer/styles/panel = ExtResource("9_large_panel")
+TopBarPanel/styles/panel = ExtResource("13_topbar")
 StarterDeckButton/styles/normal = ExtResource("6_starter_normal")
 StarterDeckButton/styles/hover = ExtResource("7_starter_hover")
 StarterDeckButton/styles/pressed = ExtResource("8_starter_pressed")

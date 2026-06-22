@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://map_scene"]
+[gd_scene load_steps=3 format=3 uid="uid://map_scene"]
 
 [ext_resource type="Script" path="res://src/ui/map/map_scene.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/ui/themes/xianxia/backgrounds/fresh_mountain_map.png" id="2_bg"]
 
 [node name="MapScene" type="Control"]
 layout_mode = 3
@@ -11,14 +12,16 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_script")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="TextureRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.045, 0.043, 0.065, 1)
+texture = ExtResource("2_bg")
+expand_mode = 1
+stretch_mode = 6
 
 [node name="Margin" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -44,7 +47,7 @@ theme_override_constants/separation = 16
 [node name="TitleLabel" type="Label" parent="Margin/Body/Header"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
-theme_override_colors/font_color = Color(0.85, 0.78, 0.55, 1)
+theme_override_colors/font_color = Color(0.08, 0.34, 0.34, 1)
 text = "天劫之路"
 
 [node name="Spacer" type="Control" parent="Margin/Body/Header"]
@@ -60,7 +63,7 @@ text = "HP: 80 / 80"
 [node name="ActLabel" type="Label" parent="Margin/Body/Header"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
-theme_override_colors/font_color = Color(0.85, 0.78, 0.55, 1)
+theme_override_colors/font_color = Color(0.18, 0.42, 0.40, 1)
 text = "Act 1"
 
 [node name="BuildBtn" type="Button" parent="Margin/Body/Header"]
@@ -110,7 +113,7 @@ theme_override_constants/margin_bottom = 20
 [node name="TitleLabel" type="Label" parent="CampfirePanel/VBox"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
-theme_override_colors/font_color = Color(0.95, 0.78, 0.4, 1)
+theme_override_colors/font_color = Color(0.10, 0.36, 0.36, 1)
 horizontal_alignment = 1
 text = "静修之地"
 
@@ -161,7 +164,7 @@ theme_override_constants/margin_bottom = 20
 [node name="ForgeTitle" type="Label" parent="ForgePanel/VBox"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 22
-theme_override_colors/font_color = Color(0.95, 0.78, 0.4, 1)
+theme_override_colors/font_color = Color(0.10, 0.36, 0.36, 1)
 horizontal_alignment = 1
 text = "选一张卡升级"
 
