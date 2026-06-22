@@ -19,6 +19,7 @@ class_name BattleScene extends Control
 @onready var timeline_scroll_view: TimelineScrollView = $VBox/Bottom/TimelineScrollView
 
 const ENEMY_VIEW_SCENE = preload("res://scenes/battle/enemy_view.tscn")
+const RELIC_RUNTIME_SCRIPT = preload("res://src/core/relic_runtime.gd")
 const MAX_LOG_LINES := 80
 const SHORT_CYCLE_HEAL_THRESHOLD := 2
 const SHORT_CYCLE_GOLD_THRESHOLD := 1
@@ -65,6 +66,8 @@ func _init_battle() -> void:
 	if run:
 		player.hp = run.hp
 	player.tags.append(&"sword")
+	if run:
+		player.relic_runtime = RELIC_RUNTIME_SCRIPT.new(run.relics)
 
 	var used_layout := false
 	if run and not run.bases.is_empty():

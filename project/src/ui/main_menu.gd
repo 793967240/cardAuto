@@ -6,6 +6,7 @@ const SETTINGS_SCENE := preload("res://scenes/settings_panel.tscn")
 
 @onready var start_button: Button = $CenterContainer/VBoxContainer/StartButton
 @onready var continue_button: Button = $CenterContainer/VBoxContainer/ContinueButton
+@onready var compendium_button: Button = $CenterContainer/VBoxContainer/CompendiumButton
 @onready var settings_button: Button = $CenterContainer/VBoxContainer/SettingsButton
 @onready var quit_button: Button = $CenterContainer/VBoxContainer/QuitButton
 @onready var title_label: Label = $CenterContainer/VBoxContainer/Title
@@ -22,12 +23,14 @@ func _update_texts() -> void:
 	title_label.text = tr("menu.main.title")
 	start_button.text = tr("menu.main.start")
 	continue_button.text = tr("menu.main.continue")
+	compendium_button.text = tr("menu.main.compendium")
 	settings_button.text = tr("menu.main.settings")
 	quit_button.text = tr("menu.main.quit")
 
 func _setup_buttons() -> void:
 	start_button.pressed.connect(_on_start_pressed)
 	continue_button.pressed.connect(_on_continue_pressed)
+	compendium_button.pressed.connect(_on_compendium_pressed)
 	settings_button.pressed.connect(_on_settings_pressed)
 	quit_button.pressed.connect(_on_quit_pressed)
 
@@ -41,6 +44,9 @@ func _on_start_pressed() -> void:
 
 func _on_continue_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/map/map_scene.tscn")
+
+func _on_compendium_pressed() -> void:
+	get_tree().change_scene_to_file("res://scenes/compendium_scene.tscn")
 
 func _on_settings_pressed() -> void:
 	if _settings_panel:

@@ -154,11 +154,7 @@ func _apply_charge_before_damage(source: Combatant) -> void:
 		amount += 1
 	if amount <= 0:
 		return
-	var existing := source.get_status(StatusInstance.ID_CHARGE)
-	if existing:
-		existing.stacks += amount
-	else:
-		source.apply_status(StatusInstance.new(StatusInstance.ID_CHARGE, amount, -1))
+	source.apply_status(StatusInstance.new(StatusInstance.ID_CHARGE, amount, -1))
 
 func _apply_damage(ctx: BattleContext, source: Combatant, target: Combatant, had_shield: bool) -> void:
 	if target == null or not target.is_alive():

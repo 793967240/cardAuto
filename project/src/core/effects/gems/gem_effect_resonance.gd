@@ -10,4 +10,4 @@ func modify_damage_with_chain(card: CardRuntime, base: int, chain) -> int:
 	for slot in chain.slots:
 		if slot.data.tags.has(required_tag):
 			count += 1
-	return base + bonus_per_match * count
+	return base + chain.modify_gem_number(bonus_per_match * count)

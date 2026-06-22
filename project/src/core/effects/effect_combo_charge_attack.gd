@@ -18,10 +18,9 @@ func fire(ctx: BattleContext, source: Combatant) -> void:
 		ctx.record_damage(source, target, dealt)
 
 	# 充能
+	source.apply_status(StatusInstance.new(StatusInstance.ID_CHARGE, charge_amount))
 	var existing := source.get_status(StatusInstance.ID_CHARGE)
 	if existing:
-		existing.stacks = min(existing.stacks + charge_amount, charge_cap)
-	else:
-		source.apply_status(StatusInstance.new(StatusInstance.ID_CHARGE, charge_amount))
+		existing.stacks = min(existing.stacks, charge_cap)
 
 	ctx.stats.cards_fired += 1

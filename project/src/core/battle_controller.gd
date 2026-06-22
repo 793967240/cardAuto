@@ -26,6 +26,9 @@ func start_battle(player: Combatant, enemies: Array[Combatant], seed: int = 0) -
 	ctx.timeline.setup(tuning.tick_duration_sec)
 	ctx.timeline.set_speed_multiplier(tuning.speed_options[tuning.default_speed_index])
 
+	if player.relic_runtime != null:
+		player.relic_runtime.on_battle_start(ctx, player)
+
 	_is_running = false
 	EventBus.battle_started.emit()
 

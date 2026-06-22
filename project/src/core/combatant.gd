@@ -10,6 +10,7 @@ var tags: Array[StringName] = []          # 角色标签（&"sword", &"player" �
 var statuses: Array[StatusInstance] = []  # 当前状态列表
 var chain: Chain                           # 该战斗者的链条
 var cycle_stats: Dictionary = {}
+var relic_runtime = null
 
 signal hp_changed(old_val: int, new_val: int)
 signal died()
@@ -26,6 +27,8 @@ func _init(id: StringName, name: String, hp_max: int) -> void:
 ## 受到伤害（考虑虚弱/护盾/印记等状态）
 func take_damage(amount: int, source_tags: Array[StringName] = []) -> int:
 	var final_dmg := amount
+	if relic_runtime != null:
+		final_dmg = relic_runtime.modify_incoming_damage(self, final_dmg)
 	# 虚弱：受到伤害 +50%
 	if has_status(StatusInstance.ID_WEAKNESS):
 		final_dmg = int(final_dmg * 1.5)
@@ -49,7 +52,12 @@ func take_damage(amount: int, source_tags: Array[StringName] = []) -> int:
 
 	var old_hp := hp
 	hp = max(0, hp - final_dmg)
+	if hp <= 0 and relic_runtime != null and relic_runtime.prevent_death(self):
+		hp_changed.emit(old_hp, hp)
+		return final_dmg
 	hp_changed.emit(old_hp, hp)
+	if relic_runtime != null:
+		relic_runtime.after_hp_changed(self, old_hp, hp)
 	if hp <= 0:
 		died.emit()
 	return final_dmg
@@ -67,6 +75,10 @@ func is_alive() -> bool:
 
 ## 施加状态
 func apply_status(status: StatusInstance) -> void:
+	if relic_runtime != null:
+		relic_runtime.modify_outgoing_status(status)
+	if status.status_id == StatusInstance.ID_CHARGE and relic_runtime != null:
+		status.stacks = relic_runtime.modify_charge_gain(status.stacks)
 	# 如果已有同类状态，叠加层数
 	var existing := get_status(status.status_id)
 	if existing:

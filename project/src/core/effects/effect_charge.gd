@@ -6,10 +6,8 @@ class_name EffectCharge extends CardEffect
 @export var charge_cap: int = 99  # 充能上限
 
 func fire(ctx: BattleContext, source: Combatant) -> void:
+	source.apply_status(StatusInstance.new(StatusInstance.ID_CHARGE, charge_amount))
 	var existing := source.get_status(StatusInstance.ID_CHARGE)
 	if existing:
-		existing.stacks = min(existing.stacks + charge_amount, charge_cap)
-	else:
-		var charge := StatusInstance.new(StatusInstance.ID_CHARGE, charge_amount)
-		source.apply_status(charge)
+		existing.stacks = min(existing.stacks, charge_cap)
 	ctx.stats.cards_fired += 1

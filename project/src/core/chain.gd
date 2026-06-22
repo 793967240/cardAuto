@@ -51,10 +51,14 @@ func _process_one_tick(ctx: BattleContext) -> void:
 	current_card_progress += 1
 	if current_card_progress >= _effective_cost(card, ctx):
 		_consume_next_cost_modifiers_for_card(card)
+		if owner and owner.relic_runtime != null:
+			owner.relic_runtime.before_card_fired(ctx, owner, card, current_index)
 		card.fire(ctx, owner)
 		_record_card_played(card)
 		_fire_gem_hook(current_index, &"on_card_played", [card, ctx, owner])
 		card_fired.emit(card, current_index)
+		if owner and owner.relic_runtime != null:
+			owner.relic_runtime.after_card_fired(ctx, owner, card, current_index)
 		current_card_progress = 0
 		_advance_index(ctx)
 
@@ -67,6 +71,8 @@ func _complete_cycle(ctx: BattleContext) -> void:
 	_apply_cycle_end_effects(ctx)
 	_fire_gem_hook_all(&"on_cycle_completed", [ctx, owner])
 	cycle_completed.emit()
+	if owner and owner.relic_runtime != null:
+		owner.relic_runtime.on_cycle_completed(ctx, owner)
 	_clear_cycle_modifiers()
 	cycle_played_count = 0
 	cycle_tag_counts.clear()
@@ -87,11 +93,16 @@ func _effective_cost(card: CardRuntime, ctx: BattleContext) -> int:
 	for g in _active_gems_for_index(current_index):
 		var eff := (g as GemInstance).get_effect()
 		if eff != null and (g as GemInstance).data.trigger == GemData.Trigger.PASSIVE:
-			base = eff.modify_cost(card, base)
+			if eff.has_method(&"modify_cost_with_chain"):
+				base = eff.modify_cost_with_chain(card, base, self)
+			else:
+				base = eff.modify_cost(card, base)
 	if owner and owner.has_status(StatusInstance.ID_VULNERABLE):
 		base += 1
 	base = _apply_passive_cost_modifiers(card, base)
 	base = _apply_next_cost_modifiers(card, base)
+	if owner and owner.relic_runtime != null:
+		base = owner.relic_runtime.modify_cost(card, base, self, current_index)
 	return max(1, base)
 
 func modify_damage(card: CardRuntime, base: int, slot_index: int = -1) -> int:
@@ -106,6 +117,8 @@ func modify_damage(card: CardRuntime, base: int, slot_index: int = -1) -> int:
 		if eff != null and (g as GemInstance).data.trigger == GemData.Trigger.PASSIVE:
 			out = eff.modify_damage_with_chain(card, out, self)
 	out = _apply_next_damage_bonuses(card, out)
+	if owner and owner.relic_runtime != null:
+		out = owner.relic_runtime.modify_damage(card, out, self, idx)
 	return out
 
 func _fire_gem_hook(idx: int, method: StringName, args: Array) -> void:
@@ -135,6 +148,11 @@ func _fire_gem_hook_all(method: StringName, args: Array) -> void:
 				_push_source_label(args, gi.data.get_name_key())
 				eff.callv(method, args)
 				_pop_source_label(args)
+
+func modify_gem_number(base: int) -> int:
+	if owner and owner.relic_runtime != null:
+		return owner.relic_runtime.modify_gem_number(base)
+	return base
 
 func _push_source_label(args: Array, label_key: String) -> void:
 	if args.is_empty() or not (args[0] is BattleContext):
