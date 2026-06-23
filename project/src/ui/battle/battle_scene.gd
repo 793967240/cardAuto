@@ -21,6 +21,9 @@ class_name BattleScene extends Control
 const ENEMY_VIEW_SCENE = preload("res://scenes/battle/enemy_view.tscn")
 const RELIC_RUNTIME_SCRIPT = preload("res://src/core/relic_runtime.gd")
 const DIALOG_PANEL_STYLE = preload("res://assets/ui/themes/xianxia/dialogs/dialog_panel_xianxia.tres")
+const SPEED_BUTTON_NORMAL_STYLE = preload("res://assets/ui/themes/xianxia/buttons/btn_flat_normal.tres")
+const SPEED_BUTTON_HOVER_STYLE = preload("res://assets/ui/themes/xianxia/buttons/btn_flat_hover.tres")
+const SPEED_BUTTON_PRESSED_STYLE = preload("res://assets/ui/themes/xianxia/buttons/btn_flat_pressed.tres")
 const MAX_LOG_LINES := 80
 const SHORT_CYCLE_HEAL_THRESHOLD := 2
 const SHORT_CYCLE_GOLD_THRESHOLD := 1
@@ -39,6 +42,7 @@ func _ready() -> void:
 	speed_2x_btn.button_group = speed_group
 	speed_4x_btn.button_group = speed_group
 	speed_1x_btn.button_pressed = true
+	_apply_speed_button_styles()
 
 	build_btn.pressed.connect(_on_build_pressed)
 	start_battle_btn.pressed.connect(_on_start_battle_pressed)
@@ -57,6 +61,15 @@ func _ready() -> void:
 
 	_init_battle()
 	_enter_waiting_to_start_state()
+
+func _apply_speed_button_styles() -> void:
+	var buttons: Array[Button] = [speed_1x_btn, speed_2x_btn, speed_4x_btn]
+	for button in buttons:
+		button.add_theme_stylebox_override(&"normal", SPEED_BUTTON_NORMAL_STYLE)
+		button.add_theme_stylebox_override(&"hover", SPEED_BUTTON_HOVER_STYLE)
+		button.add_theme_stylebox_override(&"pressed", SPEED_BUTTON_PRESSED_STYLE)
+		button.add_theme_stylebox_override(&"focus", SPEED_BUTTON_HOVER_STYLE)
+		button.add_theme_stylebox_override(&"disabled", SPEED_BUTTON_NORMAL_STYLE)
 
 func _init_battle() -> void:
 	_clear_battle_log()
