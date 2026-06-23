@@ -73,10 +73,10 @@ func _ready() -> void:
 	_refresh_all()
 
 func _load_png_texture(target: TextureRect, path: String) -> void:
-	var image := Image.load_from_file(ProjectSettings.globalize_path(path))
-	if image == null:
+	var texture := load(path) as Texture2D
+	if texture == null:
 		return
-	target.texture = ImageTexture.create_from_image(image)
+	target.texture = texture
 
 func _update_texts() -> void:
 	title_label.text = tr("build.title")
@@ -133,10 +133,9 @@ func _make_texture_button_style(texture: Texture2D, modulate: Color) -> StyleBox
 func _load_texture(path: String) -> Texture2D:
 	if _button_texture_cache.has(path):
 		return _button_texture_cache[path]
-	var image := Image.load_from_file(ProjectSettings.globalize_path(path))
-	if image == null:
+	var texture := load(path) as Texture2D
+	if texture == null:
 		return null
-	var texture := ImageTexture.create_from_image(image)
 	_button_texture_cache[path] = texture
 	return texture
 
