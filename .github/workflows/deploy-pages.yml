@@ -53,8 +53,10 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p build/web
+          EXPORT_BASENAME="timechain-${GITHUB_SHA::12}"
           godot --headless --import || true
-          godot --headless --path . --export-release Web build/web/index.html
+          godot --headless --path . --export-release Web "build/web/${EXPORT_BASENAME}.html"
+          mv "build/web/${EXPORT_BASENAME}.html" build/web/index.html
           touch build/web/.nojekyll
 
       - name: Configure Pages
