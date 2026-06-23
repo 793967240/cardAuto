@@ -82,6 +82,7 @@ const DECK_COST_BADGE_SIZE := Vector2(87, 55)
 const DECK_COST_BADGE_TOP_RIGHT := Vector2(-5, 29)
 const BUILD_SLOT_COST_BADGE_SIZE := Vector2(83, 77)
 const BUILD_SLOT_COST_BADGE_TOP_RIGHT := Vector2(-5, 29)
+const BUILD_DESC_DOWN_OFFSET := 40.0
 const KEYWORD_DEFS: Array[Dictionary] = [
 	{"id": "innate", "color": "#b92525", "terms": ["固有", "Innate"], "name_key": "card.keyword.innate.name", "desc_key": "card.keyword.innate.desc"},
 	{"id": "flow", "color": "#8a45bd", "terms": ["流转", "Flow"], "name_key": "card.keyword.flow.name", "desc_key": "card.keyword.flow.desc"},
@@ -509,9 +510,9 @@ func _apply_build_geometry() -> void:
 		type_bar.offset_right = -62.0
 		type_bar.offset_bottom = 209.0
 		desc_label.offset_left = 45.0
-		desc_label.offset_top = -156.0
+		desc_label.offset_top = -156.0 + BUILD_DESC_DOWN_OFFSET
 		desc_label.offset_right = -45.0
-		desc_label.offset_bottom = -28.0
+		desc_label.offset_bottom = -28.0 + BUILD_DESC_DOWN_OFFSET
 		margin.add_theme_constant_override(&"margin_left", 8)
 		margin.add_theme_constant_override(&"margin_top", 8)
 		margin.add_theme_constant_override(&"margin_right", 8)
@@ -530,9 +531,9 @@ func _apply_build_geometry() -> void:
 		type_bar.offset_right = -60.0
 		type_bar.offset_bottom = 229.0
 		desc_label.offset_left = 45.0
-		desc_label.offset_top = -178.0
+		desc_label.offset_top = -178.0 + BUILD_DESC_DOWN_OFFSET
 		desc_label.offset_right = -45.0
-		desc_label.offset_bottom = -31.0
+		desc_label.offset_bottom = -31.0 + BUILD_DESC_DOWN_OFFSET
 		margin.add_theme_constant_override(&"margin_left", 7)
 		margin.add_theme_constant_override(&"margin_top", 8)
 		margin.add_theme_constant_override(&"margin_right", 7)
