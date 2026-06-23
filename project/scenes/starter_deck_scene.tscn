@@ -1,53 +1,59 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene format=3 uid="uid://dtg1hivcuh6g4"]
 
-[ext_resource type="Script" path="res://src/ui/starter_deck_scene.gd" id="1"]
-[ext_resource type="Texture2D" path="res://assets/ui/themes/xianxia/backgrounds/fresh_mountain_menu.png" id="2_bg"]
+[ext_resource type="Script" uid="uid://di1qp5aomrld2" path="res://src/ui/starter_deck_scene.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://b012vv5kqwv2" path="res://assets/ui/themes/xianxia/backgrounds/fresh_mountain_menu.png" id="2_bg"]
 
-[node name="StarterDeckScene" type="Control"]
+[node name="StarterDeckScene" type="Control" unique_id=748763774]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1")
 
-[node name="Background" type="TextureRect" parent="."]
+[node name="Background" type="TextureRect" parent="." unique_id=2133951277]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 texture = ExtResource("2_bg")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="Margin" type="MarginContainer" parent="."]
+[node name="Margin" type="MarginContainer" parent="." unique_id=917120580]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_constants/margin_left = 48
 theme_override_constants/margin_top = 24
 theme_override_constants/margin_right = 48
 theme_override_constants/margin_bottom = 24
 
-[node name="VBox" type="VBoxContainer" parent="Margin"]
+[node name="VBox" type="VBoxContainer" parent="Margin" unique_id=157291938]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="TitleLabel" type="Label" parent="Margin/VBox"]
+[node name="TitleLabel" type="Label" parent="Margin/VBox" unique_id=1278866448]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.08, 0.34, 0.34, 1)
+theme_override_font_sizes/font_size = 30
 text = "选择开局卡牌仓库"
 horizontal_alignment = 1
-theme_override_font_sizes/font_size = 30
-theme_override_colors/font_color = Color(0.08, 0.34, 0.34, 1)
 
-[node name="SubtitleLabel" type="Label" parent="Margin/VBox"]
+[node name="SubtitleLabel" type="Label" parent="Margin/VBox" unique_id=1764754343]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.22, 0.45, 0.43, 1)
+theme_override_font_sizes/font_size = 18
 text = "三选一：每组包含 1 张罕见牌与 2 张普通牌"
 horizontal_alignment = 1
-theme_override_font_sizes/font_size = 18
-theme_override_colors/font_color = Color(0.22, 0.45, 0.43, 1)
 
-[node name="DecksRow" type="HBoxContainer" parent="Margin/VBox"]
+[node name="DecksRow" type="HBoxContainer" parent="Margin/VBox" unique_id=2062226261]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 22

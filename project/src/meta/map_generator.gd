@@ -17,7 +17,7 @@ const ENEMY_POOL: Array[String] = [
 	"stone_guard",
 	"iron_golem",
 ]
-const BOSS_ID: String = "iron_golem"  # 阶段 1 用铁傀儡当 boss
+const BOSS_ID: String = "tai_xu_judge"
 
 ## 生成可选择路线图。
 ## 节点字段：

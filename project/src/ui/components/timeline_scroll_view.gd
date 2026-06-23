@@ -154,18 +154,47 @@ func _on_timeline_container_draw() -> void:
 			timeline_container.draw_string(_tick_font, Vector2(x + 4, c_size.y - line_len - 4), label, HORIZONTAL_ALIGNMENT_LEFT, -1, 16, text_color)
 
 func _show_tooltip(card: CardRuntime, view: CardView) -> void:
-	var t: String = "[%s]  Cost: %d\n" % [tr(card.data.display_name_key), card.data.cost]
-	t += tr(card.data.desc_key)
+	var t: String = CardView.keyword_tooltip_for(card.data)
+	if t.is_empty():
+		_hide_tooltip()
+		return
 	tooltip_label.text = t
 	tooltip_panel.show()
 	tooltip_panel.reset_size()
-	var view_global: Vector2 = view.global_position
-	var tooltip_pos := view_global + Vector2(0, -tooltip_panel.size.y - 12)
-	if tooltip_pos.y < 8:
-		tooltip_pos.y = view_global.y + view.size.y + 8
-	var viewport_w: float = get_viewport_rect().size.x
-	tooltip_pos.x = clampf(tooltip_pos.x, 8.0, viewport_w - tooltip_panel.size.x - 8.0)
-	tooltip_panel.global_position = tooltip_pos
+	var view_rect := _local_rect_for_view(view)
+	var tooltip_pos := _tooltip_position_near_rect(view_rect, tooltip_panel.size)
+	tooltip_panel.position = tooltip_pos
 
 func _hide_tooltip() -> void:
 	tooltip_panel.hide()
+
+func _local_rect_for_view(view: CardView) -> Rect2:
+	var view_global := view.get_global_rect()
+	var own_origin := get_global_transform_with_canvas().origin
+	return Rect2(view_global.position - own_origin, view_global.size)
+
+func _tooltip_position_near_rect(anchor_rect: Rect2, tooltip_size: Vector2) -> Vector2:
+	const GAP := 8.0
+	const EDGE := 6.0
+	var bounds := Rect2(Vector2.ZERO, size)
+
+	var right_pos := Vector2(anchor_rect.end.x + GAP, anchor_rect.position.y)
+	if right_pos.x + tooltip_size.x <= bounds.end.x - EDGE:
+		return _clamp_tooltip_position(right_pos, tooltip_size, bounds, EDGE)
+
+	var left_pos := Vector2(anchor_rect.position.x - tooltip_size.x - GAP, anchor_rect.position.y)
+	if left_pos.x >= bounds.position.x + EDGE:
+		return _clamp_tooltip_position(left_pos, tooltip_size, bounds, EDGE)
+
+	var above_pos := Vector2(anchor_rect.position.x, anchor_rect.position.y - tooltip_size.y - GAP)
+	if above_pos.y >= bounds.position.y + EDGE:
+		return _clamp_tooltip_position(above_pos, tooltip_size, bounds, EDGE)
+
+	var below_pos := Vector2(anchor_rect.position.x, anchor_rect.end.y + GAP)
+	return _clamp_tooltip_position(below_pos, tooltip_size, bounds, EDGE)
+
+func _clamp_tooltip_position(pos: Vector2, tooltip_size: Vector2, bounds: Rect2, edge: float) -> Vector2:
+	return Vector2(
+		clampf(pos.x, bounds.position.x + edge, bounds.end.x - tooltip_size.x - edge),
+		clampf(pos.y, bounds.position.y + edge, bounds.end.y - tooltip_size.y - edge)
+	)

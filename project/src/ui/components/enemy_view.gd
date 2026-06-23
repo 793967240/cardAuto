@@ -50,6 +50,12 @@ func _process(_delta: float) -> void:
 	_update_intent()
 
 func _load_portrait(id: StringName) -> void:
+	if has_meta("portrait"):
+		var meta_portrait := get_meta("portrait") as Texture2D
+		if meta_portrait != null:
+			texture_rect.texture = meta_portrait
+			texture_rect.modulate = Color.WHITE
+			return
 	var path := "res://assets/enemies/%s.png" % str(id)
 	if ResourceLoader.exists(path):
 		var tex := load(path) as Texture2D

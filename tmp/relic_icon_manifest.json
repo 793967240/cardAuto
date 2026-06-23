@@ -1,0 +1,152 @@
+[
+  {
+    "id": "ancient_coin",
+    "cn": "古旧铜钱",
+    "file": "ancient_coin.tres"
+  },
+  {
+    "id": "black_iron_scabbard",
+    "cn": "玄铁剑鞘",
+    "file": "black_iron_scabbard.tres"
+  },
+  {
+    "id": "bronze_bell",
+    "cn": "铜铃",
+    "file": "bronze_bell.tres"
+  },
+  {
+    "id": "cloth_bracer",
+    "cn": "青布绑腕",
+    "file": "cloth_bracer.tres"
+  },
+  {
+    "id": "cracked_jade_charm",
+    "cn": "裂玉护符",
+    "file": "cracked_jade_charm.tres"
+  },
+  {
+    "id": "ember_talisman",
+    "cn": "赤焰符",
+    "file": "ember_talisman.tres"
+  },
+  {
+    "id": "empty_seat_lantern",
+    "cn": "空席明灯",
+    "file": "empty_seat_lantern.tres"
+  },
+  {
+    "id": "exquisite_pagoda",
+    "cn": "玲珑宝塔",
+    "file": "exquisite_pagoda.tres"
+  },
+  {
+    "id": "flawless_golden_body",
+    "cn": "无漏金身",
+    "file": "flawless_golden_body.tres"
+  },
+  {
+    "id": "heart_guard_mirror",
+    "cn": "守心镜",
+    "file": "heart_guard_mirror.tres"
+  },
+  {
+    "id": "heavenly_river_case",
+    "cn": "天河剑匣",
+    "file": "heavenly_river_case.tres"
+  },
+  {
+    "id": "jade_chain_ring",
+    "cn": "连环玉扣",
+    "file": "jade_chain_ring.tres"
+  },
+  {
+    "id": "loose_page",
+    "cn": "残卷一页",
+    "file": "loose_page.tres"
+  },
+  {
+    "id": "mind_cutting_lamp",
+    "cn": "斩念心灯",
+    "file": "mind_cutting_lamp.tres"
+  },
+  {
+    "id": "myriad_array_plate",
+    "cn": "万象阵盘",
+    "file": "myriad_array_plate.tres"
+  },
+  {
+    "id": "needle_compass",
+    "cn": "悬针罗盘",
+    "file": "needle_compass.tres"
+  },
+  {
+    "id": "nine_turn_furnace",
+    "cn": "九转丹炉",
+    "file": "nine_turn_furnace.tres"
+  },
+  {
+    "id": "old_banner",
+    "cn": "旧阵旗",
+    "file": "old_banner.tres"
+  },
+  {
+    "id": "qi_gourd",
+    "cn": "聚气葫芦",
+    "file": "qi_gourd.tres"
+  },
+  {
+    "id": "short_incense",
+    "cn": "断续线香",
+    "file": "short_incense.tres"
+  },
+  {
+    "id": "small_elixir",
+    "cn": "小丹瓶",
+    "file": "small_elixir.tres"
+  },
+  {
+    "id": "star_sand_inkstone",
+    "cn": "星砂砚",
+    "file": "star_sand_inkstone.tres"
+  },
+  {
+    "id": "sword_tassel",
+    "cn": "旧剑穗",
+    "file": "sword_tassel.tres"
+  },
+  {
+    "id": "taixu_sword_seal",
+    "cn": "太虚剑印",
+    "file": "taixu_sword_seal.tres"
+  },
+  {
+    "id": "thunder_trial_wood",
+    "cn": "雷劫木",
+    "file": "thunder_trial_wood.tres"
+  },
+  {
+    "id": "warding_umbrella",
+    "cn": "避劫伞",
+    "file": "warding_umbrella.tres"
+  },
+  {
+    "id": "whetstone",
+    "cn": "磨剑石",
+    "file": "whetstone.tres"
+  },
+  {
+    "id": "wind_return_jade",
+    "cn": "回风玉佩",
+    "file": "wind_return_jade.tres"
+  },
+  {
+    "id": "wooden_sword_case",
+    "cn": "木剑匣",
+    "file": "wooden_sword_case.tres"
+  },
+  {
+    "id": "yin_yang_fish_talisman",
+    "cn": "阴阳鱼符",
+    "file": "yin_yang_fish_talisman.tres"
+  }
+]

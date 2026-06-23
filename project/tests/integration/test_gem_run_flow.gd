@@ -51,7 +51,7 @@ func test_start_run_initializes_bases_and_gem_inventory() -> void:
 	assert_eq(run.bases.size(), Tuning.get_default().base_count, "Run should create tuning base count")
 	assert_eq(run.deck.size(), 0, "Run should start with an empty card repository before starter card repository selection")
 	assert_eq(GameState._flatten_chain_cards(run).size(), 0, "Run should start with an empty real card chain")
-	assert_eq(run.gems.size(), GameState.STARTER_GEMS.size(), "Run should grant starter gems")
+	assert_eq(run.gems.size(), 0, "Run should start without starter gems")
 	assert_eq(run.base_gems.size(), run.bases.size(), "Every base should have a gem entry")
 
 	for base in run.bases:

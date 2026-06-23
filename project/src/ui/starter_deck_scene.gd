@@ -2,7 +2,7 @@ class_name StarterDeckScene extends Control
 
 const CARD_VIEW_SCENE = preload("res://scenes/components/card_view.tscn")
 const MAP_SCENE := "res://scenes/map/map_scene.tscn"
-const PREVIEW_CARD_SCALE := 0.64
+const PREVIEW_CARD_SCALE := 1
 
 @onready var title_label: Label = $Margin/VBox/TitleLabel
 @onready var subtitle_label: Label = $Margin/VBox/SubtitleLabel
@@ -66,7 +66,7 @@ func _make_deck_panel(deck_index: int, deck_def: Dictionary) -> PanelContainer:
 	cards_column.alignment = BoxContainer.ALIGNMENT_CENTER
 	cards_column.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	cards_column.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	cards_column.add_theme_constant_override(&"separation", -78)
+	cards_column.add_theme_constant_override(&"separation", -70)
 	box.add_child(cards_column)
 
 	var paths: Array = deck_def.get("cards", [])

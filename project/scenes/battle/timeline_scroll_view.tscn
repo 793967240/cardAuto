@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://src/ui/components/timeline_scroll_view.gd" id="1_script"]
-[ext_resource type="StyleBoxTexture" path="res://assets/ui/themes/xianxia/tooltips/tooltip_frame_xianxia.tres" id="2_tooltip"]
+[ext_resource type="StyleBoxFlat" path="res://assets/ui/themes/xianxia/tooltips/tooltip_frame_xianxia.tres" id="2_tooltip"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cursor_glow"]
 bg_color = Color(0.36, 0.74, 0.66, 0.92)

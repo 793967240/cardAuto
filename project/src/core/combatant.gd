@@ -10,6 +10,7 @@ var tags: Array[StringName] = []          # 角色标签（&"sword", &"player" �
 var statuses: Array[StatusInstance] = []  # 当前状态列表
 var chain: Chain                           # 该战斗者的链条
 var cycle_stats: Dictionary = {}
+var battle_flags: Dictionary = {}
 var relic_runtime = null
 
 signal hp_changed(old_val: int, new_val: int)

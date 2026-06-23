@@ -78,6 +78,23 @@ const BUILD_TYPE_COLORS := {
 const BUILD_TEXT_COLOR_SOFT := BUILD_TEXT_COLOR
 const BUILD_TEXT_OUTLINE_SOFT := BUILD_TEXT_OUTLINE
 const DRAG_START_DISTANCE := 8.0
+const DECK_COST_BADGE_SIZE := Vector2(87, 55)
+const DECK_COST_BADGE_TOP_RIGHT := Vector2(-5, 29)
+const BUILD_SLOT_COST_BADGE_SIZE := Vector2(83, 77)
+const BUILD_SLOT_COST_BADGE_TOP_RIGHT := Vector2(-5, 29)
+const KEYWORD_DEFS: Array[Dictionary] = [
+	{"id": "innate", "color": "#b92525", "terms": ["固有", "Innate"], "name_key": "card.keyword.innate.name", "desc_key": "card.keyword.innate.desc"},
+	{"id": "flow", "color": "#8a45bd", "terms": ["流转", "Flow"], "name_key": "card.keyword.flow.name", "desc_key": "card.keyword.flow.desc"},
+	{"id": "vulnerable", "color": "#d33636", "terms": ["易伤", "Vulnerable"], "name_key": "card.keyword.vulnerable.name", "desc_key": "card.keyword.vulnerable.desc"},
+	{"id": "slow", "color": "#2a70bd", "terms": ["迟滞", "Slow", "Slowed"], "name_key": "card.keyword.slow.name", "desc_key": "card.keyword.slow.desc"},
+	{"id": "burn", "color": "#c44a1d", "terms": ["燃烧", "Burn"], "name_key": "card.keyword.burn.name", "desc_key": "card.keyword.burn.desc"},
+	{"id": "haste", "color": "#0f8a7a", "terms": ["加速", "Haste"], "name_key": "card.keyword.haste.name", "desc_key": "card.keyword.haste.desc"},
+	{"id": "strength", "color": "#b85518", "terms": ["力量", "Strength"], "name_key": "card.keyword.strength.name", "desc_key": "card.keyword.strength.desc"},
+	{"id": "shield", "color": "#267c9e", "terms": ["护盾", "Shield"], "name_key": "card.keyword.shield.name", "desc_key": "card.keyword.shield.desc"},
+	{"id": "charge", "color": "#8061c9", "terms": ["充能", "Charge", "Charge-consume"], "name_key": "card.keyword.charge.name", "desc_key": "card.keyword.charge.desc"},
+	{"id": "consumable", "color": "#8f3f2d", "terms": ["一次性", "Consumable"], "name_key": "card.keyword.consumable.name", "desc_key": "card.keyword.consumable.desc"},
+	{"id": "interrupt", "color": "#a02f78", "terms": ["打断", "Interrupt", "interrupt"], "name_key": "card.keyword.interrupt.name", "desc_key": "card.keyword.interrupt.desc"},
+]
 
 @onready var bg_panel: Panel = $BgPanel
 @onready var frame_texture: TextureRect = $FrameTexture
@@ -99,7 +116,7 @@ const DRAG_START_DISTANCE := 8.0
 @onready var build_name_label: Label = $BuildNameLabel
 @onready var type_bar: Panel = $TypeBar
 @onready var type_label: Label = $TypeBar/TypeLabel
-@onready var desc_label: Label = $DescLabel
+@onready var desc_label: RichTextLabel = $DescLabel
 @onready var rarity_frame: Panel = $RarityFrame
 
 ## 点击信号（构筑模式用，battle 不发）
@@ -281,7 +298,7 @@ func _setup_build_slot(card: CardData, compact: bool) -> void:
 		type_bar.show()
 		_apply_type_bar(fallback)
 		desc_label.show()
-		desc_label.text = tr(fallback.desc_key)
+		_set_card_description(fallback)
 		_apply_desc_font(desc_label.text)
 		rarity_frame.hide()
 		vbox.alignment = BoxContainer.ALIGNMENT_BEGIN
@@ -313,13 +330,13 @@ func _setup_build_slot(card: CardData, compact: bool) -> void:
 
 		# 效果描述
 		desc_label.show()
-		desc_label.text = tr(card.desc_key)
+		_set_card_description(card)
 		_apply_desc_font(desc_label.text)
 
 		# 稀有度边框
 		_apply_rarity_frame(card)
 
-	tooltip_text = tr(ChainComposer.get_default_strike_card().desc_key) if card == null else tr(card.desc_key)
+	tooltip_text = _keyword_tooltip_for_card(ChainComposer.get_default_strike_card() if card == null else card)
 
 # ─── BUILD_DECK_ITEM 模式 ───────────────────────────────────────
 
@@ -355,7 +372,7 @@ func setup_deck_item(card: CardData, available: int, total: int) -> void:
 	type_bar.show()
 	_apply_type_bar(card)
 	desc_label.show()
-	desc_label.text = tr(card.desc_key)
+	_set_card_description(card)
 	_apply_desc_font(desc_label.text)
 	_apply_rarity_frame(card)
 
@@ -387,7 +404,7 @@ func setup_deck_item(card: CardData, available: int, total: int) -> void:
 	mouse_default_cursor_shape = (Control.CURSOR_ARROW
 		if disabled else Control.CURSOR_POINTING_HAND)
 
-	tooltip_text = tr(card.desc_key)
+	tooltip_text = _keyword_tooltip_for_card(card)
 
 # ─── 通用状态 ────────────────────────────────────────────────────
 
@@ -452,10 +469,12 @@ func _apply_cost_badge_chrome(build_mode: bool) -> void:
 		cost_badge.anchor_right = 1.0
 		cost_badge.anchor_top = 0.0
 		cost_badge.anchor_bottom = 0.0
-		cost_badge.offset_left = -90.0
-		cost_badge.offset_top = 45.0
-		cost_badge.offset_right = -5.0
-		cost_badge.offset_bottom = 71.0
+		var badge_size := DECK_COST_BADGE_SIZE if mode == Mode.BUILD_DECK_ITEM else BUILD_SLOT_COST_BADGE_SIZE
+		var top_right := DECK_COST_BADGE_TOP_RIGHT if mode == Mode.BUILD_DECK_ITEM else BUILD_SLOT_COST_BADGE_TOP_RIGHT
+		cost_badge.offset_right = top_right.x
+		cost_badge.offset_top = top_right.y
+		cost_badge.offset_left = cost_badge.offset_right - badge_size.x
+		cost_badge.offset_bottom = cost_badge.offset_top + badge_size.y
 		cost_label.add_theme_font_size_override("font_size", 15)
 		cost_label.add_theme_color_override(&"font_color", BUILD_TEXT_COLOR)
 		cost_label.add_theme_color_override(&"font_outline_color", BUILD_TEXT_OUTLINE)
@@ -489,9 +508,9 @@ func _apply_build_geometry() -> void:
 		type_bar.offset_top = 181.0
 		type_bar.offset_right = -62.0
 		type_bar.offset_bottom = 209.0
-		desc_label.offset_left = 29.0
-		desc_label.offset_top = -126.0
-		desc_label.offset_right = -29.0
+		desc_label.offset_left = 45.0
+		desc_label.offset_top = -156.0
+		desc_label.offset_right = -45.0
 		desc_label.offset_bottom = -28.0
 		margin.add_theme_constant_override(&"margin_left", 8)
 		margin.add_theme_constant_override(&"margin_top", 8)
@@ -510,9 +529,9 @@ func _apply_build_geometry() -> void:
 		type_bar.offset_top = 198.0
 		type_bar.offset_right = -60.0
 		type_bar.offset_bottom = 229.0
-		desc_label.offset_left = 29.0
-		desc_label.offset_top = -138.0
-		desc_label.offset_right = -29.0
+		desc_label.offset_left = 45.0
+		desc_label.offset_top = -178.0
+		desc_label.offset_right = -45.0
 		desc_label.offset_bottom = -31.0
 		margin.add_theme_constant_override(&"margin_left", 7)
 		margin.add_theme_constant_override(&"margin_top", 8)
@@ -535,6 +554,62 @@ func _apply_desc_font(_text: String) -> void:
 	if mode == Mode.BUILD_SLOT and not is_compact_build_slot:
 		fsize = 11
 	desc_label.add_theme_font_size_override("font_size", fsize)
+
+func _set_card_description(card: CardData) -> void:
+	var raw := tr(card.desc_key)
+	desc_label.text = _colorize_keywords(raw)
+
+static func _colorize_keywords(raw: String) -> String:
+	var out := ""
+	var i := 0
+	while i < raw.length():
+		var match_term := ""
+		var match_color := ""
+		for def in KEYWORD_DEFS:
+			for term in def.get("terms", []):
+				var term_text := str(term)
+				if term_text == "":
+					continue
+				if raw.substr(i, term_text.length()) == term_text and term_text.length() > match_term.length():
+					match_term = term_text
+					match_color = str(def.get("color", "#b92525"))
+		if match_term != "":
+			out += "[color=%s]%s[/color]" % [match_color, _bbcode_escape(match_term)]
+			i += match_term.length()
+		else:
+			out += _bbcode_escape(raw.substr(i, 1))
+			i += 1
+	return out
+
+static func _keyword_tooltip_for_card(card: CardData) -> String:
+	if card == null:
+		return ""
+	var desc := _translate(card.desc_key)
+	var lines: Array[String] = []
+	var seen: Dictionary = {}
+	for def in KEYWORD_DEFS:
+		var keyword_id := str(def.get("id", ""))
+		if seen.has(keyword_id):
+			continue
+		if _description_has_keyword(desc, def):
+			seen[keyword_id] = true
+			lines.append("%s：%s" % [_translate(str(def.get("name_key", ""))), _translate(str(def.get("desc_key", "")))])
+	return "\n".join(lines)
+
+static func _description_has_keyword(desc: String, def: Dictionary) -> bool:
+	for term in def.get("terms", []):
+		if desc.contains(str(term)):
+			return true
+	return false
+
+static func _bbcode_escape(text: String) -> String:
+	return text.replace("[", "[lb]").replace("]", "[rb]")
+
+static func keyword_tooltip_for(card: CardData) -> String:
+	return _keyword_tooltip_for_card(card)
+
+static func _translate(key: String) -> String:
+	return TranslationServer.translate(key)
 
 # ─── 通用名称字号 ───────────────────────────────────────────────
 
@@ -588,7 +663,7 @@ func _on_mouse_exited() -> void:
 		frame_texture.modulate = Color.WHITE
 
 func _apply_build_text_contrast() -> void:
-	for label in [name_label, build_name_label, desc_label, type_label, art_placeholder, stock_label]:
+	for label in [name_label, build_name_label, type_label, art_placeholder, stock_label]:
 		if mode == Mode.BUILD_SLOT:
 			label.add_theme_color_override(&"font_color", BUILD_TEXT_COLOR_SOFT)
 			label.add_theme_color_override(&"font_outline_color", BUILD_TEXT_OUTLINE_SOFT)
@@ -597,6 +672,7 @@ func _apply_build_text_contrast() -> void:
 			label.add_theme_color_override(&"font_color", BUILD_TEXT_COLOR)
 			label.add_theme_color_override(&"font_outline_color", BUILD_TEXT_OUTLINE)
 			label.add_theme_constant_override(&"outline_size", 4)
+	desc_label.add_theme_color_override(&"default_color", BUILD_TEXT_COLOR_SOFT if mode == Mode.BUILD_SLOT else BUILD_TEXT_COLOR)
 
 func _on_gui_input(event: InputEvent) -> void:
 	if mode == Mode.BATTLE:

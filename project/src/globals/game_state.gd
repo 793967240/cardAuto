@@ -67,13 +67,6 @@ const SWORD_STARTER_DECKS: Array[Dictionary] = [
 
 const BASE_SLOT_PATH := "res://data/slots/base/base_slot.tres"
 
-const STARTER_GEMS: Array[String] = [
-	"res://data/gems/ruby.tres",
-	"res://data/gems/sapphire.tres",
-	"res://data/gems/amber.tres",
-	"res://data/gems/jade.tres",
-]
-
 func start_run(character_id: StringName) -> void:
 	current_run = RunState.new()
 	current_run.character_id = character_id
@@ -133,10 +126,6 @@ func _init_bases(character_id: StringName) -> void:
 		current_run.base_gems[slot.id] = []
 
 	current_run.gems.clear()
-	for path in STARTER_GEMS:
-		var gem_data := load(path) as GemData
-		if gem_data:
-			current_run.gems.append(GemInstance.new(gem_data))
 
 static func _flatten_chain_cards(run: RunState) -> Array[CardData]:
 	var out: Array[CardData] = []

@@ -20,6 +20,7 @@ class_name BattleScene extends Control
 
 const ENEMY_VIEW_SCENE = preload("res://scenes/battle/enemy_view.tscn")
 const RELIC_RUNTIME_SCRIPT = preload("res://src/core/relic_runtime.gd")
+const DIALOG_PANEL_STYLE = preload("res://assets/ui/themes/xianxia/dialogs/dialog_panel_xianxia.tres")
 const MAX_LOG_LINES := 80
 const SHORT_CYCLE_HEAL_THRESHOLD := 2
 const SHORT_CYCLE_GOLD_THRESHOLD := 1
@@ -27,8 +28,10 @@ const SHORT_CYCLE_HEAL_RATIO := 0.10
 const SHORT_CYCLE_GOLD_BONUS := 10
 
 var _player_max_hp: int = 80
+var _battle_start_hp: int = 80
 var _total_logged_damage := 0
 var _total_logged_heal := 0
+var _battle_result_popup: Control = null
 
 func _ready() -> void:
 	var speed_group := ButtonGroup.new()
@@ -60,6 +63,7 @@ func _init_battle() -> void:
 	var run := GameState.current_run
 	if run:
 		_player_max_hp = run.max_hp
+		_battle_start_hp = run.hp
 	relic_bar.refresh()
 
 	var player := Combatant.new(&"player", tr("player.name"), _player_max_hp)
@@ -123,6 +127,8 @@ func _init_battle() -> void:
 
 	var enemy_view := ENEMY_VIEW_SCENE.instantiate() as EnemyView
 	enemy_container.add_child(enemy_view)
+	if enemy_data.portrait != null:
+		enemy_view.set_meta("portrait", enemy_data.portrait)
 	enemy_view.setup(enemy)
 	enemy_view.clicked.connect(_on_enemy_clicked)
 
@@ -185,11 +191,11 @@ func _on_battle_ended(winner: int) -> void:
 	if not GameState.is_simulation \
 			and winner == BattleContext.Winner.PLAYER \
 			and GameState.current_run != null:
-		var cycles_completed := 999
-		if battle_controller != null and battle_controller.ctx != null:
-			cycles_completed = battle_controller.ctx.stats.player_cycles_completed
-		BattleScene.apply_short_cycle_victory_bonus(GameState.current_run, cycles_completed)
-		get_tree().change_scene_to_file("res://scenes/reward/reward_scene.tscn")
+		var summary := _build_battle_result_summary()
+		var bonus := BattleScene.apply_short_cycle_victory_bonus(GameState.current_run, int(summary.get("cycles_completed", 999)))
+		summary["post_heal"] = int(bonus.get("healed", 0))
+		summary["post_gold"] = int(bonus.get("gold", 0))
+		_show_battle_result_popup(summary)
 		return
 
 	var next_scene := resolve_post_battle(winner)
@@ -230,6 +236,111 @@ static func apply_short_cycle_victory_bonus(run: RunState, cycles_completed: int
 		run.gold += SHORT_CYCLE_GOLD_BONUS
 		result["gold"] = SHORT_CYCLE_GOLD_BONUS
 	return result
+
+func _build_battle_result_summary() -> Dictionary:
+	var stats: BattleContext.BattleStats = null
+	if battle_controller != null and battle_controller.ctx != null:
+		stats = battle_controller.ctx.stats
+	var ticks := stats.total_ticks if stats != null else 0
+	var player_hp := GameState.current_run.hp if GameState.current_run != null else _battle_start_hp
+	return {
+		"ticks": ticks,
+		"seconds": float(ticks) * Tuning.get_default().tick_duration_sec,
+		"start_hp": _battle_start_hp,
+		"hp_before_post": player_hp,
+		"damage_taken": stats.damage_taken if stats != null else 0,
+		"battle_heal": stats.healing_done if stats != null else 0,
+		"cycles_completed": stats.player_cycles_completed if stats != null else 999,
+		"post_heal": 0,
+		"post_gold": 0,
+	}
+
+func _show_battle_result_popup(summary: Dictionary) -> void:
+	if is_instance_valid(_battle_result_popup):
+		_battle_result_popup.queue_free()
+
+	var panel := PanelContainer.new()
+	panel.name = "BattleResultPopup"
+	panel.custom_minimum_size = Vector2(560, 420)
+	panel.z_index = 200
+	panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	panel.add_theme_stylebox_override(&"panel", DIALOG_PANEL_STYLE)
+	add_child(panel)
+	_battle_result_popup = panel
+
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override(&"margin_left", 40)
+	margin.add_theme_constant_override(&"margin_top", 34)
+	margin.add_theme_constant_override(&"margin_right", 40)
+	margin.add_theme_constant_override(&"margin_bottom", 30)
+	panel.add_child(margin)
+
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override(&"separation", 14)
+	margin.add_child(box)
+
+	var title := Label.new()
+	title.text = tr("battle.result.title")
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override(&"font_size", 28)
+	title.add_theme_color_override(&"font_color", Color(0.10, 0.34, 0.34, 1))
+	box.add_child(title)
+
+	var lines := _battle_result_lines(summary)
+	for line in lines:
+		var label := Label.new()
+		label.text = line
+		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		label.add_theme_font_size_override(&"font_size", 17)
+		label.add_theme_color_override(&"font_color", Color(0.20, 0.38, 0.35, 1))
+		box.add_child(label)
+
+	var spacer := Control.new()
+	spacer.custom_minimum_size = Vector2(0, 4)
+	box.add_child(spacer)
+
+	var confirm := Button.new()
+	confirm.text = tr("battle.result.continue")
+	confirm.custom_minimum_size = Vector2(180, 48)
+	confirm.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	confirm.pressed.connect(_on_battle_result_confirmed)
+	box.add_child(confirm)
+
+	await get_tree().process_frame
+	var viewport_size := get_viewport_rect().size
+	panel.size = panel.custom_minimum_size
+	panel.position = (viewport_size - panel.size) * 0.5
+
+func _battle_result_lines(summary: Dictionary) -> Array[String]:
+	var ticks := int(summary.get("ticks", 0))
+	var seconds := float(summary.get("seconds", 0.0))
+	var start_hp := int(summary.get("start_hp", 0))
+	var hp_before_post := int(summary.get("hp_before_post", start_hp))
+	var damage_taken := int(summary.get("damage_taken", 0))
+	var battle_heal := int(summary.get("battle_heal", 0))
+	var post_heal := int(summary.get("post_heal", 0))
+	var post_gold := int(summary.get("post_gold", 0))
+	var hp_after_post := mini(_player_max_hp, hp_before_post + post_heal)
+	var net_loss := maxi(0, start_hp - hp_after_post)
+
+	var lines: Array[String] = []
+	lines.append(tr("battle.result.time") % [ticks, seconds])
+	lines.append(tr("battle.result.damage_taken") % damage_taken)
+	lines.append(tr("battle.result.battle_heal") % battle_heal)
+	lines.append(tr("battle.result.hp_change") % [start_hp, hp_after_post, net_loss])
+	if post_heal > 0:
+		lines.append(tr("battle.result.post_heal") % post_heal)
+	else:
+		lines.append(tr("battle.result.no_post_heal"))
+	if post_gold > 0:
+		lines.append(tr("battle.result.post_gold") % post_gold)
+	return lines
+
+func _on_battle_result_confirmed() -> void:
+	if is_instance_valid(_battle_result_popup):
+		_battle_result_popup.queue_free()
+	_battle_result_popup = null
+	get_tree().change_scene_to_file("res://scenes/reward/reward_scene.tscn")
 
 func _on_start_battle_pressed() -> void:
 	battle_controller.set_paused(false)

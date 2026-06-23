@@ -7,6 +7,8 @@ const MAP_NODE_ICON_BATTLE = preload("res://assets/ui/map/map_node_battle.png")
 const MAP_NODE_ICON_CAMPFIRE = preload("res://assets/ui/map/map_node_campfire.png")
 const MAP_NODE_ICON_CHEST = preload("res://assets/ui/map/map_node_chest.png")
 const MAP_NODE_ICON_BOSS = preload("res://assets/ui/map/map_node_boss.png")
+const DIALOG_PANEL_STYLE = preload("res://assets/ui/themes/xianxia/dialogs/dialog_panel_xianxia.tres")
+const RELIC_PLACEHOLDER_ICON = preload("res://assets/ui/relics/relic_placeholder.png")
 
 @onready var nodes_container: VBoxContainer = $Margin/Body/Scroll/NodesVBox
 @onready var scroll: ScrollContainer = $Margin/Body/Scroll
@@ -29,11 +31,20 @@ const MAP_NODE_ICON_BOSS = preload("res://assets/ui/map/map_node_boss.png")
 @onready var forge_list_vbox: VBoxContainer = $ForgePanel/VBox/ForgeScroll/ForgeListVBox
 @onready var forge_cancel_btn: Button = $ForgePanel/VBox/ForgeCancelBtn
 
+# Forge 确认弹窗
+@onready var forge_confirm_panel: PanelContainer = $ForgeConfirmPanel
+@onready var forge_confirm_title: Label = $ForgeConfirmPanel/VBox/TitleLabel
+@onready var forge_before_slot: Control = $ForgeConfirmPanel/VBox/CompareRow/BeforeSlot
+@onready var forge_after_slot: Control = $ForgeConfirmPanel/VBox/CompareRow/AfterSlot
+@onready var forge_confirm_btn: Button = $ForgeConfirmPanel/VBox/ButtonRow/ConfirmBtn
+@onready var forge_confirm_cancel_btn: Button = $ForgeConfirmPanel/VBox/ButtonRow/CancelBtn
+
 var _node_buttons: Dictionary = {}
 var _available_node_ids: Dictionary = {}
 var _route_lines: MapRouteLineLayer
 var _backdrop: MapBackdropLayer
 var _pending_chest_reward: Dictionary = {}
+var _pending_forge_deck_index: int = -1
 
 func _ready() -> void:
 	if GameState.current_run == null:
@@ -50,9 +61,12 @@ func _ready() -> void:
 	campfire_forge_btn.pressed.connect(_on_campfire_forge)
 	campfire_skip_btn.pressed.connect(_on_campfire_skip)
 	forge_cancel_btn.pressed.connect(_on_forge_cancel)
+	forge_confirm_btn.pressed.connect(_on_forge_confirmed)
+	forge_confirm_cancel_btn.pressed.connect(_on_forge_confirm_cancelled)
 	_prepare_overlay_panels()
 	campfire_panel.hide()
 	forge_panel.hide()
+	forge_confirm_panel.hide()
 	_ensure_backdrop_layer()
 	_ensure_route_line_layer()
 	_connect_route_line_redraw()
@@ -63,8 +77,11 @@ func _ready() -> void:
 func _prepare_overlay_panels() -> void:
 	campfire_panel.z_index = 80
 	forge_panel.z_index = 90
+	forge_confirm_panel.z_index = 100
 	campfire_panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	forge_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	forge_confirm_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	forge_confirm_panel.add_theme_stylebox_override(&"panel", DIALOG_PANEL_STYLE)
 
 func _ensure_backdrop_layer() -> void:
 	if is_instance_valid(_backdrop):
@@ -105,6 +122,9 @@ func _update_texts() -> void:
 	campfire_skip_btn.text = tr("campfire.option.skip")
 	forge_title.text = tr("campfire.forge.title")
 	forge_cancel_btn.text = tr("ui.button.cancel")
+	forge_confirm_title.text = tr("campfire.forge.confirm.title")
+	forge_confirm_btn.text = tr("campfire.forge.confirm")
+	forge_confirm_cancel_btn.text = tr("campfire.forge.cancel")
 
 func _refresh_ui() -> void:
 	var run := GameState.current_run
@@ -264,20 +284,80 @@ func _open_chest() -> void:
 	if _pending_chest_reward.is_empty():
 		_advance_node()
 		return
-	var reward_name := _reward_display_name(_pending_chest_reward)
-	var dialog := AcceptDialog.new()
-	dialog.title = tr("chest.title")
-	dialog.dialog_text = tr("chest.reward") % reward_name
-	dialog.confirmed.connect(_on_chest_confirmed.bind(dialog))
+	var dialog := _make_chest_dialog(_pending_chest_reward)
 	add_child(dialog)
-	dialog.popup_centered()
+	_center_chest_dialog(dialog)
 
-func _on_chest_confirmed(dialog: AcceptDialog) -> void:
+func _on_chest_confirmed(dialog: Control) -> void:
 	_apply_chest_reward(_pending_chest_reward)
 	_pending_chest_reward.clear()
 	if is_instance_valid(dialog):
 		dialog.queue_free()
 	_advance_node()
+
+func _make_chest_dialog(option: Dictionary) -> PanelContainer:
+	var panel := PanelContainer.new()
+	panel.name = "ChestRewardDialog"
+	panel.custom_minimum_size = Vector2(520, 360)
+	panel.z_index = 120
+	panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	panel.add_theme_stylebox_override(&"panel", DIALOG_PANEL_STYLE)
+
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override(&"margin_left", 34)
+	margin.add_theme_constant_override(&"margin_top", 28)
+	margin.add_theme_constant_override(&"margin_right", 34)
+	margin.add_theme_constant_override(&"margin_bottom", 28)
+	panel.add_child(margin)
+
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override(&"separation", 14)
+	margin.add_child(box)
+
+	var title := Label.new()
+	title.text = tr("chest.title")
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override(&"font_size", 28)
+	title.add_theme_color_override(&"font_color", Color(0.10, 0.34, 0.34, 1))
+	box.add_child(title)
+
+	var icon := TextureRect.new()
+	icon.custom_minimum_size = Vector2(126, 126)
+	icon.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	icon.texture = _reward_icon(option)
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	box.add_child(icon)
+
+	var reward_name := Label.new()
+	reward_name.text = _reward_display_name(option)
+	reward_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	reward_name.add_theme_font_size_override(&"font_size", 22)
+	reward_name.add_theme_color_override(&"font_color", Color(0.14, 0.38, 0.36, 1))
+	box.add_child(reward_name)
+
+	var desc := Label.new()
+	desc.text = _reward_description(option)
+	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	desc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	desc.add_theme_font_size_override(&"font_size", 15)
+	desc.add_theme_color_override(&"font_color", Color(0.26, 0.40, 0.37, 1))
+	desc.custom_minimum_size = Vector2(0, 46)
+	box.add_child(desc)
+
+	var confirm := Button.new()
+	confirm.text = tr("ui.button.confirm")
+	confirm.custom_minimum_size = Vector2(160, 46)
+	confirm.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	confirm.pressed.connect(_on_chest_confirmed.bind(panel))
+	box.add_child(confirm)
+	return panel
+
+func _center_chest_dialog(dialog: Control) -> void:
+	await get_tree().process_frame
+	var viewport_size := get_viewport_rect().size
+	dialog.size = dialog.custom_minimum_size
+	dialog.position = (viewport_size - dialog.size) * 0.5
 
 func _apply_chest_reward(option: Dictionary) -> void:
 	var run := GameState.current_run
@@ -298,6 +378,25 @@ func _reward_display_name(option: Dictionary) -> String:
 	if reward_type == &"relic" and resource is RelicData:
 		return tr((resource as RelicData).get_name_key())
 	return tr("chest.reward.unknown")
+
+func _reward_description(option: Dictionary) -> String:
+	var reward_type: StringName = option.get("type", &"")
+	var resource: Resource = option.get("resource", null)
+	if reward_type == &"gem" and resource is GemData:
+		return tr((resource as GemData).get_desc_key())
+	if reward_type == &"relic" and resource is RelicData:
+		return tr((resource as RelicData).get_desc_key())
+	return ""
+
+func _reward_icon(option: Dictionary) -> Texture2D:
+	var resource: Resource = option.get("resource", null)
+	if resource is RelicData:
+		var relic := resource as RelicData
+		return relic.icon if relic.icon != null else RELIC_PLACEHOLDER_ICON
+	if resource is GemData:
+		var gem := resource as GemData
+		return gem.icon if gem.icon != null else RELIC_PLACEHOLDER_ICON
+	return RELIC_PLACEHOLDER_ICON
 
 # ─── Campfire ────────────────────────────────────────────────
 
@@ -379,9 +478,54 @@ func _on_forge_card_picked(card: CardData, deck_index: int) -> void:
 	if run.deck[deck_index] == null or run.deck[deck_index].id != card.id:
 		return
 
-	MapScene.upgrade_card_instance(run, deck_index)
+	_pending_forge_deck_index = deck_index
+	_show_forge_confirm(card, card.upgrade)
+
+func _show_forge_confirm(before_card: CardData, after_card: CardData) -> void:
+	_clear_forge_confirm_cards()
+	forge_confirm_title.text = tr("campfire.forge.confirm.title")
+
+	var before_view := CARD_VIEW_SCENE.instantiate() as CardView
+	forge_before_slot.add_child(before_view)
+	before_view.setup_deck_item(before_card, 1, 1)
+	before_view.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	var after_view := CARD_VIEW_SCENE.instantiate() as CardView
+	forge_after_slot.add_child(after_view)
+	after_view.setup_deck_item(after_card, 1, 1)
+	after_view.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
 	forge_panel.hide()
-	_advance_node()
+	forge_confirm_panel.show()
+
+func _clear_forge_confirm_cards() -> void:
+	for child in forge_before_slot.get_children():
+		child.queue_free()
+	for child in forge_after_slot.get_children():
+		child.queue_free()
+
+func _on_forge_confirmed() -> void:
+	var run := GameState.current_run
+	if run == null:
+		_on_forge_confirm_cancelled()
+		return
+	if _pending_forge_deck_index < 0 or _pending_forge_deck_index >= run.deck.size():
+		_on_forge_confirm_cancelled()
+		return
+
+	if MapScene.upgrade_card_instance(run, _pending_forge_deck_index):
+		_pending_forge_deck_index = -1
+		_clear_forge_confirm_cards()
+		forge_confirm_panel.hide()
+		_advance_node()
+	else:
+		_on_forge_confirm_cancelled()
+
+func _on_forge_confirm_cancelled() -> void:
+	_pending_forge_deck_index = -1
+	_clear_forge_confirm_cards()
+	forge_confirm_panel.hide()
+	forge_panel.show()
 
 static func upgrade_card_instance(run: RunState, deck_index: int) -> bool:
 	if run == null or deck_index < 0 or deck_index >= run.deck.size():

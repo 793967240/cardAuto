@@ -1,7 +1,7 @@
 [gd_resource type="Resource" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://src/data_models/relic_data.gd" id="1_data"]
-[ext_resource type="Texture2D" path="res://assets/ui/relics/relic_placeholder.png" id="2_icon"]
+[ext_resource type="Texture2D" path="res://assets/ui/relics/generated/yin_yang_fish_talisman.png" id="2_icon"]
 
 [resource]
 script = ExtResource("1_data")

@@ -171,7 +171,7 @@ text = "ATTACK"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="DescLabel" type="Label" parent="."]
+[node name="DescLabel" type="RichTextLabel" parent="."]
 visible = false
 z_index = 8
 layout_mode = 1
@@ -186,15 +186,12 @@ offset_bottom = -8.0
 grow_horizontal = 2
 grow_vertical = 0
 mouse_filter = 2
-theme_override_colors/font_color = Color(0.03, 0.035, 0.032, 1)
-theme_override_colors/font_outline_color = Color(0.96, 0.98, 0.94, 0.72)
-theme_override_constants/outline_size = 2
+theme_override_colors/default_color = Color(0.03, 0.035, 0.032, 1)
 theme_override_font_sizes/font_size = 12
+bbcode_enabled = true
 text = "效果描述"
-horizontal_alignment = 1
-vertical_alignment = 1
 autowrap_mode = 2
-clip_text = true
+scroll_active = false
 
 [node name="Margin" type="MarginContainer" parent="."]
 layout_mode = 1

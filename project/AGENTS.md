@@ -120,7 +120,7 @@ Timeline (tick 引擎, 0.5s/tick, 1x/2x/4x)
 
 ```
 GameState.start_run()
-  → RunState（8 bases + 10 deck cards + 4 starter gems）
+  → RunState（8 bases + empty card repository + empty gem inventory）
   → BuildScene（玩家摆卡/镶宝石）
   → ChainComposer.compose(spec) → Result.layout: Array[ChainSlot]
   → BattleScene → player.chain.set_layout(result.layout)

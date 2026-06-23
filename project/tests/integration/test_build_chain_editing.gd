@@ -136,7 +136,10 @@ func test_install_gem_instance_moves_from_previous_base() -> void:
 	var run := GameState.current_run
 	var first_id: StringName = run.bases[0].id
 	var second_id: StringName = run.bases[1].id
-	var gem = run.gems[0]
+	var ruby := load("res://data/gems/ruby.tres") as GemData
+	assert_not_null(ruby, "load ruby")
+	var gem := GemInstance.new(ruby)
+	run.gems.append(gem)
 
 	assert_true(BuildScene.install_gem_instance(run, first_id, gem), "Gem should install on first base")
 	assert_true(BuildScene.install_gem_instance(run, second_id, gem), "Gem should move to second base")

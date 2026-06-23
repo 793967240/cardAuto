@@ -1,0 +1,85 @@
+[gd_resource type="Resource" load_steps=11 format=3 uid="uid://enemy_tai_xu_judge"]
+
+[ext_resource type="Script" path="res://src/data_models/enemy_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://src/data_models/card_data.gd" id="2_card"]
+[ext_resource type="Script" path="res://src/core/effects/effect_boss_tai_xu.gd" id="3_fx"]
+[ext_resource type="Texture2D" path="res://assets/enemies/tai_xu_judge.png" id="4_portrait"]
+
+[sub_resource type="Resource" id="fx_tribulation"]
+script = ExtResource("3_fx")
+move = 0
+
+[sub_resource type="Resource" id="fx_law_seal"]
+script = ExtResource("3_fx")
+move = 1
+
+[sub_resource type="Resource" id="fx_null_guard"]
+script = ExtResource("3_fx")
+move = 2
+
+[sub_resource type="Resource" id="fx_final_decree"]
+script = ExtResource("3_fx")
+move = 3
+
+[sub_resource type="Resource" id="card_tribulation"]
+script = ExtResource("2_card")
+id = &"tai_xu_tribulation"
+display_name_key = "enemy.tai_xu_tribulation.name"
+desc_key = "enemy.tai_xu_tribulation.desc"
+cost = 2
+card_type = 0
+tags = [&"enemy_attack", &"boss", &"fire"]
+rarity = 2
+description_template = "造成伤害并施加燃烧。半血后伤害和燃烧提高。"
+effect = SubResource("fx_tribulation")
+consumable = false
+
+[sub_resource type="Resource" id="card_law_seal"]
+script = ExtResource("2_card")
+id = &"tai_xu_law_seal"
+display_name_key = "enemy.tai_xu_law_seal.name"
+desc_key = "enemy.tai_xu_law_seal.desc"
+cost = 2
+card_type = 3
+tags = [&"enemy_debuff", &"boss"]
+rarity = 2
+description_template = "施加迟滞和道伤。半血后持续更久。"
+effect = SubResource("fx_law_seal")
+consumable = false
+
+[sub_resource type="Resource" id="card_null_guard"]
+script = ExtResource("2_card")
+id = &"tai_xu_null_guard"
+display_name_key = "enemy.tai_xu_null_guard.name"
+desc_key = "enemy.tai_xu_null_guard.desc"
+cost = 3
+card_type = 1
+tags = [&"enemy_defense", &"boss"]
+rarity = 2
+description_template = "获得护盾与打断抗性。半血后护盾提高。"
+effect = SubResource("fx_null_guard")
+consumable = false
+
+[sub_resource type="Resource" id="card_final_decree"]
+script = ExtResource("2_card")
+id = &"tai_xu_final_decree"
+display_name_key = "enemy.tai_xu_final_decree.name"
+desc_key = "enemy.tai_xu_final_decree.desc"
+cost = 4
+card_type = 0
+tags = [&"enemy_attack", &"boss", &"heavy"]
+rarity = 2
+description_template = "高额伤害并打断当前蓄力。若目标已有负面状态，额外伤害。半血后更强。"
+effect = SubResource("fx_final_decree")
+consumable = false
+
+[resource]
+script = ExtResource("1_data")
+id = &"tai_xu_judge"
+display_name_key = "enemy.tai_xu_judge.name"
+max_hp = 180
+tier = 3
+tags = [&"boss", &"celestial", &"tribulation"]
+deck = [SubResource("card_law_seal"), SubResource("card_tribulation"), SubResource("card_null_guard"), SubResource("card_tribulation"), SubResource("card_final_decree")]
+portrait = ExtResource("4_portrait")
+act = 1
