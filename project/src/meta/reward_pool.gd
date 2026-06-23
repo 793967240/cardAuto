@@ -4,6 +4,8 @@
 # 后续阶段会扩展为多类型池（卡牌/宝石/遗物/金币/裁切服务），见 GDD §5.1。
 class_name RewardPool extends RefCounted
 
+const RESOURCE_CATALOG = preload("res://src/meta/resource_catalog.gd")
+
 ## 角色 → 该角色可用的卡牌目录（不含起始卡专属限制；阶段 1 直接全池）
 const CHARACTER_CARD_DIRS: Dictionary = {
 	&"sword": "res://data/cards/sword/",
@@ -86,20 +88,17 @@ static func draw_chest(rng_seed: int = 0) -> Dictionary:
 ## 扫描卡牌目录，加载所有 .tres 卡牌资源
 static func _load_pool(dir_path: String) -> Array[CardData]:
 	var out: Array[CardData] = []
-	var dir := DirAccess.open(dir_path)
-	if dir == null:
-		push_warning("RewardPool: 无法打开目录 %s" % dir_path)
+	var paths := _paths_for_card_dir(dir_path)
+	if paths.is_empty():
+		push_warning("RewardPool: 未找到卡牌清单 %s" % dir_path)
 		return out
 
-	dir.list_dir_begin()
-	var fname := dir.get_next()
-	while fname != "":
-		if not dir.current_is_dir() and fname.ends_with(".tres"):
-			var res := load(dir_path + fname) as CardData
-			if res != null:
-				out.append(res)
-		fname = dir.get_next()
-	dir.list_dir_end()
+	for path in paths:
+		var res := load(path) as CardData
+		if res != null:
+			out.append(res)
+		else:
+			push_warning("RewardPool: 无法加载卡牌资源 %s" % path)
 	return out
 
 static func _load_card_pool(character_id: StringName) -> Array[CardData]:
@@ -112,38 +111,29 @@ static func _load_card_pool(character_id: StringName) -> Array[CardData]:
 
 static func _load_gem_pool() -> Array[GemData]:
 	var out: Array[GemData] = []
-	var dir := DirAccess.open(GEM_DIR)
-	if dir == null:
-		push_warning("RewardPool: 无法打开目录 %s" % GEM_DIR)
-		return out
-
-	dir.list_dir_begin()
-	var fname := dir.get_next()
-	while fname != "":
-		if not dir.current_is_dir() and fname.ends_with(".tres"):
-			var res := load(GEM_DIR + fname) as GemData
-			if res != null:
-				out.append(res)
-		fname = dir.get_next()
-	dir.list_dir_end()
+	for path in RESOURCE_CATALOG.gem_paths():
+		var res := load(path) as GemData
+		if res != null:
+			out.append(res)
+		else:
+			push_warning("RewardPool: 无法加载宝石资源 %s" % path)
 	return out
 
 static func _load_relic_pool() -> Array[RelicData]:
 	var out: Array[RelicData] = []
-	var dir := DirAccess.open(RELIC_DIR)
-	if dir == null:
-		push_warning("RewardPool: 无法打开目录 %s" % RELIC_DIR)
-		return out
-	dir.list_dir_begin()
-	var fname := dir.get_next()
-	while fname != "":
-		if not dir.current_is_dir() and fname.ends_with(".tres"):
-			var res := load(RELIC_DIR + fname) as RelicData
-			if res != null:
-				out.append(res)
-		fname = dir.get_next()
-	dir.list_dir_end()
+	for path in RESOURCE_CATALOG.relic_paths():
+		var res := load(path) as RelicData
+		if res != null:
+			out.append(res)
+		else:
+			push_warning("RewardPool: 无法加载遗物资源 %s" % path)
 	return out
+
+static func _paths_for_card_dir(dir_path: String) -> Array[String]:
+	for character_id in CHARACTER_CARD_DIRS:
+		if CHARACTER_CARD_DIRS[character_id] == dir_path:
+			return RESOURCE_CATALOG.card_paths(character_id)
+	return []
 
 static func _pick_remove(pool: Array, rng: RandomNumberGenerator) -> Variant:
 	var pick_idx := rng.randi_range(0, pool.size() - 1)

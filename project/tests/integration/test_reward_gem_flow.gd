@@ -3,6 +3,7 @@
 extends GutTest
 
 var _save: SaveSystem
+const RESOURCE_CATALOG = preload("res://src/meta/resource_catalog.gd")
 
 func before_each() -> void:
 	_save = SaveSystem.new()
@@ -36,6 +37,24 @@ func test_reward_pool_draw_options_includes_gem_and_cards() -> void:
 
 	assert_gte(gem_count, 1, "Mixed reward should include at least one gem")
 	assert_gte(card_count, 1, "Mixed reward should still include card options")
+
+func test_resource_catalog_matches_reward_data_files() -> void:
+	assert_eq(RESOURCE_CATALOG.card_paths(&"sword").size(), _count_tres_files("res://data/cards/sword/"),
+		"Sword card catalog should include every top-level card resource")
+	assert_eq(RESOURCE_CATALOG.gem_paths().size(), _count_tres_files("res://data/gems/"),
+		"Gem catalog should include every gem resource")
+	assert_eq(RESOURCE_CATALOG.relic_paths().size(), _count_tres_files("res://data/relics/"),
+		"Relic catalog should include every relic resource")
+
+	for path in RESOURCE_CATALOG.card_paths(&"sword"):
+		assert_true(FileAccess.file_exists(path), "Catalog card path should exist: %s" % path)
+		assert_true(load(path) is CardData, "Catalog card path should load CardData: %s" % path)
+	for path in RESOURCE_CATALOG.gem_paths():
+		assert_true(FileAccess.file_exists(path), "Catalog gem path should exist: %s" % path)
+		assert_true(load(path) is GemData, "Catalog gem path should load GemData: %s" % path)
+	for path in RESOURCE_CATALOG.relic_paths():
+		assert_true(FileAccess.file_exists(path), "Catalog relic path should exist: %s" % path)
+		assert_true(load(path) is RelicData, "Catalog relic path should load RelicData: %s" % path)
 
 func test_reward_pool_draw_options_is_seed_deterministic() -> void:
 	var first := RewardPool.draw_options(&"sword", 3, 99)
@@ -118,3 +137,18 @@ func _option_ids(options: Array[Dictionary]) -> Array[String]:
 			rid = str((res as RelicData).id)
 		ids.append("%s:%s" % [str(option.get("type", "")), rid])
 	return ids
+
+func _count_tres_files(dir_path: String) -> int:
+	var dir := DirAccess.open(dir_path)
+	assert_not_null(dir, "Data directory should exist: %s" % dir_path)
+	if dir == null:
+		return 0
+	var count := 0
+	dir.list_dir_begin()
+	var fname := dir.get_next()
+	while fname != "":
+		if not dir.current_is_dir() and fname.ends_with(".tres"):
+			count += 1
+		fname = dir.get_next()
+	dir.list_dir_end()
+	return count

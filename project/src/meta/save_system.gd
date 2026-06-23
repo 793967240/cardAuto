@@ -2,6 +2,8 @@
 # 存档系统 - 支持 Run 存档、元进度、损坏恢复
 class_name SaveSystem extends RefCounted
 
+const RESOURCE_CATALOG = preload("res://src/meta/resource_catalog.gd")
+
 const RUN_SAVE_PATH := "user://run.save"
 const META_SAVE_PATH := "user://meta.save"
 const BACKUP_COUNT := 3
@@ -187,20 +189,12 @@ func _rehydrate(state: RunState, data: Dictionary) -> void:
 
 func _build_card_index() -> Dictionary:
 	var index: Dictionary = {}
-	var dirs := ["res://data/cards/sword/"]
-	for dir_path in dirs:
-		var dir := DirAccess.open(dir_path)
-		if dir == null:
-			continue
-		dir.list_dir_begin()
-		var fname := dir.get_next()
-		while fname != "":
-			if not dir.current_is_dir() and fname.ends_with(".tres"):
-				var res := load(dir_path + fname) as CardData
-				if res and res.id != &"":
-					index[str(res.id)] = res
-			fname = dir.get_next()
-		dir.list_dir_end()
+	for path in RESOURCE_CATALOG.card_paths(&"sword"):
+		var res := load(path) as CardData
+		if res and res.id != &"":
+			index[str(res.id)] = res
+		elif res == null:
+			push_warning("SaveSystem: failed to load card resource %s" % path)
 	return index
 
 func _take_matching_gem_instance(gems: Array, gem_id: String):
@@ -215,34 +209,20 @@ func _take_matching_gem_instance(gems: Array, gem_id: String):
 
 func _build_gem_index() -> Dictionary:
 	var index: Dictionary = {}
-	var dir_path := "res://data/gems/"
-	var dir := DirAccess.open(dir_path)
-	if dir == null:
-		return index
-	dir.list_dir_begin()
-	var fname := dir.get_next()
-	while fname != "":
-		if not dir.current_is_dir() and fname.ends_with(".tres"):
-			var res := load(dir_path + fname) as GemData
-			if res and res.id != &"":
-				index[str(res.id)] = res
-		fname = dir.get_next()
-	dir.list_dir_end()
+	for path in RESOURCE_CATALOG.gem_paths():
+		var res := load(path) as GemData
+		if res and res.id != &"":
+			index[str(res.id)] = res
+		elif res == null:
+			push_warning("SaveSystem: failed to load gem resource %s" % path)
 	return index
 
 func _build_relic_index() -> Dictionary:
 	var index: Dictionary = {}
-	var dir_path := "res://data/relics/"
-	var dir := DirAccess.open(dir_path)
-	if dir == null:
-		return index
-	dir.list_dir_begin()
-	var fname := dir.get_next()
-	while fname != "":
-		if not dir.current_is_dir() and fname.ends_with(".tres"):
-			var res := load(dir_path + fname) as RelicData
-			if res and res.id != &"":
-				index[str(res.id)] = res
-		fname = dir.get_next()
-	dir.list_dir_end()
+	for path in RESOURCE_CATALOG.relic_paths():
+		var res := load(path) as RelicData
+		if res and res.id != &"":
+			index[str(res.id)] = res
+		elif res == null:
+			push_warning("SaveSystem: failed to load relic resource %s" % path)
 	return index
